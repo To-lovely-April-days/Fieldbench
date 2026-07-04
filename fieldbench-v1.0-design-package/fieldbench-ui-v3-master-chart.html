@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — Master · Chart · timeline link</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --blue-tint2:#3E6AE10E;
+  --carbon:#171A20; --graphite:#393C41; --pewter:#5C5E62; --silver:#8E8E8E;
+  --cloud:#EAEAEC; --ash:#F4F4F4; --bg:#FAFAFB; --white:#FFFFFF;
+  --green:#1FA463; --amber:#D9870A; --red:#D9342B;
+  --f-addr:#8A56D6; --f-func:#0B3E97; --teal:#00B386; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.titlebar{height:40px;display:flex;align-items:stretch;border-bottom:1px solid var(--cloud);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tabs{display:flex;align-items:flex-end;flex:1;padding:6px 10px 0;gap:2px}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;height:34px;font-size:12px;color:var(--silver);border:1px solid transparent;border-bottom:none;border-radius:var(--r) var(--r) 0 0}
+.tab .dot{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.tab .dot.on{background:var(--green)}
+.tab .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.tab.active{background:var(--white);border-color:var(--cloud);color:var(--carbon)}
+.tab.active .kind{color:var(--blue)}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 10px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.toolbar{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--white);border-bottom:1px solid var(--cloud);flex-shrink:0}
+.ctl{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.ctl .cell{display:flex;align-items:center;gap:7px;padding:0 11px;font-size:12px}
+.ctl .cell + .cell{border-left:1px solid var(--cloud)}
+.ctl .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--silver)}
+.ctl .v{font-family:var(--mono);font-size:11.5px;color:var(--carbon)}
+.ctl .car{color:var(--silver);font-size:8px}
+.lens{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.lens span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--pewter)}
+.lens span.on{background:var(--blue-tint);color:var(--blue);font-weight:500}
+.spacer{flex:1}
+.run{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pewter)}
+.run .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.run b{font-weight:500;color:var(--carbon)}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr;min-height:0}
+.rail{background:var(--bg);border-right:1px solid var(--cloud);padding:14px 0}
+.rh{display:flex;align-items:center;height:24px;padding:0 14px}
+.rh span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.trow{display:flex;align-items:center;gap:8px;height:28px;padding:0 14px;font-size:12px;color:var(--pewter)}
+.trow .st{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.trow .st.on{background:var(--green)}
+.trow.conn{color:var(--carbon)}
+.trow .m{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.trow.sess{padding-left:35px;position:relative}
+.trow.sess::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--cloud)}
+.trow.sess .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-left:auto}
+.trow.active{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue);color:var(--carbon)}
+.trow.active .kind{color:var(--blue)}
+.center{display:flex;flex-direction:column;min-width:0;background:var(--white)}
+.thead{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px;height:26px;align-items:center;padding:0 14px;border-bottom:1px solid var(--cloud)}
+.thead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.rows{flex:1;overflow:hidden}
+.row{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px;align-items:center;height:26px;padding:0 14px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.row .ts{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.row .ts b{color:var(--graphite);font-weight:400}
+.row .dt{font-family:var(--mono);font-size:10.5px;color:var(--silver);text-align:right;padding-right:12px}
+.dir{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em}
+.dir.tx{color:var(--amber)} .dir.rx{color:#1989FA}
+.row .len{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.sum{display:flex;align-items:center;gap:9px}
+.tok{font-family:var(--mono);font-size:11px;font-weight:500}
+.tok.addr{color:var(--f-addr)} .tok.func{color:var(--f-func)}
+.sum .txt{color:var(--graphite);font-size:11.5px}
+.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;margin-left:auto}
+.tag.ok{color:var(--green)}
+.tag.err{color:var(--red);background:#D9342B14;border-radius:20px;padding:2px 8px}
+.row .hex{font-family:var(--mono);font-size:11px;color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .hex .hl{color:var(--red)}
+.row.err{background:#D9342B08}
+.row.sel{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue)}
+.proto{height:280px;border-top:1px solid var(--cloud);background:var(--white);display:flex;flex-direction:column;flex-shrink:0}
+.ptabs{display:flex;align-items:center;height:34px;border-bottom:1px solid var(--cloud);padding:0 14px;gap:20px}
+.ptab{height:33px;display:flex;align-items:center;font-size:12px;color:var(--silver);border-bottom:1.5px solid transparent}
+.ptab.on{color:var(--carbon);border-bottom-color:var(--blue);font-weight:500}
+.cctl{margin-left:auto;display:flex;align-items:center;gap:10px}
+.wseg{display:flex;height:24px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.wseg span{display:flex;align-items:center;padding:0 10px;font-family:var(--mono);font-size:10px;color:var(--pewter)}
+.wseg span.on{background:var(--ash);color:var(--carbon);font-weight:500}
+.mini{height:24px;display:flex;align-items:center;padding:0 10px;border:1px solid var(--cloud);border-radius:var(--r);font-size:11px;color:var(--pewter);gap:6px}
+.chwrap{flex:1;display:flex;flex-direction:column;padding:10px 14px 8px;position:relative}
+.chans{display:flex;gap:16px;margin-bottom:6px}
+.ch{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--graphite)}
+.ch i{width:8px;height:8px;border-radius:2px}
+.ch .v{font-family:var(--mono);font-size:11px;color:var(--carbon);font-weight:500}
+.ch .u{font-family:var(--mono);font-size:9.5px;color:var(--silver)}
+.plot{flex:1;position:relative}
+.plot svg{width:100%;height:100%;display:block}
+.xlab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--silver);padding-top:4px}
+.callout{position:absolute;left:56%;top:6px;background:var(--white);border:1px solid var(--cloud);border-radius:var(--r);padding:7px 10px;font-size:11px;color:var(--graphite)}
+.callout .m{font-family:var(--mono);font-size:10px;color:var(--red)}
+.callout a{display:block;color:var(--blue);font-weight:500;text-decoration:none;margin-top:3px;font-size:11px}
+.status{height:28px;display:flex;align-items:center;padding:0 14px;background:var(--white);border-top:1px solid var(--cloud);font-family:var(--mono);font-size:10.5px;color:var(--silver);flex-shrink:0}
+.status .item{display:flex;align-items:center;gap:6px;padding:0 14px;border-left:1px solid var(--cloud)}
+.status .item:first-child{border-left:none;padding-left:0}
+.status .item b{color:var(--graphite);font-weight:400}
+.status .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.status .e b{color:var(--red)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs">
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">mon</span></div>
+      <div class="tab active"><span class="dot on"></span>COM3 <span class="kind">rtu·m</span></div>
+      <div class="tab"><span class="dot"></span>TCP :502 <span class="kind">slv</span></div>
+    </div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="ctl">
+      <div class="cell"><span class="k">Port</span><span class="v">COM3 · CH340</span><span class="car">▾</span></div>
+      <div class="cell"><span class="k">Baud</span><span class="v">9600</span><span class="car">▾</span></div>
+      <div class="cell"><span class="v">8-N-1</span><span class="car">▾</span></div>
+    </div>
+    <div class="lens"><span>Raw</span><span class="on">Modbus RTU · Master</span></div>
+    <div class="spacer"></div>
+    <div class="run"><span class="dot"></span><b>Connected</b></div>
+  </div>
+
+  <div class="main">
+    <aside class="rail">
+      <div class="rh"><span>Connections</span></div>
+      <div class="trow conn"><span class="st on"></span>COM3 — CH340<span class="m">9600</span></div>
+      <div class="trow sess">Monitor<span class="kind">raw</span></div>
+      <div class="trow sess active">Master<span class="kind">rtu</span></div>
+      <div class="trow conn"><span class="st"></span>TCP Server<span class="m">:502</span></div>
+      <div class="trow sess">Slave<span class="kind">tcp</span></div>
+    </aside>
+
+    <section class="center">
+      <div class="thead"><span>Time</span><span style="text-align:right;padding-right:12px">Δ ms</span><span>Dir</span><span>Len</span><span>Frame</span><span>Hex</span></div>
+      <div class="rows">
+        <div class="row"><span class="ts">14:32:02.<b>203</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row"><span class="ts">14:32:02.<b>224</b></span><span class="dt">21</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span></div>
+        <div class="row"><span class="ts">14:32:02.<b>703</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row err sel"><span class="ts">14:32:02.<b>731</b></span><span class="dt">28</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag err">CRC FAIL</span></span><span class="hex">01 03 14 00 E6 00 E7 01 90 … 00 2A <span class="hl">3B 91</span></span></div>
+        <div class="row"><span class="ts">14:32:03.<b>203</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row"><span class="ts">14:32:03.<b>219</b></span><span class="dt">16</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span></div>
+        <div class="row"><span class="ts">14:32:03.<b>703</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row"><span class="ts">14:32:03.<b>720</b></span><span class="dt">17</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span></div>
+      </div>
+
+      <div class="proto">
+        <div class="ptabs">
+          <div class="ptab">Registers</div>
+          <div class="ptab">Poll tasks</div>
+          <div class="ptab">Send</div>
+          <div class="ptab on">Chart</div>
+          <div class="cctl">
+            <div class="wseg"><span class="on">60 s</span><span>10 min</span><span>All</span></div>
+            <span class="mini">⏸ Pause</span>
+            <span class="mini">↓ Export CSV</span>
+          </div>
+        </div>
+        <div class="chwrap">
+          <div class="chans">
+            <span class="ch"><i style="background:var(--blue)"></i>temp_pv <span class="v">22.9</span><span class="u">°C</span></span>
+            <span class="ch"><i style="background:var(--teal)"></i>flow_pv <span class="v">40.0</span><span class="u">L/min</span></span>
+            <span class="ch"><i style="background:var(--f-addr)"></i>press_pv <span class="v">1.013</span><span class="u">bar</span></span>
+          </div>
+          <div class="plot">
+            <svg viewBox="0 0 860 150" preserveAspectRatio="none">
+              <line x1="0" y1="30" x2="860" y2="30" stroke="#EAEAEC" stroke-width="1"/>
+              <line x1="0" y1="75" x2="860" y2="75" stroke="#EAEAEC" stroke-width="1"/>
+              <line x1="0" y1="120" x2="860" y2="120" stroke="#EAEAEC" stroke-width="1"/>
+              <line x1="482" y1="6" x2="482" y2="144" stroke="#D9342B" stroke-width="1" stroke-dasharray="3 3" opacity=".5"/>
+              <polyline points="0,86 200,85 400,85 600,84 860,84" fill="none" stroke="#8A56D6" stroke-width="1.5" opacity=".85"/>
+              <polyline points="0,112 120,111 200,108 280,72 360,66 440,64 560,63 680,62 860,62" fill="none" stroke="#00B386" stroke-width="1.5" opacity=".9"/>
+              <polyline points="0,60 90,58 180,57 270,55 360,53 440,52 470,51 482,98 496,52 580,50 680,48 780,47 860,46" fill="none" stroke="#3E6AE1" stroke-width="1.75"/>
+              <circle cx="482" cy="98" r="4" fill="#D9342B"/>
+            </svg>
+            <div class="callout">
+              <span class="m">14:32:02.731 · frame #1047 · CRC FAIL</span>
+              <a href="#">Jump to timeline ↑</a>
+            </div>
+          </div>
+          <div class="xlab"><span>14:32:01</span><span>14:32:02</span><span>14:32:03</span><span>14:32:04</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="status">
+    <span class="item"><span class="dot"></span><b>COM3 · 9600 8N1</b></span>
+    <span class="item">CH <b>3</b></span>
+    <span class="item">FRM <b>1,062</b></span>
+    <span class="item e">ERR <b>3</b></span>
+  </div>
+</div>
+</body>
+</html>

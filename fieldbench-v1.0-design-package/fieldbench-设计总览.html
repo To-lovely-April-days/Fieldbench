@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fieldbench · UI 设计总览</title>
+<style>
+:root{
+  --blue:#3E6AE1;--blue-tint:#3E6AE114;--carbon:#171A20;--graphite:#393C41;--pewter:#5C5E62;
+  --silver:#8E8E8E;--cloud:#EAEAEC;--ash:#F4F4F4;--bg:#FAFAFB;--r:4px;
+  --green:#1FA463;--amber:#D9870A;--red:#D9342B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;color:var(--carbon);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.cover{padding:70px 0 36px}
+.cover .eyebrow{font-size:13px;color:var(--blue);font-weight:500;letter-spacing:.04em}
+.cover h1{font-size:42px;font-weight:500;letter-spacing:-.02em;margin-top:14px;display:flex;align-items:center;gap:14px}
+.cover h1 .mark{width:34px;height:34px;border:2.5px solid var(--blue);border-radius:7px;position:relative}
+.cover h1 .mark::after{content:'';position:absolute;left:7px;top:14px;width:15px;height:2.5px;background:var(--blue)}
+.cover p{font-size:15px;color:var(--graphite);max-width:720px;margin-top:16px;line-height:1.6}
+.cover .note{font-size:13px;color:var(--pewter);background:var(--ash);border-radius:8px;padding:14px 18px;margin-top:22px;max-width:760px;line-height:1.6}
+.cover .note b{font-weight:500;color:var(--graphite)}
+.ds{border-top:1px solid var(--cloud);border-bottom:1px solid var(--cloud);padding:34px 0;margin-top:18px}
+.ds h2{font-size:14px;font-weight:500;color:var(--pewter);margin-bottom:20px}
+.ds-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:48px}
+.swatches{display:flex;flex-wrap:wrap;gap:14px}
+.sw{display:flex;flex-direction:column;gap:6px}
+.sw .chip{width:50px;height:50px;border-radius:8px;border:1px solid var(--cloud)}
+.sw .nm{font-size:11px;color:var(--pewter)}
+.sw .hex{font-size:10.5px;color:var(--silver);font-variant-numeric:tabular-nums}
+.principles{font-size:13.5px;color:var(--graphite);line-height:1.9}
+.principles b{font-weight:500;color:var(--carbon)}
+.sec{padding:42px 0 6px}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-h .n{font-size:13px;color:var(--silver);font-variant-numeric:tabular-nums}
+.sec-h h2{font-size:23px;font-weight:500}
+.sec-h .cnt{font-size:13px;color:var(--silver)}
+.mod{background:#fff;border:1px solid var(--cloud);border-radius:12px;margin-top:22px;overflow:hidden}
+.mod-head{display:flex;align-items:flex-start;gap:16px;padding:22px 24px 16px}
+.mod-no{font-size:13px;color:var(--silver);font-variant-numeric:tabular-nums;font-weight:500;padding-top:4px;width:26px;flex:none}
+.mod-tt{flex:1}
+.mod-tt h3{font-size:18px;font-weight:500;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.mod-tt p{font-size:13.5px;color:var(--pewter);margin-top:5px;line-height:1.5}
+.badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.badge.main{background:var(--blue-tint);color:var(--blue)}
+.badge.park{background:var(--ash);color:var(--pewter)}
+.badge.early{background:var(--ash);color:var(--silver)}
+.open{flex:none;font-size:13px;font-weight:500;color:var(--blue);background:var(--blue-tint);padding:9px 16px;border-radius:var(--r);align-self:center;white-space:nowrap}
+.feat{display:flex;flex-wrap:wrap;gap:8px;padding:0 24px 18px 66px}
+.feat span{font-size:12px;color:var(--graphite);background:var(--bg);border:1px solid var(--cloud);border-radius:20px;padding:4px 12px}
+.preview{border-top:1px solid var(--cloud);background:#F2F3F5;position:relative;height:678px;overflow:hidden}
+.preview .lbl{position:absolute;top:10px;left:14px;z-index:2;font-size:11px;color:var(--silver);background:rgba(255,255,255,.85);padding:3px 9px;border-radius:20px}
+.preview iframe{width:1440px;height:920px;border:0;transform:scale(.7833);transform-origin:0 0;background:#FAFAFA}
+footer{padding:46px 0 66px;color:var(--silver);font-size:12.5px;line-height:1.7;border-top:1px solid var(--cloud);margin-top:46px}
+@media(max-width:760px){.ds-grid{grid-template-columns:1fr;gap:28px}.cover h1{font-size:32px}.feat{padding-left:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <div class="eyebrow">UI DESIGN INDEX · v1.0 COMPLETE</div>
+    <h1><span class="mark"></span>Fieldbench · UI 设计总览</h1>
+    <p>工业通信工作台(串口 · Modbus · AI)v1.0 全部界面设计汇总,共 10 个主线界面覆盖 PRD 全部功能面。设计语言移植自食力的 Tesla 极简体系:唯一强调色电光蓝、零阴影零渐变、4px 圆角细线分隔、系统字体 + 等宽数字,密度调整为仪器级。</p>
+    <div class="note">说明:主线为 <b>Tesla 极简 · 浅色</b>(默认主题),同一 token 表派生深色主题。Send 发送器组件在 Monitor 稿中呈现,Master 会话同款不重复出稿。v1 / v2 为早期方向探索,保留备查。各模块为独立 HTML 文件,需与本索引放在同一文件夹,预览方可加载。</div>
+  </div>
+
+  <div class="ds">
+    <h2>设计语言 · Tesla 极简(仪器级密度)</h2>
+    <div class="ds-grid">
+      <div>
+        <div class="swatches">
+          <div class="sw"><div class="chip" style="background:#3E6AE1"></div><div class="nm">电光蓝</div><div class="hex">#3E6AE1</div></div>
+          <div class="sw"><div class="chip" style="background:#171A20"></div><div class="nm">墨</div><div class="hex">#171A20</div></div>
+          <div class="sw"><div class="chip" style="background:#5C5E62"></div><div class="nm">锡灰</div><div class="hex">#5C5E62</div></div>
+          <div class="sw"><div class="chip" style="background:#8E8E8E"></div><div class="nm">银</div><div class="hex">#8E8E8E</div></div>
+          <div class="sw"><div class="chip" style="background:#EAEAEC"></div><div class="nm">云</div><div class="hex">#EAEAEC</div></div>
+          <div class="sw"><div class="chip" style="background:#F4F4F4"></div><div class="nm">灰白</div><div class="hex">#F4F4F4</div></div>
+        </div>
+        <div class="swatches" style="margin-top:16px">
+          <div class="sw"><div class="chip" style="background:#8A56D6"></div><div class="nm">地址</div><div class="hex">#8A56D6</div></div>
+          <div class="sw"><div class="chip" style="background:#0B3E97"></div><div class="nm">功能码</div><div class="hex">#0B3E97</div></div>
+          <div class="sw"><div class="chip" style="background:#00B386"></div><div class="nm">长度 / 通道</div><div class="hex">#00B386</div></div>
+          <div class="sw"><div class="chip" style="background:#D9342B"></div><div class="nm">错误</div><div class="hex">#D9342B</div></div>
+          <div class="sw"><div class="chip" style="background:#D9870A"></div><div class="nm">TX / 警示</div><div class="hex">#D9870A</div></div>
+          <div class="sw"><div class="chip" style="background:#1989FA"></div><div class="nm">RX</div><div class="hex">#1989FA</div></div>
+          <div class="sw"><div class="chip" style="background:#1FA463"></div><div class="nm">正常</div><div class="hex">#1FA463</div></div>
+        </div>
+      </div>
+      <div class="principles">
+        · <b>唯一强调色</b>电光蓝:选中、激活、AI、可写、订阅全部归蓝<br>
+        · <b>协议四色仅作字段标识</b>,列表 / 字节 / 图例三处同色<br>
+        · <b>零阴影、零渐变</b>,4px 圆角,细线(#EAEAEC)分隔<br>
+        · 字重仅 <b>400 / 500</b>,系统字体栈,数据用等宽数字<br>
+        · 密度为<b>仪器级</b>:时间轴 26px 行高,微标签 9.5px 大写字距<br>
+        · 深浅双主题共用同一 token 表,浅色为默认
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">01</span><h2>主窗口 · Master 会话</h2><span class="cnt">4 个状态 · Flow A</span></div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">01</div>
+        <div class="mod-tt"><h3>Registers · 浅色默认主题 <span class="badge main">主线</span></h3>
+          <p>轮询运行中,一帧 CRC 失败被选中:时间轴字段着色 + Δ 响应延迟列、寄存器网格带趋势 sparkline、右栏字节检查器与 AI 解释(原因排序 + 检查清单 + 试用余额)。</p></div>
+        <a class="open" href="fieldbench-ui-v3-tesla-light.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>报文时间轴</span><span>Δ 响应延迟</span><span>字段四色</span><span>寄存器网格 + Trend</span><span>字节检查器</span><span>AI 解释</span><span>参数热改</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-tesla-light.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">02</div>
+        <div class="mod-tt"><h3>Poll tasks 页签 <span class="badge main">主线</span></h3>
+          <p>多轮询任务并行(同连接串行调度):运行 / 暂停双态、周期与实测 cycle、错误计数标红、Tesla 开关,时间轴可见 @01 / @02 两任务交错。</p></div>
+        <a class="open" href="fieldbench-ui-v3-master-polltasks.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>任务列表</span><span>启停开关</span><span>错误计数</span><span>多从站交错调度</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-master-polltasks.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">03</div>
+        <div class="mod-tt"><h3>Chart 页签 · 曲线↔时间轴联动 <span class="badge main">主线</span></h3>
+          <p>三通道实时曲线(分类色标识),CRC 失败点在曲线上标红,点击卡片「Jump to timeline」跳回对应报文——「值不对 → 是哪帧 → 为什么」全品类独有链条。</p></div>
+        <a class="open" href="fieldbench-ui-v3-master-chart.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>多通道曲线</span><span>异常点标红</span><span>跳转时间轴</span><span>窗口 60s/10min/All</span><span>导出 CSV</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-master-chart.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">04</div>
+        <div class="mod-tt"><h3>深色主题 <span class="badge main">主线</span></h3>
+          <p>同一 token 表的暗色派生:电光蓝提亮一档,面板三级明度,语义色微调对比度。与浅色版同状态,便于逐区 A/B。</p></div>
+        <a class="open" href="fieldbench-ui-v3-master-dark.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>同 token 派生</span><span>暗面板三级</span><span>语义色暗调</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-master-dark.html" loading="lazy"></iframe></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">02</span><h2>会话类型</h2><span class="cnt">Monitor · Slave</span></div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">01</div>
+        <div class="mod-tt"><h3>Monitor 会话 · 协议自动识别 <span class="badge main">主线</span></h3>
+          <p>被动挂在 485 总线上,Raw 视角只见字节块;识别 chip 弹出「Modbus RTU · 12/12 CRC 通过」,一键切换 lens、历史全量重解析。底部为 Raw 发送器(校验附加 / 循环 / 收藏),AI 面板为空态双入口。</p></div>
+        <a class="open" href="fieldbench-ui-v3-monitor-detect.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>识别 chip</span><span>切块间隔控制</span><span>ASCII 列</span><span>Raw 发送器</span><span>AI 空态</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-monitor-detect.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">02</div>
+        <div class="mod-tt"><h3>Slave 会话 · TCP 仿真 <span class="badge main">主线</span></h3>
+          <p>监听 :502、单客户端接入:请求 / 响应进同一时间轴(Δ 列 = 我方响应耗时),四类寄存器区页签,值发生器(正弦 / 递增 / 静态),写入即刻反映;检查器解析 MBAP 头。</p></div>
+        <a class="open" href="fieldbench-ui-v3-slave.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>TCP 监听</span><span>四区页签</span><span>值发生器</span><span>MBAP 检查器</span><span>客户端列表</span><span>非法地址自动 EXC</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-slave.html" loading="lazy"></iframe></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">03</span><h2>关键流程与弹窗</h2><span class="cnt">4 个状态</span></div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">01</div>
+        <div class="mod-tt"><h3>首次启动 · 新建连接 <span class="badge main">主线</span></h3>
+          <p>首跑不给空 dashboard,直接弹新建连接:枚举到的 USB 串口默认选中,Start as 三选(默认 Master),底部 Demo 入口承接无设备用户。目标 TTFF &lt; 60s。</p></div>
+        <a class="open" href="fieldbench-ui-v3-firstrun.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>串口 / TCP 三态</span><span>参数六格</span><span>Start as 三选</span><span>Demo 入口</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-firstrun.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">02</div>
+        <div class="mod-tt"><h3>从站扫描 <span class="badge main">主线</span></h3>
+          <p>1–247 遍历探测(FC / 超时可配),可选串口参数矩阵扫描;进度条 + 实时结果:响应从站列出耗时,异常码也算「活着」,一键 Open as Master。</p></div>
+        <a class="open" href="fieldbench-ui-v3-scan.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>范围 / 探测 FC / 超时</span><span>参数矩阵可选</span><span>实时结果</span><span>EXC 判活</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-scan.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">03</div>
+        <div class="mod-tt"><h3>AI 点表导入 · 审核 <span class="badge main">主线</span></h3>
+          <p>左侧源图(手册截图),右侧待确认点表:地址基准强制二选一置顶(蓝底横条),冲突 / 可疑地址琥珀标出、可改可删,底部保存设备档案 + 分段轮询生成说明。绝不静默入库。</p></div>
+        <a class="open" href="fieldbench-ui-v3-import-review.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>源图对照</span><span>地址基准强制确认</span><span>冲突标红</span><span>行内编辑</span><span>设备档案</span><span>试用额度</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-import-review.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">04</div>
+        <div class="mod-tt"><h3>设置 · License 与 AI <span class="badge main">主线</span></h3>
+          <p>Pro 激活态(2 台设备、自助管理),离线激活流程明示(机器码 → 官网换激活文件 → 导入),「激活后永久离线、绝不回连」写成产品承诺;AI 订阅双配额用量表 + 隐私预览;遥测默认关闭。</p></div>
+        <a class="open" href="fieldbench-ui-v3-settings.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="feat"><span>离线激活</span><span>设备管理</span><span>双配额用量</span><span>隐私预览</span><span>遥测默认关</span></div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v3-settings.html" loading="lazy"></iframe></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h"><span class="n">04</span><h2>早期探索</h2><span class="cnt">2 个版本 · 备查</span></div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">01</div>
+        <div class="mod-tt"><h3>v2 · 单色骨架深色 <span class="badge park">探索 · 已搁置</span></h3>
+          <p>Geist + JetBrains Mono,青色主色 + AI 紫双强调。骨架去色、密度与 Δ 列 / sparkline 在此版本确立,后被 Tesla 语言取代。</p></div>
+        <a class="open" href="fieldbench-ui-v2-master-dark.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v2-master-dark.html" loading="lazy"></iframe></div>
+    </div>
+
+    <div class="mod">
+      <div class="mod-head">
+        <div class="mod-no">02</div>
+        <div class="mod-tt"><h3>v1 · 深色仪器初稿 <span class="badge early">早期版本</span></h3>
+          <p>IBM Plex + 彩底胶囊字段章。信息架构与布局在此确立,视觉方向被 v2 / v3 迭代取代。</p></div>
+        <a class="open" href="fieldbench-ui-v1-master-dark.html" target="_blank">打开 ↗</a>
+      </div>
+      <div class="preview"><span class="lbl">实时预览</span><iframe src="fieldbench-ui-v1-master-dark.html" loading="lazy"></iframe></div>
+    </div>
+  </div>
+
+  <footer>
+    Fieldbench · UI 设计总览 · Tesla 极简设计语言(仪器级密度)· v1.0 界面全覆盖<br>
+    各模块为独立 HTML 文件,需与本索引页放在同一文件夹,预览方可正常加载。产品名 Fieldbench 为工作名,待域名与商标核验。
+  </footer>
+
+</div>
+</body>
+</html>

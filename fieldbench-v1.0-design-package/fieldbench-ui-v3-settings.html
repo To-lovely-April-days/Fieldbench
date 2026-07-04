@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — Settings · License &amp; AI</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --blue-tint2:#3E6AE10E;
+  --carbon:#171A20; --graphite:#393C41; --pewter:#5C5E62; --silver:#8E8E8E;
+  --cloud:#EAEAEC; --ash:#F4F4F4; --bg:#FAFAFB; --white:#FFFFFF;
+  --green:#1FA463; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.titlebar{height:40px;display:flex;align-items:center;border-bottom:1px solid var(--cloud);padding:0 16px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tt{margin-left:16px;font-size:12px;color:var(--silver)}
+.winctl{margin-left:auto;display:flex;gap:2px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr;min-height:0}
+.nav{background:var(--bg);border-right:1px solid var(--cloud);padding:16px 0}
+.nrow{display:flex;align-items:center;height:32px;padding:0 16px;font-size:12.5px;color:var(--pewter)}
+.nrow.on{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue);color:var(--carbon);font-weight:500}
+.content{background:var(--white);overflow:hidden;padding:26px 0}
+.col{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--white);border:1px solid var(--cloud);border-radius:8px;padding:18px 20px}
+.card h4{font-size:13.5px;font-weight:500;display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.card h4 .st{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.card h4 .bd{margin-left:auto;font-size:11px;font-weight:500;color:var(--green);background:#1FA46314;padding:3px 10px;border-radius:20px}
+.card h4 .bd.blue{color:var(--blue);background:var(--blue-tint)}
+.krow{display:flex;align-items:center;gap:12px;min-height:30px;font-size:12px}
+.krow .k{color:var(--silver);width:150px;font-size:11.5px;flex-shrink:0}
+.krow .v{font-family:var(--mono);font-size:11.5px;color:var(--carbon)}
+.krow .v.txt{font-family:var(--sans);font-size:12px;color:var(--graphite)}
+.krow a{color:var(--blue);font-weight:500;font-size:11.5px;text-decoration:none}
+.krow .ml{margin-left:auto}
+.chip{font-family:var(--mono);font-size:10.5px;color:var(--pewter);background:var(--ash);border-radius:var(--r);padding:3px 8px}
+.divider{height:1px;background:var(--cloud);margin:12px 0}
+.offline{display:flex;gap:12px;align-items:flex-start;background:var(--ash);border-radius:8px;padding:13px 15px;font-size:12px;color:var(--pewter);line-height:1.55}
+.offline b{font-weight:500;color:var(--graphite)}
+.offline .btn{flex-shrink:0;align-self:center;height:28px;display:flex;align-items:center;padding:0 13px;background:var(--white);border:1px solid var(--cloud);border-radius:var(--r);font-size:11.5px;color:var(--graphite);white-space:nowrap}
+.meter{flex:1;max-width:220px}
+.meter .bar{height:3px;border-radius:2px;background:var(--cloud);position:relative;overflow:hidden;margin-bottom:4px}
+.meter .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--blue)}
+.meter .n{font-family:var(--mono);font-size:10px;color:var(--silver)}
+.sw{width:32px;height:18px;border-radius:10px;background:var(--blue);position:relative;flex-shrink:0}
+.sw::after{content:'';position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.sw.off{background:#D0D1D2}
+.sw.off::after{right:auto;left:2px}
+.trow{display:flex;align-items:center;gap:12px;min-height:34px;font-size:12px;color:var(--graphite)}
+.trow small{display:block;font-size:11px;color:var(--silver)}
+.trow .sw{margin-left:auto}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <span class="tt">Settings</span>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="main">
+    <aside class="nav">
+      <div class="nrow">General</div>
+      <div class="nrow">Connections</div>
+      <div class="nrow">Appearance</div>
+      <div class="nrow on">License</div>
+      <div class="nrow">AI assistant</div>
+      <div class="nrow">Updates</div>
+      <div class="nrow">About</div>
+    </aside>
+
+    <section class="content">
+      <div class="col">
+
+        <div class="card">
+          <h4><span class="st"></span>Fieldbench Pro <span class="bd">Activated</span></h4>
+          <div class="krow"><span class="k">License key</span><span class="v">FB1-••••-••••-7K2M</span><a class="ml" href="#">Copy</a></div>
+          <div class="krow"><span class="k">Licensed to</span><span class="v txt">zhang.hui@example.com</span></div>
+          <div class="krow"><span class="k">Devices</span><span class="v txt">2 of 2 — this machine · WKS-LAB01</span><a class="ml" href="#">Manage devices</a></div>
+          <div class="krow"><span class="k">Validation</span><span class="v txt">Permanently offline after activation — no phone-home, ever.</span></div>
+          <div class="divider"></div>
+          <div class="offline">
+            <span><b>Offline activation.</b> This machine's code is <span class="chip">8F3A-22C1-90DE-4471</span> — open fieldbench.app/activate on any device, exchange it for an activation file, then import it here.</span>
+            <span class="btn">Import activation file…</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h4><span class="st" style="background:var(--blue)"></span>AI assistant <span class="bd blue">Subscribed</span></h4>
+          <div class="krow"><span class="k">Plan</span><span class="v txt">$49 / year · renews Aug 4, 2026</span><a class="ml" href="#">Manage subscription</a></div>
+          <div class="krow" style="align-items:center">
+            <span class="k">Explanations</span>
+            <span class="meter"><span class="bar"><i style="width:21%"></i></span><span class="n">213 / 1000 this month</span></span>
+          </div>
+          <div class="krow" style="align-items:center">
+            <span class="k">Point map extractions</span>
+            <span class="meter"><span class="bar"><i style="width:13%"></i></span><span class="n">4 / 30 this month</span></span>
+          </div>
+          <div class="divider"></div>
+          <div class="krow"><span class="k">Privacy</span><span class="v txt">Frames are sent only when you press Explain. Nothing is stored on the gateway.</span><a class="ml" href="#">Preview what gets sent</a></div>
+        </div>
+
+        <div class="card">
+          <h4>Updates &amp; telemetry</h4>
+          <div class="krow"><span class="k">Version</span><span class="v">1.0.3</span><span class="v txt" style="color:var(--green)">Up to date</span><a class="ml" href="#">Check now</a></div>
+          <div class="trow"><span>Notify about updates<small>Never installs silently — you choose when.</small></span><span class="sw"></span></div>
+          <div class="trow"><span>Anonymous usage statistics<small>Off by default. No frame content is ever included.</small></span><span class="sw off"></span></div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+</html>
