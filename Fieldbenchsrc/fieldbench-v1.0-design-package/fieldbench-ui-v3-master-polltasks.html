@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — Master · Poll tasks</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --blue-tint2:#3E6AE10E;
+  --carbon:#171A20; --graphite:#393C41; --pewter:#5C5E62; --silver:#8E8E8E;
+  --cloud:#EAEAEC; --ash:#F4F4F4; --bg:#FAFAFB; --white:#FFFFFF;
+  --green:#1FA463; --amber:#D9870A; --red:#D9342B;
+  --f-addr:#8A56D6; --f-func:#0B3E97; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.titlebar{height:40px;display:flex;align-items:stretch;border-bottom:1px solid var(--cloud);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tabs{display:flex;align-items:flex-end;flex:1;padding:6px 10px 0;gap:2px}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;height:34px;font-size:12px;color:var(--silver);border:1px solid transparent;border-bottom:none;border-radius:var(--r) var(--r) 0 0}
+.tab .dot{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.tab .dot.on{background:var(--green)}
+.tab .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.tab.active{background:var(--white);border-color:var(--cloud);color:var(--carbon)}
+.tab.active .kind{color:var(--blue)}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 10px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.toolbar{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--white);border-bottom:1px solid var(--cloud);flex-shrink:0}
+.ctl{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.ctl .cell{display:flex;align-items:center;gap:7px;padding:0 11px;font-size:12px}
+.ctl .cell + .cell{border-left:1px solid var(--cloud)}
+.ctl .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--silver)}
+.ctl .v{font-family:var(--mono);font-size:11.5px;color:var(--carbon)}
+.ctl .car{color:var(--silver);font-size:8px}
+.lens{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.lens span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--pewter)}
+.lens span.on{background:var(--blue-tint);color:var(--blue);font-weight:500}
+.spacer{flex:1}
+.run{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pewter)}
+.run .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.run b{font-weight:500;color:var(--carbon)}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr;min-height:0}
+.rail{background:var(--bg);border-right:1px solid var(--cloud);padding:14px 0}
+.rh{display:flex;align-items:center;height:24px;padding:0 14px}
+.rh span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.trow{display:flex;align-items:center;gap:8px;height:28px;padding:0 14px;font-size:12px;color:var(--pewter)}
+.trow .st{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.trow .st.on{background:var(--green)}
+.trow.conn{color:var(--carbon)}
+.trow .m{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.trow.sess{padding-left:35px;position:relative}
+.trow.sess::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--cloud)}
+.trow.sess .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-left:auto}
+.trow.active{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue);color:var(--carbon)}
+.trow.active .kind{color:var(--blue)}
+.center{display:flex;flex-direction:column;min-width:0;background:var(--white)}
+.thead{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px;height:26px;align-items:center;padding:0 14px;border-bottom:1px solid var(--cloud)}
+.thead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.rows{flex:1;overflow:hidden}
+.row{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px;align-items:center;height:26px;padding:0 14px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.row .ts{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.row .ts b{color:var(--graphite);font-weight:400}
+.row .dt{font-family:var(--mono);font-size:10.5px;color:var(--silver);text-align:right;padding-right:12px}
+.dir{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em}
+.dir.tx{color:var(--amber)} .dir.rx{color:#1989FA}
+.row .len{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.sum{display:flex;align-items:center;gap:9px}
+.tok{font-family:var(--mono);font-size:11px;font-weight:500}
+.tok.addr{color:var(--f-addr)} .tok.func{color:var(--f-func)}
+.sum .txt{color:var(--graphite);font-size:11.5px}
+.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;margin-left:auto;color:var(--green)}
+.row .hex{font-family:var(--mono);font-size:11px;color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.proto{height:246px;border-top:1px solid var(--cloud);background:var(--white);display:flex;flex-direction:column;flex-shrink:0}
+.ptabs{display:flex;align-items:center;height:34px;border-bottom:1px solid var(--cloud);padding:0 14px;gap:20px}
+.ptab{height:33px;display:flex;align-items:center;font-size:12px;color:var(--silver);border-bottom:1.5px solid transparent}
+.ptab.on{color:var(--carbon);border-bottom-color:var(--blue);font-weight:500}
+.ptabs .sched{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--silver)}
+.ghead,.grow{display:grid;grid-template-columns:26px 96px 1fr 90px 92px 70px 64px 96px;align-items:center;padding:0 14px}
+.ghead{height:26px;border-bottom:1px solid var(--cloud)}
+.ghead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.grow{height:34px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.grow .st{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.grow.off .st{background:#D0D1D2}
+.grow .nm{font-weight:500;color:var(--carbon)}
+.grow.off .nm{color:var(--pewter);font-weight:400}
+.grow .tg{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--graphite)}
+.grow .tg .a{color:var(--f-addr)} .grow .tg .f{color:var(--f-func)}
+.grow .iv,.grow .cy{font-family:var(--mono);font-size:11px;color:var(--pewter)}
+.grow.off .cy{color:var(--silver)}
+.grow .er{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.grow .er.bad{color:var(--red)}
+.sw{width:32px;height:18px;border-radius:10px;background:var(--blue);position:relative}
+.sw::after{content:'';position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#fff}
+.sw.off{background:#D0D1D2}
+.sw.off::after{right:auto;left:2px}
+.acts2{display:flex;gap:6px;justify-content:flex-end}
+.mini{width:22px;height:22px;border:1px solid var(--cloud);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:9.5px;color:var(--pewter)}
+.addrow{height:34px;display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--blue);font-weight:500;gap:8px}
+.status{height:28px;display:flex;align-items:center;padding:0 14px;background:var(--white);border-top:1px solid var(--cloud);font-family:var(--mono);font-size:10.5px;color:var(--silver);flex-shrink:0;gap:0}
+.status .item{display:flex;align-items:center;gap:6px;padding:0 14px;border-left:1px solid var(--cloud)}
+.status .item:first-child{border-left:none;padding-left:0}
+.status .item b{color:var(--graphite);font-weight:400}
+.status .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs">
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">mon</span></div>
+      <div class="tab active"><span class="dot on"></span>COM3 <span class="kind">rtu·m</span></div>
+      <div class="tab"><span class="dot"></span>TCP :502 <span class="kind">slv</span></div>
+    </div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="ctl">
+      <div class="cell"><span class="k">Port</span><span class="v">COM3 · CH340</span><span class="car">▾</span></div>
+      <div class="cell"><span class="k">Baud</span><span class="v">9600</span><span class="car">▾</span></div>
+      <div class="cell"><span class="v">8-N-1</span><span class="car">▾</span></div>
+    </div>
+    <div class="lens"><span>Raw</span><span class="on">Modbus RTU · Master</span></div>
+    <div class="spacer"></div>
+    <div class="run"><span class="dot"></span><b>Connected</b></div>
+  </div>
+
+  <div class="main">
+    <aside class="rail">
+      <div class="rh"><span>Connections</span></div>
+      <div class="trow conn"><span class="st on"></span>COM3 — CH340<span class="m">9600</span></div>
+      <div class="trow sess">Monitor<span class="kind">raw</span></div>
+      <div class="trow sess active">Master<span class="kind">rtu</span></div>
+      <div class="trow conn"><span class="st"></span>TCP Server<span class="m">:502</span></div>
+      <div class="trow sess">Slave<span class="kind">tcp</span></div>
+    </aside>
+
+    <section class="center">
+      <div class="thead"><span>Time</span><span style="text-align:right;padding-right:12px">Δ ms</span><span>Dir</span><span>Len</span><span>Frame</span><span>Hex</span></div>
+      <div class="rows">
+        <div class="row"><span class="ts">14:35:10.<b>000</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row"><span class="ts">14:35:10.<b>016</b></span><span class="dt">16</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span></div>
+        <div class="row"><span class="ts">14:35:10.<b>034</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@02</span><span class="tok func">FC04</span><span class="txt">Read input 0–3</span></span><span class="hex">02 04 00 00 00 04 F0 3B</span></div>
+        <div class="row"><span class="ts">14:35:10.<b>052</b></span><span class="dt">18</span><span class="dir rx">RX ↓</span><span class="len">13</span><span class="sum"><span class="tok addr">@02</span><span class="tok func">FC04</span><span class="txt">8 bytes</span><span class="tag">OK</span></span><span class="hex">02 04 08 00 D1 00 4B 03 27 00 00 …</span></div>
+        <div class="row"><span class="ts">14:35:10.<b>500</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row"><span class="ts">14:35:10.<b>516</b></span><span class="dt">16</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span></div>
+        <div class="row"><span class="ts">14:35:11.<b>000</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span></div>
+        <div class="row"><span class="ts">14:35:11.<b>017</b></span><span class="dt">17</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span></div>
+        <div class="row"><span class="ts">14:35:11.<b>034</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@02</span><span class="tok func">FC04</span><span class="txt">Read input 0–3</span></span><span class="hex">02 04 00 00 00 04 F0 3B</span></div>
+        <div class="row"><span class="ts">14:35:11.<b>051</b></span><span class="dt">17</span><span class="dir rx">RX ↓</span><span class="len">13</span><span class="sum"><span class="tok addr">@02</span><span class="tok func">FC04</span><span class="txt">8 bytes</span><span class="tag">OK</span></span><span class="hex">02 04 08 00 D1 00 4B 03 27 00 00 …</span></div>
+      </div>
+
+      <div class="proto">
+        <div class="ptabs">
+          <div class="ptab">Registers</div>
+          <div class="ptab on">Poll tasks</div>
+          <div class="ptab">Send</div>
+          <div class="ptab">Chart</div>
+          <span class="sched">Same connection · serial scheduling</span>
+        </div>
+        <div class="ghead"><span></span><span>Task</span><span>Target</span><span>Interval</span><span>Last cycle</span><span>Errors</span><span>Enabled</span><span style="text-align:right">Actions</span></div>
+        <div class="grow">
+          <span class="st"></span><span class="nm">Task 1</span>
+          <span class="tg"><span class="a">@01</span><span class="f">FC03</span>Holding 0–9</span>
+          <span class="iv">500 ms</span><span class="cy">16 ms</span><span class="er">0</span>
+          <span><span class="sw"></span></span>
+          <span class="acts2"><span class="mini">▶</span><span class="mini">✎</span><span class="mini">🗑</span></span>
+        </div>
+        <div class="grow">
+          <span class="st"></span><span class="nm">Task 2</span>
+          <span class="tg"><span class="a">@02</span><span class="f">FC04</span>Input 0–3</span>
+          <span class="iv">1000 ms</span><span class="cy">18 ms</span><span class="er">0</span>
+          <span><span class="sw"></span></span>
+          <span class="acts2"><span class="mini">▶</span><span class="mini">✎</span><span class="mini">🗑</span></span>
+        </div>
+        <div class="grow off">
+          <span class="st"></span><span class="nm">Task 3</span>
+          <span class="tg"><span class="a">@01</span><span class="f">FC01</span>Coils 0–15</span>
+          <span class="iv">2000 ms</span><span class="cy">—</span><span class="er bad">3</span>
+          <span><span class="sw off"></span></span>
+          <span class="acts2"><span class="mini">▶</span><span class="mini">✎</span><span class="mini">🗑</span></span>
+        </div>
+        <div class="addrow">+ New task</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="status">
+    <span class="item"><span class="dot"></span><b>COM3 · 9600 8N1</b></span>
+    <span class="item">TASKS <b>2 / 3 RUN</b></span>
+    <span class="item">FRM <b>2,310</b></span>
+    <span class="item">ERR <b>3</b></span>
+  </div>
+</div>
+</body>
+</html>

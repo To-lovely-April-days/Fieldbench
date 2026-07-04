@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — First run · new connection</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --carbon:#171A20; --graphite:#393C41;
+  --pewter:#5C5E62; --silver:#8E8E8E; --cloud:#EAEAEC; --ash:#F4F4F4;
+  --bg:#FAFAFB; --white:#FFFFFF; --green:#1FA463; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.titlebar{height:40px;display:flex;align-items:stretch;border-bottom:1px solid var(--cloud);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tabs{flex:1;display:flex;align-items:flex-end;padding:6px 10px 0}
+.tab-new{width:30px;height:30px;margin-bottom:3px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:14px}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 10px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.toolbar{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--white);border-bottom:1px solid var(--cloud);flex-shrink:0;color:var(--silver)}
+.dis{display:flex;align-items:center;gap:7px;height:28px;padding:0 11px;border:1px solid var(--cloud);border-radius:var(--r);font-size:12px;color:#C4C6C9}
+.spacer{flex:1}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr;min-height:0}
+.rail{background:var(--bg);border-right:1px solid var(--cloud);padding:14px 0}
+.rh{display:flex;align-items:center;height:24px;padding:0 14px}
+.rh span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.rempty{padding:10px 14px;font-size:11.5px;color:#C4C6C9;line-height:1.5}
+.center{background:var(--white);display:flex;align-items:center;justify-content:center}
+.cempty{display:flex;flex-direction:column;align-items:center;gap:10px;color:#C4C6C9}
+.cempty .mk{width:28px;height:28px;border:1.5px solid #D9DADC;border-radius:6px;position:relative}
+.cempty .mk::after{content:'';position:absolute;left:6px;top:12px;width:13px;height:1.5px;background:#D9DADC}
+.cempty p{font-size:12.5px}
+.status{height:28px;display:flex;align-items:center;gap:24px;padding:0 14px;background:var(--white);border-top:1px solid var(--cloud);font-family:var(--mono);font-size:10.5px;color:#C4C6C9;flex-shrink:0}
+
+.scrim{position:absolute;inset:0;background:rgba(23,26,32,.26);display:flex;align-items:center;justify-content:center}
+.dlg{width:492px;background:var(--white);border:1px solid var(--cloud);border-radius:8px;overflow:hidden}
+.dhead{display:flex;align-items:center;padding:18px 20px 0}
+.dhead h3{font-size:16px;font-weight:500}
+.dhead .x{margin-left:auto;color:var(--silver);font-size:12px}
+.dbody{padding:16px 20px 0}
+.seg{display:flex;height:32px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.seg span{flex:1;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:var(--pewter)}
+.seg span + span{border-left:1px solid var(--cloud)}
+.seg span.on{background:var(--blue-tint);color:var(--blue);font-weight:500}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-bottom:16px}
+.f{display:flex;flex-direction:column;gap:5px}
+.f .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.f .inp{height:32px;display:flex;align-items:center;padding:0 11px;border:1px solid var(--cloud);border-radius:var(--r);font-family:var(--mono);font-size:12px;color:var(--carbon)}
+.f .inp .car{margin-left:auto;color:var(--silver);font-size:8px}
+.f.focus .inp{border-color:var(--blue)}
+.srow{margin-bottom:6px}
+.srow .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver);display:block;margin-bottom:5px}
+.hint{font-size:11.5px;color:var(--silver);margin:8px 0 14px;line-height:1.55}
+.note{display:flex;align-items:center;gap:10px;background:var(--ash);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--pewter);line-height:1.5;margin-bottom:16px}
+.note b{font-weight:500;color:var(--graphite)}
+.note a{margin-left:auto;color:var(--blue);font-weight:500;text-decoration:none;white-space:nowrap;font-size:12px}
+.dfoot{display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid var(--cloud)}
+.ghost{height:32px;display:flex;align-items:center;padding:0 16px;border-radius:var(--r);font-size:12.5px;color:var(--pewter)}
+.primary{margin-left:auto;height:32px;display:flex;align-items:center;padding:0 22px;background:var(--blue);color:#fff;font-size:12.5px;font-weight:500;border-radius:var(--r)}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs"><div class="tab-new">+</div></div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="dis">No connection</div>
+    <div class="spacer"></div>
+  </div>
+
+  <div class="main">
+    <aside class="rail">
+      <div class="rh"><span>Connections</span></div>
+      <div class="rempty">Nothing yet.</div>
+    </aside>
+    <section class="center">
+      <div class="cempty">
+        <div class="mk"></div>
+        <p>Create a connection to start capturing.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="status"><span>—</span></div>
+
+  <div class="scrim">
+    <div class="dlg">
+      <div class="dhead"><h3>New connection</h3><span class="x">✕</span></div>
+      <div class="dbody">
+        <div class="seg"><span class="on">Serial</span><span>TCP client</span><span>TCP server</span></div>
+        <div class="fgrid">
+          <div class="f focus"><span class="k">Port</span><span class="inp">COM3 — CH340<span class="car">▾</span></span></div>
+          <div class="f"><span class="k">Baud rate</span><span class="inp">9600<span class="car">▾</span></span></div>
+          <div class="f"><span class="k">Data bits</span><span class="inp">8<span class="car">▾</span></span></div>
+          <div class="f"><span class="k">Parity</span><span class="inp">None<span class="car">▾</span></span></div>
+          <div class="f"><span class="k">Stop bits</span><span class="inp">1<span class="car">▾</span></span></div>
+          <div class="f"><span class="k">Flow control</span><span class="inp">None<span class="car">▾</span></span></div>
+        </div>
+        <div class="srow">
+          <span class="k">Start as</span>
+          <div class="seg" style="margin-bottom:0"><span>Monitor</span><span class="on">Master</span><span>Slave</span></div>
+        </div>
+        <div class="hint">Monitor listens passively · Master polls devices · Slave simulates one. Switch anytime — same connection, same capture.</div>
+        <div class="note"><span><b>No device on hand?</b> Run the demo — a simulated master and slave, wired together.</span><a href="#">Run demo →</a></div>
+      </div>
+      <div class="dfoot">
+        <span class="ghost">Cancel</span>
+        <span class="primary">Connect</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

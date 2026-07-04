@@ -1,0 +1,108 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             xmlns:modbus="using:Fieldbench.Core.Modbus"
+             x:Class="Fieldbench.App.Views.SlavePanelView"
+             x:DataType="vm:SlavePanelViewModel">
+
+    <Grid RowDefinitions="34,26,*">
+
+        <!-- area tabs -->
+        <Border Grid.Row="0" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1">
+            <DockPanel Margin="14,0" LastChildFill="False">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <RadioButton Classes="ptab" GroupName="area" Content="Holding 4x"
+                                 IsChecked="{Binding ActiveArea, Converter={x:Static vm:AreaConv.Holding}}" />
+                    <RadioButton Classes="ptab" GroupName="area" Content="Input 3x"
+                                 IsChecked="{Binding ActiveArea, Converter={x:Static vm:AreaConv.Input}}" />
+                    <RadioButton Classes="ptab" GroupName="area" Content="Coils 0x"
+                                 IsChecked="{Binding ActiveArea, Converter={x:Static vm:AreaConv.Coils}}" />
+                    <RadioButton Classes="ptab" GroupName="area" Content="Discrete 1x"
+                                 IsChecked="{Binding ActiveArea, Converter={x:Static vm:AreaConv.Discrete}}" />
+                </StackPanel>
+                <TextBlock DockPanel.Dock="Right" Text="{DynamicResource L.SparseInfo}" Classes="micro"
+                           VerticalAlignment="Center" />
+            </DockPanel>
+        </Border>
+
+        <!-- grid header -->
+        <Grid Grid.Row="1" Margin="14,0" ColumnDefinitions="80,*,128,128,170,148">
+            <TextBlock Grid.Column="0" Text="{DynamicResource L.Address}" Classes="micro" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="1" Text="{DynamicResource L.Tag}" Classes="micro" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="2" Text="{DynamicResource L.Type}" Classes="micro" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="3" Text="{DynamicResource L.Value}" Classes="micro" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="4" Text="{DynamicResource L.Generator}" Classes="micro" VerticalAlignment="Center" />
+            <TextBlock Grid.Column="5" Text="{DynamicResource L.RawCol}" Classes="micro" VerticalAlignment="Center" />
+        </Grid>
+        <Border Grid.Row="1" VerticalAlignment="Bottom" Height="1" Background="{DynamicResource FbCloud}" />
+
+        <!-- rows -->
+        <ScrollViewer Grid.Row="2">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding Rows}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:SlaveRowViewModel">
+                            <Border Height="29" BorderBrush="{DynamicResource FbRowLine}" BorderThickness="0,0,0,1">
+                                <Grid Margin="14,0" ColumnDefinitions="80,*,128,128,170,148" VerticalAlignment="Center">
+                                    <TextBlock Grid.Column="0" Text="{Binding Address}" Classes="mono" FontSize="11"
+                                               Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12"
+                                               Foreground="{DynamicResource FbCarbon}" VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="2" Text="{Binding TypeLabel}" Classes="mono" FontSize="10.5"
+                                               Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                                    <Panel Grid.Column="3" VerticalAlignment="Center">
+                                        <Button Padding="0" Background="Transparent" BorderThickness="0"
+                                                Command="{Binding BeginEditCommand}" IsVisible="{Binding !IsEditing}"
+                                                HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Value}" Classes="mono" FontSize="12" FontWeight="Medium"
+                                                       Foreground="{DynamicResource FbCarbon}" />
+                                        </Button>
+                                        <TextBox Text="{Binding EditValue}" IsVisible="{Binding IsEditing}"
+                                                 MinHeight="24" Height="24" FontSize="11.5" Width="110"
+                                                 HorizontalAlignment="Left" KeyDown="OnEditKeyDown" />
+                                    </Panel>
+                                    <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="4">
+                                        <ComboBox ItemsSource="{Binding GeneratorKinds}"
+                                                  SelectedItem="{Binding GeneratorKind}"
+                                                  MinHeight="24" Height="24" FontSize="10.5" Width="118"
+                                                  FontFamily="{StaticResource FbMono}" />
+                                        <Button Classes="mini" Content="✎" IsVisible="{Binding IsGenerated}"
+                                                ToolTip.Tip="{Binding GeneratorLabel}">
+                                            <Button.Flyout>
+                                                <Flyout Placement="Bottom">
+                                                    <StackPanel Width="200" Spacing="8">
+                                                        <StackPanel Spacing="6" IsVisible="{Binding IsSine}">
+                                                            <TextBlock Text="SINE · MIN / MAX / PERIOD S" Classes="micro" />
+                                                            <NumericUpDown Value="{Binding SineMin}" Increment="1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                            <NumericUpDown Value="{Binding SineMax}" Increment="1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                            <NumericUpDown Value="{Binding PeriodSeconds}" Minimum="0.1" Increment="1" FormatString="0.#" MinHeight="26" FontSize="11" />
+                                                        </StackPanel>
+                                                        <StackPanel Spacing="6" IsVisible="{Binding IsRandom}">
+                                                            <TextBlock Text="RANDOM · MIN / MAX" Classes="micro" />
+                                                            <NumericUpDown Value="{Binding RandMin}" Increment="1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                            <NumericUpDown Value="{Binding RandMax}" Increment="1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                        </StackPanel>
+                                                        <StackPanel Spacing="6" IsVisible="{Binding IsIncrement}">
+                                                            <TextBlock Text="INCREMENT · STEP/S · WRAP" Classes="micro" />
+                                                            <NumericUpDown Value="{Binding StepPerSecond}" Increment="0.1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                            <NumericUpDown Value="{Binding WrapMin}" Increment="1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                            <NumericUpDown Value="{Binding WrapMax}" Increment="1" FormatString="0.###" MinHeight="26" FontSize="11" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </StackPanel>
+                                    <TextBlock Grid.Column="5" Text="{Binding RawHex}" Classes="mono" FontSize="10.5"
+                                               Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Classes="act" Content="{DynamicResource L.NewTag}" Foreground="{DynamicResource FbBlue}"
+                        FontWeight="Medium" Margin="14,4" Command="{Binding AddTagCommand}" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

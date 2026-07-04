@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Fieldbench.Core</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+    <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+  </ItemGroup>
+
+</Project>

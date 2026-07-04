@@ -1,0 +1,129 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+      Fieldbench design tokens — Tesla minimal, instrument density.
+      Light is the default theme; dark derives from the same table
+      (blue one notch brighter, three panel luminance levels).
+      Field colors are the fixed product-wide four-color board:
+      address purple / function blue / length teal / data grey (+ error red).
+    -->
+
+    <ResourceDictionary.ThemeDictionaries>
+
+        <ResourceDictionary x:Key="Light">
+            <Color x:Key="FbBlueColor">#3E6AE1</Color>
+            <Color x:Key="FbBlueTintColor">#143E6AE1</Color>
+            <Color x:Key="FbBlueTint2Color">#0E3E6AE1</Color>
+            <Color x:Key="FbCarbonColor">#171A20</Color>
+            <Color x:Key="FbGraphiteColor">#393C41</Color>
+            <Color x:Key="FbPewterColor">#5C5E62</Color>
+            <Color x:Key="FbSilverColor">#8E8E8E</Color>
+            <Color x:Key="FbCloudColor">#EAEAEC</Color>
+            <Color x:Key="FbAshColor">#F4F4F4</Color>
+            <Color x:Key="FbBgColor">#FAFAFB</Color>
+            <Color x:Key="FbPanelColor">#FFFFFF</Color>
+            <Color x:Key="FbGreenColor">#1FA463</Color>
+            <Color x:Key="FbAmberColor">#D9870A</Color>
+            <Color x:Key="FbRedColor">#D9342B</Color>
+            <Color x:Key="FbFieldAddrColor">#8A56D6</Color>
+            <Color x:Key="FbFieldFuncColor">#0B3E97</Color>
+            <Color x:Key="FbFieldLenColor">#00B386</Color>
+            <Color x:Key="FbFieldDataColor">#5C5E62</Color>
+            <Color x:Key="FbRxColor">#1989FA</Color>
+            <Color x:Key="FbDotIdleColor">#D0D1D2</Color>
+            <Color x:Key="FbRowLineColor">#0B171A20</Color>
+            <Color x:Key="FbBlueOnColor">#3E6AE1</Color>
+            <Color x:Key="FbScrimColor">#42171A20</Color>
+            <Color x:Key="FbAmberTintColor">#14D9870A</Color>
+            <Color x:Key="FbRedTintColor">#14D9342B</Color>
+            <Color x:Key="FbAmberRowColor">#08D9870A</Color>
+            <Color x:Key="FbRedRowColor">#08D9342B</Color>
+            <Color x:Key="FbGreenTintColor">#141FA463</Color>
+            <Color x:Key="FbAddrTintColor">#128A56D6</Color>
+            <Color x:Key="FbFuncTintColor">#100B3E97</Color>
+            <Color x:Key="FbLenTintColor">#1200B386</Color>
+            <Color x:Key="FbGhostTextColor">#C4C6C9</Color>
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Dark">
+            <Color x:Key="FbBlueColor">#537BE8</Color>
+            <Color x:Key="FbBlueTintColor">#29537BE8</Color>
+            <Color x:Key="FbBlueTint2Color">#1A537BE8</Color>
+            <Color x:Key="FbCarbonColor">#EFF1F4</Color>
+            <Color x:Key="FbGraphiteColor">#C6CAD1</Color>
+            <Color x:Key="FbPewterColor">#9AA0A8</Color>
+            <Color x:Key="FbSilverColor">#6A7078</Color>
+            <Color x:Key="FbCloudColor">#12FFFFFF</Color>
+            <Color x:Key="FbAshColor">#23262C</Color>
+            <Color x:Key="FbBgColor">#141619</Color>
+            <Color x:Key="FbPanelColor">#1B1E23</Color>
+            <Color x:Key="FbGreenColor">#2CB474</Color>
+            <Color x:Key="FbAmberColor">#E09A24</Color>
+            <Color x:Key="FbRedColor">#E2503F</Color>
+            <Color x:Key="FbFieldAddrColor">#A47BE8</Color>
+            <Color x:Key="FbFieldFuncColor">#6E9FEF</Color>
+            <Color x:Key="FbFieldLenColor">#1FC7A0</Color>
+            <Color x:Key="FbFieldDataColor">#9AA3AD</Color>
+            <Color x:Key="FbRxColor">#4E9BE8</Color>
+            <Color x:Key="FbDotIdleColor">#3A3E45</Color>
+            <Color x:Key="FbRowLineColor">#08FFFFFF</Color>
+            <Color x:Key="FbBlueOnColor">#8FA9F2</Color>
+            <Color x:Key="FbScrimColor">#66000000</Color>
+            <Color x:Key="FbAmberTintColor">#24E09A24</Color>
+            <Color x:Key="FbRedTintColor">#29E2503F</Color>
+            <Color x:Key="FbAmberRowColor">#0DE09A24</Color>
+            <Color x:Key="FbRedRowColor">#0FE2503F</Color>
+            <Color x:Key="FbGreenTintColor">#242CB474</Color>
+            <Color x:Key="FbAddrTintColor">#21A47BE8</Color>
+            <Color x:Key="FbFuncTintColor">#216E9FEF</Color>
+            <Color x:Key="FbLenTintColor">#211FC7A0</Color>
+            <Color x:Key="FbGhostTextColor">#4A4F57</Color>
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- Brushes over the theme colors -->
+    <SolidColorBrush x:Key="FbBlue" Color="{DynamicResource FbBlueColor}" />
+    <SolidColorBrush x:Key="FbBlueTint" Color="{DynamicResource FbBlueTintColor}" />
+    <SolidColorBrush x:Key="FbBlueTint2" Color="{DynamicResource FbBlueTint2Color}" />
+    <SolidColorBrush x:Key="FbBlueOn" Color="{DynamicResource FbBlueOnColor}" />
+    <SolidColorBrush x:Key="FbCarbon" Color="{DynamicResource FbCarbonColor}" />
+    <SolidColorBrush x:Key="FbGraphite" Color="{DynamicResource FbGraphiteColor}" />
+    <SolidColorBrush x:Key="FbPewter" Color="{DynamicResource FbPewterColor}" />
+    <SolidColorBrush x:Key="FbSilver" Color="{DynamicResource FbSilverColor}" />
+    <SolidColorBrush x:Key="FbCloud" Color="{DynamicResource FbCloudColor}" />
+    <SolidColorBrush x:Key="FbAsh" Color="{DynamicResource FbAshColor}" />
+    <SolidColorBrush x:Key="FbBg" Color="{DynamicResource FbBgColor}" />
+    <SolidColorBrush x:Key="FbPanel" Color="{DynamicResource FbPanelColor}" />
+    <SolidColorBrush x:Key="FbGreen" Color="{DynamicResource FbGreenColor}" />
+    <SolidColorBrush x:Key="FbAmber" Color="{DynamicResource FbAmberColor}" />
+    <SolidColorBrush x:Key="FbRed" Color="{DynamicResource FbRedColor}" />
+    <SolidColorBrush x:Key="FbFieldAddr" Color="{DynamicResource FbFieldAddrColor}" />
+    <SolidColorBrush x:Key="FbFieldFunc" Color="{DynamicResource FbFieldFuncColor}" />
+    <SolidColorBrush x:Key="FbFieldLen" Color="{DynamicResource FbFieldLenColor}" />
+    <SolidColorBrush x:Key="FbFieldData" Color="{DynamicResource FbFieldDataColor}" />
+    <SolidColorBrush x:Key="FbRx" Color="{DynamicResource FbRxColor}" />
+    <SolidColorBrush x:Key="FbDotIdle" Color="{DynamicResource FbDotIdleColor}" />
+    <SolidColorBrush x:Key="FbRowLine" Color="{DynamicResource FbRowLineColor}" />
+    <SolidColorBrush x:Key="FbScrim" Color="{DynamicResource FbScrimColor}" />
+    <SolidColorBrush x:Key="FbAmberTint" Color="{DynamicResource FbAmberTintColor}" />
+    <SolidColorBrush x:Key="FbRedTint" Color="{DynamicResource FbRedTintColor}" />
+    <SolidColorBrush x:Key="FbAmberRow" Color="{DynamicResource FbAmberRowColor}" />
+    <SolidColorBrush x:Key="FbRedRow" Color="{DynamicResource FbRedRowColor}" />
+    <SolidColorBrush x:Key="FbGreenTint" Color="{DynamicResource FbGreenTintColor}" />
+    <SolidColorBrush x:Key="FbAddrTint" Color="{DynamicResource FbAddrTintColor}" />
+    <SolidColorBrush x:Key="FbFuncTint" Color="{DynamicResource FbFuncTintColor}" />
+    <SolidColorBrush x:Key="FbLenTint" Color="{DynamicResource FbLenTintColor}" />
+    <SolidColorBrush x:Key="FbGhostText" Color="{DynamicResource FbGhostTextColor}" />
+
+    <!-- Settings gear (from the product icon set, viewBox 0 0 1024 1024) -->
+    <StreamGeometry x:Key="FbGearGeometry">M786.13654324 546.44998527c1.53136767-11.80007191 2.52212489-23.59941961 2.52212488-36.20932128 0-12.52016214-1.17096046-24.32023333-2.52212488-36.20932129l77.82329955-60.88923834c7.0257649-5.49512071 8.9175398-15.49315724 4.41389978-23.6001431l-73.76980698-127.63328043c-4.41389977-8.10553817-14.41193631-11.078534-22.51819869-8.10553818l-91.87482937 36.92941153c-19.18551983-14.77162005-39.90240735-26.93137498-62.33014231-36.20932128L603.82923613 156.70385955C602.65899842 147.78704395 595.00216004 141.21142578 585.72493723 141.21142578H438.09485953c-9.18748329 0-16.93478539 6.6653577-18.10502239 15.49243377l-14.05152981 97.81937335c-22.51819868 9.18748329-43.14462248 21.79810844-62.3301423 36.20932128l-91.87482936-36.93013499c-8.55640911-3.33267884-18.1042989 0-22.51819869 8.10698584L155.44605346 389.54268474c-4.86332304 8.10626238-2.5214014 18.1042989 4.41389978 23.59941961l77.82330027 60.88923835c-1.53136767 11.79934771-2.52212489 23.95910263-2.52212488 36.20932129 0 12.24949445 1.17096046 24.31950984 2.52212489 36.20932127L159.77021371 607.33922361C152.74372533 612.83362012 150.85267392 622.83165738 155.35631394 630.93791903l73.76980699 127.63328044c4.41317631 8.10698585 14.41193631 11.07925746 22.51819868 8.10698583l91.87482937-36.93085919c19.18551983 14.77234354 39.90168387 26.93282193 62.3301423 36.21004547l14.05080562 97.81937335c1.17096046 8.82707607 8.82779955 15.49243377 18.10502237 15.49243378h147.62935423c9.18748329 0 16.93406192-6.6653577 18.10502238-15.49243378l14.05080562-97.81937335c22.51819868-9.18748329 43.14534593-21.79810844 62.3308665-36.209322l91.87482937 36.93013572c8.55640911 3.33267884 18.1042989 0 22.51747521-8.10698584L868.28327885 630.93791903c4.41389977-8.10626238 2.52212489-18.1042989-4.41317558-23.59869542l-77.73356003-60.88923834zM511.95513023 639.49505161c-71.24768211 0-129.16464811-57.916966-129.1646481-129.1646481s57.916966-129.16464811 129.16464811-129.16464739S641.11977835 439.08272212 641.11977835 510.3304035s-57.916966 129.16464811-129.16464811 129.16464811z m0 0</StreamGeometry>
+
+    <FontFamily x:Key="FbMono">Cascadia Code, SF Mono, Consolas, DejaVu Sans Mono, Noto Sans Mono, monospace</FontFamily>
+    <FontFamily x:Key="FbSans">Inter, Segoe UI, PingFang SC, Noto Sans CJK SC, Helvetica Neue, Arial, sans-serif</FontFamily>
+
+    <CornerRadius x:Key="FbRadius">4</CornerRadius>
+    <x:Double x:Key="FbRowHeight">26</x:Double>
+
+</ResourceDictionary>

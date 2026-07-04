@@ -1,0 +1,216 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <x:String x:Key="L.AppName">FIELDBENCH</x:String>
+
+    <!-- Toolbar / lens -->
+    <x:String x:Key="L.Port">端口</x:String>
+    <x:String x:Key="L.Baud">波特率</x:String>
+    <x:String x:Key="L.Raw">Raw</x:String>
+    <x:String x:Key="L.ScanSlaves">扫描从站</x:String>
+    <x:String x:Key="L.Record">记录</x:String>
+    <x:String x:Key="L.Clear">清空</x:String>
+    <x:String x:Key="L.Connected">已连接</x:String>
+    <x:String x:Key="L.Disconnected">未连接</x:String>
+    <x:String x:Key="L.Listening">监听中</x:String>
+    <x:String x:Key="L.DeviceLost">设备已断开</x:String>
+    <x:String x:Key="L.Connect">连接</x:String>
+    <x:String x:Key="L.Disconnect">断开</x:String>
+    <x:String x:Key="L.Split">切块</x:String>
+    <x:String x:Key="L.Listen">监听</x:String>
+    <x:String x:Key="L.UnitId">从站 ID</x:String>
+    <x:String x:Key="L.NoConnection">无连接</x:String>
+    <x:String x:Key="L.Pause">暂停</x:String>
+    <x:String x:Key="L.Resume">继续</x:String>
+
+    <!-- Rail -->
+    <x:String x:Key="L.Connections">连接</x:String>
+    <x:String x:Key="L.Profiles">配置档</x:String>
+    <x:String x:Key="L.NothingYet">暂无内容。</x:String>
+    <x:String x:Key="L.Monitor">监视</x:String>
+    <x:String x:Key="L.Master">主站</x:String>
+    <x:String x:Key="L.Slave">从站</x:String>
+
+    <!-- Timeline -->
+    <x:String x:Key="L.Time">时间</x:String>
+    <x:String x:Key="L.DeltaMs">Δ 毫秒</x:String>
+    <x:String x:Key="L.Dir">方向</x:String>
+    <x:String x:Key="L.Len">长度</x:String>
+    <x:String x:Key="L.Frame">报文</x:String>
+    <x:String x:Key="L.Hex">HEX</x:String>
+    <x:String x:Key="L.Ascii">ASCII</x:String>
+    <x:String x:Key="L.SwitchLens">切换解析</x:String>
+    <x:String x:Key="L.Detected">已检测到</x:String>
+    <x:String x:Key="L.FilterErrors">仅异常帧</x:String>
+    <x:String x:Key="L.FilterPlaceholder">过滤 hex / ASCII…</x:String>
+    <x:String x:Key="L.EmptyTimeline">新建连接后开始捕获。</x:String>
+
+    <!-- Inspector -->
+    <x:String x:Key="L.ByteInspector">字节检查器</x:String>
+    <x:String x:Key="L.NoLens">未应用解析 — 原始字节显示。</x:String>
+    <x:String x:Key="L.ApplyLens">应用解析 →</x:String>
+    <x:String x:Key="L.SelectFrame">选中一帧以检查。</x:String>
+    <x:String x:Key="L.Addr">地址</x:String>
+    <x:String x:Key="L.Func">功能</x:String>
+    <x:String x:Key="L.Data">数据</x:String>
+    <x:String x:Key="L.Crc">CRC</x:String>
+
+    <!-- AI -->
+    <x:String x:Key="L.AiExplain">AI 解释</x:String>
+    <x:String x:Key="L.AiEmpty">选中一帧或多帧开始。</x:String>
+    <x:String x:Key="L.AiExplainSelection">解释所选</x:String>
+    <x:String x:Key="L.AiIdentify">识别未知协议</x:String>
+    <x:String x:Key="L.AiAsk">对这帧提问…</x:String>
+    <x:String x:Key="L.AiTrial">试用</x:String>
+    <x:String x:Key="L.AiLeft">剩余</x:String>
+    <x:String x:Key="L.Subscribe">订阅</x:String>
+    <x:String x:Key="L.AiOffline">AI 需联网，核心功能不受影响。</x:String>
+    <x:String x:Key="L.AiQuotaOut">试用次数已用完 — 订阅可获每月 1000 次解释。</x:String>
+
+    <!-- Proto panels -->
+    <x:String x:Key="L.Registers">寄存器</x:String>
+    <x:String x:Key="L.PollTasks">轮询任务</x:String>
+    <x:String x:Key="L.Send">发送</x:String>
+    <x:String x:Key="L.Chart">曲线</x:String>
+    <x:String x:Key="L.Log">日志</x:String>
+    <x:String x:Key="L.Address">地址</x:String>
+    <x:String x:Key="L.Tag">标签</x:String>
+    <x:String x:Key="L.Type">类型</x:String>
+    <x:String x:Key="L.Value">数值</x:String>
+    <x:String x:Key="L.Trend">趋势</x:String>
+    <x:String x:Key="L.RawCol">原始</x:String>
+    <x:String x:Key="L.RW">读写</x:String>
+    <x:String x:Key="L.Generator">发生器</x:String>
+    <x:String x:Key="L.Task">任务</x:String>
+    <x:String x:Key="L.Target">目标</x:String>
+    <x:String x:Key="L.Interval">周期</x:String>
+    <x:String x:Key="L.LastCycle">实测周期</x:String>
+    <x:String x:Key="L.Errors">错误</x:String>
+    <x:String x:Key="L.Enabled">启用</x:String>
+    <x:String x:Key="L.Actions">操作</x:String>
+    <x:String x:Key="L.NewTask">+ 新建任务</x:String>
+    <x:String x:Key="L.NewTag">+ 新建标签</x:String>
+    <x:String x:Key="L.SerialScheduling">同一连接 · 串行调度</x:String>
+    <x:String x:Key="L.SparseInfo">稀疏映射 · 非法地址 → 自动 EXC 02</x:String>
+    <x:String x:Key="L.Favorites">收藏</x:String>
+    <x:String x:Key="L.Recent">最近</x:String>
+    <x:String x:Key="L.SaveCurrent">+ 保存当前</x:String>
+    <x:String x:Key="L.Clients">客户端</x:String>
+    <x:String x:Key="L.ImportPointMap">导入点表…</x:String>
+    <x:String x:Key="L.ExportCsv">↓ 导出 CSV</x:String>
+    <x:String x:Key="L.JumpTimeline">跳转到时间轴 ↑</x:String>
+
+    <!-- Status bar -->
+    <x:String x:Key="L.Fps">FPS</x:String>
+
+    <!-- New connection dialog -->
+    <x:String x:Key="L.NewConnection">新建连接</x:String>
+    <x:String x:Key="L.Serial">串口</x:String>
+    <x:String x:Key="L.TcpClient">TCP 客户端</x:String>
+    <x:String x:Key="L.TcpServer">TCP 服务端</x:String>
+    <x:String x:Key="L.BaudRate">波特率</x:String>
+    <x:String x:Key="L.DataBits">数据位</x:String>
+    <x:String x:Key="L.Parity">校验位</x:String>
+    <x:String x:Key="L.StopBits">停止位</x:String>
+    <x:String x:Key="L.FlowControl">流控</x:String>
+    <x:String x:Key="L.Host">主机</x:String>
+    <x:String x:Key="L.PortNumber">端口</x:String>
+    <x:String x:Key="L.StartAs">启动为</x:String>
+    <x:String x:Key="L.StartAsHint">监视被动收听 · 主站轮询设备 · 从站模拟设备。随时切换 — 同一连接、同一捕获。</x:String>
+    <x:String x:Key="L.NoDevice">手边没有设备？</x:String>
+    <x:String x:Key="L.NoDeviceHint">运行演示 — 一对互联的模拟主站与从站。</x:String>
+    <x:String x:Key="L.RunDemo">运行演示 →</x:String>
+    <x:String x:Key="L.Cancel">取消</x:String>
+
+    <!-- Scan dialog -->
+    <x:String x:Key="L.ScanTitle">扫描从站</x:String>
+    <x:String x:Key="L.From">起始</x:String>
+    <x:String x:Key="L.To">结束</x:String>
+    <x:String x:Key="L.Probe">探测</x:String>
+    <x:String x:Key="L.Timeout">超时</x:String>
+    <x:String x:Key="L.SweepParams">同时扫描常见串口参数</x:String>
+    <x:String x:Key="L.SweepHint">9600–115200 波特率 × N / E 校验 — 约增加 4 分钟</x:String>
+    <x:String x:Key="L.Responding">响应从站</x:String>
+    <x:String x:Key="L.Found">个</x:String>
+    <x:String x:Key="L.OpenAsMaster">以主站打开 →</x:String>
+    <x:String x:Key="L.StopScan">停止扫描</x:String>
+    <x:String x:Key="L.StartScan">开始扫描</x:String>
+    <x:String x:Key="L.ScanKeep">停止后已发现的从站保留在列表中。</x:String>
+    <x:String x:Key="L.Scanning">扫描中</x:String>
+    <x:String x:Key="L.Probing">探测</x:String>
+    <x:String x:Key="L.Elapsed">已用时</x:String>
+
+    <!-- Import review -->
+    <x:String x:Key="L.ImportTitle">导入点表</x:String>
+    <x:String x:Key="L.ImportSubtitle">AI 从粘贴内容提取</x:String>
+    <x:String x:Key="L.SourceLabel">来源 — 粘贴内容</x:String>
+    <x:String x:Key="L.ReExtract">↻ 重新提取</x:String>
+    <x:String x:Key="L.PdfComing">整本 PDF + 页码选择 — 1.0.x 提供</x:String>
+    <x:String x:Key="L.AddressBase">地址基准 — 确认后才可导入</x:String>
+    <x:String x:Key="L.Base1">4xxxx · PLC，1 基</x:String>
+    <x:String x:Key="L.Base0">0 基 · 协议地址</x:String>
+    <x:String x:Key="L.BaseWhy">它决定下面每个寄存器的线上地址 — 点表导入头号错误来源。</x:String>
+    <x:String x:Key="L.AiSuggests">AI 建议：</x:String>
+    <x:String x:Key="L.PointsExtracted">个点位已提取</x:String>
+    <x:String x:Key="L.Ready">就绪</x:String>
+    <x:String x:Key="L.NeedReview">待复核</x:String>
+    <x:String x:Key="L.Status">状态</x:String>
+    <x:String x:Key="L.Order">字节序</x:String>
+    <x:String x:Key="L.Scale">缩放</x:String>
+    <x:String x:Key="L.Unit">单位</x:String>
+    <x:String x:Key="L.SaveProfile">保存设备档案</x:String>
+    <x:String x:Key="L.ImportN">导入</x:String>
+    <x:String x:Key="L.Points">个点位</x:String>
+    <x:String x:Key="L.SegmentedNote">生成分段轮询任务 · 每段 ≤125 寄存器</x:String>
+    <x:String x:Key="L.PasteHere">粘贴寄存器表格文本或手册截图，然后提取。</x:String>
+    <x:String x:Key="L.Extract">提取</x:String>
+    <x:String x:Key="L.Extractions">提取</x:String>
+
+    <!-- Settings -->
+    <x:String x:Key="L.Settings">设置</x:String>
+    <x:String x:Key="L.General">通用</x:String>
+    <x:String x:Key="L.Appearance">外观</x:String>
+    <x:String x:Key="L.License">授权</x:String>
+    <x:String x:Key="L.AiAssistant">AI 助手</x:String>
+    <x:String x:Key="L.Updates">更新</x:String>
+    <x:String x:Key="L.About">关于</x:String>
+    <x:String x:Key="L.Theme">主题</x:String>
+    <x:String x:Key="L.ThemeLight">浅色</x:String>
+    <x:String x:Key="L.ThemeDark">深色</x:String>
+    <x:String x:Key="L.Language">语言</x:String>
+    <x:String x:Key="L.BufferSize">时间轴缓冲（帧）</x:String>
+    <x:String x:Key="L.LicenseKey">授权密钥</x:String>
+    <x:String x:Key="L.LicensedTo">授权给</x:String>
+    <x:String x:Key="L.Devices">设备</x:String>
+    <x:String x:Key="L.Validation">验证</x:String>
+    <x:String x:Key="L.NoPhoneHome">激活后永久离线可用 — 绝不回连验证。</x:String>
+    <x:String x:Key="L.OfflineActivation">离线激活。</x:String>
+    <x:String x:Key="L.MachineCodeIs">本机机器码为</x:String>
+    <x:String x:Key="L.OfflineHow">— 在任意设备打开 fieldbench.app/activate 换取激活文件，然后在此导入。</x:String>
+    <x:String x:Key="L.ImportActivation">导入激活文件…</x:String>
+    <x:String x:Key="L.Activate">激活</x:String>
+    <x:String x:Key="L.Activated">已激活</x:String>
+    <x:String x:Key="L.FreeTier">免费版</x:String>
+    <x:String x:Key="L.TrialTier">Pro 试用</x:String>
+    <x:String x:Key="L.DaysLeft">天剩余</x:String>
+    <x:String x:Key="L.StartTrial">开始 14 天 Pro 试用</x:String>
+    <x:String x:Key="L.Explanations">报文解释</x:String>
+    <x:String x:Key="L.PointExtractions">点表提取</x:String>
+    <x:String x:Key="L.ThisMonth">本月</x:String>
+    <x:String x:Key="L.Privacy">隐私</x:String>
+    <x:String x:Key="L.PrivacyNote">仅在你按下“解释”时发送所选报文，网关不存储任何内容。</x:String>
+    <x:String x:Key="L.PreviewSent">预览将发送的内容</x:String>
+    <x:String x:Key="L.Version">版本</x:String>
+    <x:String x:Key="L.CheckNow">立即检查</x:String>
+    <x:String x:Key="L.NotifyUpdates">有更新时提示</x:String>
+    <x:String x:Key="L.NeverSilent">绝不静默安装 — 由你决定何时更新。</x:String>
+    <x:String x:Key="L.Telemetry">匿名使用统计</x:String>
+    <x:String x:Key="L.TelemetryOff">默认关闭。绝不包含任何报文内容。</x:String>
+    <x:String x:Key="L.UpgradePro">升级到 Pro</x:String>
+
+    <!-- Misc -->
+    <x:String x:Key="L.Export">导出</x:String>
+    <x:String x:Key="L.Demo">演示</x:String>
+    <x:String x:Key="L.OK">确定</x:String>
+
+</ResourceDictionary>

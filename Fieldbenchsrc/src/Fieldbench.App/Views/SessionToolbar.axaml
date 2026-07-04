@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             x:Class="Fieldbench.App.Views.SessionToolbar"
+             x:DataType="vm:SessionViewModel">
+
+    <DockPanel Margin="14,0" VerticalAlignment="Center" Height="44" LastChildFill="False">
+
+        <!-- connection params group -->
+        <Border DockPanel.Dock="Left" Classes="seg" Height="28" VerticalAlignment="Center"
+                Background="{DynamicResource FbPanel}">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Spacing="7" Margin="11,0">
+                    <TextBlock Text="{DynamicResource L.Port}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding PortLabel}" Classes="mono" FontSize="11.5" VerticalAlignment="Center" />
+                </StackPanel>
+                <Rectangle Width="1" Fill="{DynamicResource FbCloud}" IsVisible="{Binding IsSerial}" />
+                <StackPanel Orientation="Horizontal" Spacing="7" Margin="11,0" IsVisible="{Binding IsSerial}">
+                    <TextBlock Text="{DynamicResource L.Baud}" Classes="micro" VerticalAlignment="Center" />
+                    <ComboBox ItemsSource="{Binding StandardBauds}" SelectedItem="{Binding BaudRate}"
+                              MinHeight="24" Height="24" FontSize="11.5" FontFamily="{StaticResource FbMono}"
+                              BorderThickness="0" Background="Transparent" Padding="2,0" />
+                </StackPanel>
+                <Rectangle Width="1" Fill="{DynamicResource FbCloud}" IsVisible="{Binding IsSerial}" />
+                <TextBlock Text="{Binding ParamsLabel}" Classes="mono" FontSize="11.5" Margin="11,0"
+                           VerticalAlignment="Center" IsVisible="{Binding IsSerial}" />
+            </StackPanel>
+        </Border>
+
+        <!-- lens switch -->
+        <Border DockPanel.Dock="Left" Classes="seg" Height="28" Margin="14,0,0,0" VerticalAlignment="Center"
+                Background="{DynamicResource FbPanel}">
+            <StackPanel Orientation="Horizontal">
+                <RadioButton Classes="seg-item" GroupName="lens" Content="{DynamicResource L.Raw}"
+                             IsChecked="{Binding IsRawLensActive, Mode=OneWay}"
+                             Command="{Binding SwitchToRawLensCommand}" />
+                <Rectangle Width="1" Fill="{DynamicResource FbCloud}" />
+                <RadioButton Classes="seg-item" GroupName="lens" Content="{Binding ModbusLensLabel}"
+                             IsChecked="{Binding IsModbusLensActive, Mode=OneWay}"
+                             Command="{Binding SwitchToModbusLensCommand}" />
+            </StackPanel>
+        </Border>
+
+        <!-- raw split gap -->
+        <Border DockPanel.Dock="Left" Classes="seg" Height="28" Margin="14,0,0,0" VerticalAlignment="Center"
+                Background="{DynamicResource FbPanel}" IsVisible="{Binding ShowAsciiColumn}">
+            <StackPanel Orientation="Horizontal" Spacing="7" Margin="11,0">
+                <TextBlock Text="{DynamicResource L.Split}" Classes="micro" VerticalAlignment="Center" />
+                <TextBlock Text="Gap" FontSize="11.5" Foreground="{DynamicResource FbCarbon}"
+                           VerticalAlignment="Center" />
+                <NumericUpDown Value="{Binding SplitGapMs}" Minimum="1" Maximum="1000" Increment="5"
+                               FormatString="0" MinHeight="24" Height="24" Width="92" FontSize="11.5"
+                               BorderThickness="0" Background="Transparent" />
+                <TextBlock Text="ms" FontSize="11" Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <!-- actions -->
+        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="4" Margin="14,0,0,0"
+                    VerticalAlignment="Center">
+            <Button Classes="act" Command="{Binding ScanSlavesCommand}" IsVisible="{Binding IsMaster}">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                    <TextBlock Text="◎" FontSize="10" Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource L.ScanSlaves}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <ToggleButton Classes="act" IsChecked="{Binding IsRecording}" Background="Transparent" BorderThickness="0"
+                          Height="28" Padding="11,0">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                    <TextBlock Text="●" FontSize="10" Foreground="{DynamicResource FbRed}" VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource L.Record}" FontSize="12"
+                               Foreground="{DynamicResource FbPewter}" VerticalAlignment="Center" />
+                </StackPanel>
+            </ToggleButton>
+            <Button Classes="act" Command="{Binding ClearTimelineCommand}">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                    <TextBlock Text="⌫" FontSize="10" Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource L.Clear}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <ToggleButton Classes="act" IsChecked="{Binding IsPaused}" Background="Transparent" BorderThickness="0"
+                          Height="28" Padding="11,0">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                    <TextBlock Text="⏸" FontSize="10" Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource L.Pause}" FontSize="12"
+                               Foreground="{DynamicResource FbPewter}" VerticalAlignment="Center" />
+                </StackPanel>
+            </ToggleButton>
+        </StackPanel>
+
+        <!-- run status -->
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <Ellipse Width="6" Height="6" Fill="{DynamicResource FbGreen}" IsVisible="{Binding IsConnected}" />
+            <Ellipse Width="6" Height="6" Fill="{DynamicResource FbDotIdle}" IsVisible="{Binding !IsConnected}" />
+            <Button Padding="0" Background="Transparent" BorderThickness="0"
+                    Command="{Binding ToggleConnectionCommand}">
+                <TextBlock Text="{Binding ConnectionStateLabel}" FontSize="12" FontWeight="Medium"
+                           Foreground="{DynamicResource FbCarbon}" />
+            </Button>
+            <TextBlock Text="{Binding ConnectedFor}" Classes="mono" FontSize="11.5"
+                       Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+        </StackPanel>
+
+    </DockPanel>
+</UserControl>

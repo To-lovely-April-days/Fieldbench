@@ -1,0 +1,16 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             xmlns:v="using:Fieldbench.App.Views"
+             x:Class="Fieldbench.App.Views.MonitorPanelView"
+             x:DataType="vm:SessionViewModel">
+
+    <Grid RowDefinitions="34,*">
+        <Border Grid.Row="0" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal" Margin="14,0">
+                <RadioButton Classes="ptab" GroupName="montab" Content="{DynamicResource L.Send}" IsChecked="True" />
+            </StackPanel>
+        </Border>
+        <v:SendPanelView Grid.Row="1" DataContext="{Binding Sender}" />
+    </Grid>
+</UserControl>

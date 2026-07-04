@@ -1,0 +1,221 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Base typography -->
+    <Style Selector="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource FbSans}" />
+        <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+    </Style>
+
+    <!-- Micro caps label: the 9.5px uppercase letter-spaced instrument label -->
+    <Style Selector="TextBlock.micro">
+        <Setter Property="FontFamily" Value="{StaticResource FbMono}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="LetterSpacing" Value="1.2" />
+        <Setter Property="Foreground" Value="{DynamicResource FbSilver}" />
+    </Style>
+
+    <Style Selector="TextBlock.mono">
+        <Setter Property="FontFamily" Value="{StaticResource FbMono}" />
+    </Style>
+
+    <!-- Primary button: electric blue, the single accent -->
+    <Style Selector="Button.primary">
+        <Setter Property="Background" Value="{DynamicResource FbBlue}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="20,0" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource FbBlue}" />
+        <Setter Property="Opacity" Value="0.92" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+    <Style Selector="Button.primary:pressed /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource FbBlue}" />
+        <Setter Property="Opacity" Value="0.85" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- Ghost button -->
+    <Style Selector="Button.ghost">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource FbPewter}" />
+        <Setter Property="FontSize" Value="12.5" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="16,0" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource FbAsh}" />
+        <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+    </Style>
+
+    <!-- Quiet toolbar action -->
+    <Style Selector="Button.act">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource FbPewter}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="11,0" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.act:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource FbAsh}" />
+        <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+    </Style>
+
+    <!-- Small bordered mini button (⏸ ▶ ✎ 🗑) -->
+    <Style Selector="Button.mini">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource FbPewter}" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="Button.mini:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource FbAsh}" />
+    </Style>
+
+    <!-- Inputs -->
+    <Style Selector="TextBox">
+        <Setter Property="Background" Value="{DynamicResource FbPanel}" />
+        <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="SelectionBrush" Value="{DynamicResource FbBlueTint}" />
+    </Style>
+    <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource FbBlue}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+        <Setter Property="BorderBrush" Value="{DynamicResource FbSilver}" />
+    </Style>
+    <Style Selector="TextBox.mono">
+        <Setter Property="FontFamily" Value="{StaticResource FbMono}" />
+    </Style>
+
+    <Style Selector="ComboBox">
+        <Setter Property="Background" Value="{DynamicResource FbPanel}" />
+        <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="CheckBox">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource FbGraphite}" />
+    </Style>
+
+    <!-- Tesla-style toggle switch -->
+    <Style Selector="ToggleSwitch">
+        <Setter Property="OnContent" Value="{x:Null}" />
+        <Setter Property="OffContent" Value="{x:Null}" />
+    </Style>
+
+    <!-- Thin instrument scrollbars -->
+    <Style Selector="ScrollBar:vertical">
+        <Setter Property="Width" Value="8" />
+    </Style>
+    <Style Selector="ScrollBar:horizontal">
+        <Setter Property="Height" Value="8" />
+    </Style>
+
+    <!-- Segmented control host -->
+    <Style Selector="Border.seg">
+        <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="RadioButton.seg-item">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="segBg" Background="Transparent" Padding="14,0" Height="28">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      VerticalAlignment="Center" HorizontalAlignment="Center"
+                                      TextElement.FontSize="12" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Foreground" Value="{DynamicResource FbPewter}" />
+    </Style>
+    <Style Selector="RadioButton.seg-item:checked /template/ Border#segBg">
+        <Setter Property="Background" Value="{DynamicResource FbBlueTint}" />
+    </Style>
+    <Style Selector="RadioButton.seg-item:checked">
+        <Setter Property="Foreground" Value="{DynamicResource FbBlueOn}" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <!-- Underline protocol-panel tab -->
+    <Style Selector="RadioButton.ptab">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="line" BorderThickness="0,0,0,1.5" BorderBrush="Transparent" Height="33" Padding="0,0,0,1">
+                    <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                      TextElement.FontSize="12" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Setter Property="Foreground" Value="{DynamicResource FbSilver}" />
+        <Setter Property="Margin" Value="0,0,20,0" />
+    </Style>
+    <Style Selector="RadioButton.ptab:checked /template/ Border#line">
+        <Setter Property="BorderBrush" Value="{DynamicResource FbBlue}" />
+    </Style>
+    <Style Selector="RadioButton.ptab:checked">
+        <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <!-- Status dot -->
+    <Style Selector="Ellipse.dot">
+        <Setter Property="Width" Value="5" />
+        <Setter Property="Height" Value="5" />
+        <Setter Property="Fill" Value="{DynamicResource FbDotIdle}" />
+    </Style>
+    <Style Selector="Ellipse.dot.on">
+        <Setter Property="Fill" Value="{DynamicResource FbGreen}" />
+    </Style>
+
+    <!-- ToolTip -->
+    <Style Selector="ToolTip">
+        <Setter Property="Background" Value="{DynamicResource FbPanel}" />
+        <Setter Property="Foreground" Value="{DynamicResource FbGraphite}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{StaticResource FbRadius}" />
+        <Setter Property="FontSize" Value="11.5" />
+        <Setter Property="Padding" Value="10,6" />
+    </Style>
+
+</Styles>

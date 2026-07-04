@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — AI point map import · review</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --carbon:#171A20; --graphite:#393C41;
+  --pewter:#5C5E62; --silver:#8E8E8E; --cloud:#EAEAEC; --ash:#F4F4F4;
+  --bg:#FAFAFB; --white:#FFFFFF; --green:#1FA463; --amber:#D9870A; --red:#D9342B; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.titlebar{height:40px;display:flex;align-items:center;border-bottom:1px solid var(--cloud);padding:0 16px;flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.filler{flex:1;background:var(--white)}
+
+.scrim{position:absolute;inset:0;background:rgba(23,26,32,.26);display:flex;align-items:center;justify-content:center}
+.sheet{width:1180px;height:724px;background:var(--white);border:1px solid var(--cloud);border-radius:8px;display:flex;flex-direction:column;overflow:hidden}
+.shead{display:flex;align-items:center;gap:10px;padding:16px 22px;border-bottom:1px solid var(--cloud)}
+.shead .sp{color:var(--blue);font-size:14px}
+.shead h3{font-size:15px;font-weight:500}
+.shead .sub{font-size:12px;color:var(--silver);margin-left:4px}
+.shead .quota{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.shead .quota b{color:var(--blue);font-weight:500}
+.shead .x{color:var(--silver);font-size:12px;margin-left:16px}
+.sbody{flex:1;display:grid;grid-template-columns:372px 1fr;min-height:0}
+
+/* source pane */
+.src{border-right:1px solid var(--cloud);background:var(--bg);padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.src .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--silver)}
+.scan{background:var(--white);border:1px solid var(--cloud);border-radius:var(--r);padding:16px 14px;flex:1}
+.scan h5{font-size:11px;font-weight:600;color:#3a3a3a;margin-bottom:3px}
+.scan .cap{font-size:9px;color:#9a9a9a;margin-bottom:10px}
+.stable{width:100%;border-collapse:collapse;font-size:9px;color:#4a4a4a}
+.stable th{font-weight:600;text-align:left;background:#F0F0F0;border:1px solid #DFDFDF;padding:4px 6px}
+.stable td{border:1px solid #E6E6E6;padding:4px 6px;font-variant-numeric:tabular-nums}
+.scan .pg{margin-top:10px;font-size:8.5px;color:#B0B0B0;text-align:right}
+.srcact{display:flex;align-items:center;gap:12px}
+.srcact .re{font-size:12px;color:var(--pewter)}
+.srcact .tip{font-size:10.5px;color:var(--silver);margin-left:auto}
+
+/* review pane */
+.rev{display:flex;flex-direction:column;min-height:0}
+.base{display:flex;align-items:center;gap:14px;padding:14px 22px;border-bottom:1px solid var(--cloud);background:var(--blue-tint)}
+.base .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);font-weight:500;width:118px;line-height:1.5}
+.bseg{display:flex;height:30px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.bseg span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--pewter);gap:7px}
+.bseg span + span{border-left:1px solid var(--cloud)}
+.bseg span.on{background:var(--blue);color:#fff;font-weight:500}
+.bseg .rad{width:9px;height:9px;border-radius:50%;border:1.5px solid currentColor;position:relative}
+.bseg .on .rad::after{content:'';position:absolute;inset:1.5px;border-radius:50%;background:#fff}
+.base .why{font-size:11px;color:var(--pewter);line-height:1.5;max-width:280px}
+.base .aisug{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--silver)}
+.sumbar{display:flex;align-items:center;gap:16px;padding:10px 22px;border-bottom:1px solid var(--cloud);font-size:12px;color:var(--pewter)}
+.sumbar b{font-weight:500;color:var(--carbon)}
+.sumbar .w{color:var(--amber)}
+.sumbar .filter{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--silver)}
+
+.thead2,.trow2{display:grid;grid-template-columns:30px 76px 1fr 92px 66px 60px 58px 40px 158px;align-items:center;padding:0 22px}
+.thead2{height:28px;border-bottom:1px solid var(--cloud)}
+.thead2 span{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver)}
+.trows{flex:1;overflow:hidden}
+.trow2{height:32px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.trow2 .cb{width:13px;height:13px;border:1.5px solid var(--pewter);border-radius:3px;position:relative}
+.trow2 .cb.on{background:var(--blue);border-color:var(--blue)}
+.trow2 .cb.on::after{content:'✓';position:absolute;inset:0;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center}
+.trow2 .a{font-family:var(--mono);font-size:11px;color:var(--graphite)}
+.trow2 .a.bad{color:var(--red)}
+.trow2 .n{color:var(--carbon)}
+.trow2 .ed{height:24px;display:inline-flex;align-items:center;padding:0 8px;border:1px solid var(--blue);border-radius:3px;font-size:12px;color:var(--carbon);background:var(--white)}
+.trow2 .ed .caret{width:1px;height:12px;background:var(--blue);margin-left:1px}
+.trow2 .ty,.trow2 .or,.trow2 .sc,.trow2 .un{font-family:var(--mono);font-size:10.5px;color:var(--pewter)}
+.trow2 .rw{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--silver)}
+.trow2 .st{font-family:var(--mono);font-size:10px}
+.trow2 .st.ok{color:var(--green)}
+.trow2 .st.w{color:var(--amber);background:#D9870A14;border-radius:20px;padding:2px 9px;justify-self:start}
+.trow2.warn{background:#D9870A08}
+.more{height:30px;display:flex;align-items:center;padding:0 22px;font-family:var(--mono);font-size:10.5px;color:var(--silver);border-bottom:1px solid rgba(23,26,32,.045)}
+
+.sfoot{display:flex;align-items:center;gap:12px;padding:14px 22px;border-top:1px solid var(--cloud)}
+.sfoot .cb{width:13px;height:13px;background:var(--blue);border-radius:3px;position:relative}
+.sfoot .cb::after{content:'✓';position:absolute;inset:0;color:#fff;font-size:9px;display:flex;align-items:center;justify-content:center}
+.sfoot .sv{font-size:12px;color:var(--graphite)}
+.sfoot .fn{height:28px;display:flex;align-items:center;padding:0 10px;border:1px solid var(--cloud);border-radius:var(--r);font-family:var(--mono);font-size:11px;color:var(--carbon)}
+.sfoot .ghost{margin-left:auto;height:32px;display:flex;align-items:center;padding:0 16px;border-radius:var(--r);font-size:12.5px;color:var(--pewter)}
+.pwrap{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.primary{height:32px;display:flex;align-items:center;padding:0 20px;background:var(--blue);color:#fff;font-size:12.5px;font-weight:500;border-radius:var(--r)}
+.pwrap .sub{font-size:10px;color:var(--silver)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="titlebar"><div class="logo"><span class="mark"></span>FIELDBENCH</div></div>
+  <div class="filler"></div>
+
+  <div class="scrim">
+    <div class="sheet">
+      <div class="shead">
+        <span class="sp">✦</span><h3>Import point map</h3><span class="sub">AI extracted from pasted image</span>
+        <span class="quota">Trial · extractions <b>2 / 3</b> left</span><span class="x">✕</span>
+      </div>
+      <div class="sbody">
+
+        <div class="src">
+          <span class="lb">Source — pasted image</span>
+          <div class="scan">
+            <h5>4.2 Communication register map (RS-485)</h5>
+            <div class="cap">Baud 9600, data 8, parity none, stop 1 · Modbus RTU</div>
+            <table class="stable">
+              <tr><th>Addr</th><th>Description</th><th>Type</th><th>Unit</th><th>R/W</th></tr>
+              <tr><td>40001</td><td>Temperature PV</td><td>INT16 ×0.1</td><td>°C</td><td>R</td></tr>
+              <tr><td>40002</td><td>Pressure PV</td><td>INT16 ×0.001</td><td>bar</td><td>R</td></tr>
+              <tr><td>40003</td><td>Flow PV</td><td>INT16 ×0.1</td><td>L/min</td><td>R</td></tr>
+              <tr><td>40005</td><td>Temp setpoint</td><td>FLOAT32</td><td>°C</td><td>R/W</td></tr>
+              <tr><td>40006</td><td>Alarm high limit</td><td>INT16 ×0.1</td><td>°C</td><td>R/W</td></tr>
+              <tr><td>4A001</td><td>Firmware version</td><td>INT16</td><td>—</td><td>R</td></tr>
+              <tr><td>40010</td><td>Status word</td><td>BITS</td><td>—</td><td>R</td></tr>
+            </table>
+            <div class="pg">TCS-2000 Series · User Manual v2.3 · p. 47</div>
+          </div>
+          <div class="srcact">
+            <span class="re">↻ Re-extract</span>
+            <span class="tip">Whole-PDF import with page picker — coming in 1.0.x</span>
+          </div>
+        </div>
+
+        <div class="rev">
+          <div class="base">
+            <span class="k">Address base<br>confirm to import</span>
+            <div class="bseg">
+              <span class="on"><span class="rad"></span>4xxxx · PLC, 1-based</span>
+              <span><span class="rad"></span>0-based · protocol</span>
+            </div>
+            <span class="why">This decides the wire address of every register below — the single most common import mistake.</span>
+            <span class="aisug">AI suggests: 4xxxx</span>
+          </div>
+
+          <div class="sumbar"><b>18 points extracted</b><span>16 ready</span><span class="w">2 need review</span><span class="filter">SHOW: ALL ▾</span></div>
+
+          <div class="thead2"><span></span><span>Address</span><span>Tag</span><span>Type</span><span>Order</span><span>Scale</span><span>Unit</span><span>R/W</span><span>Status</span></div>
+          <div class="trows">
+            <div class="trow2"><span class="cb on"></span><span class="a">40001</span><span class="n">temp_pv</span><span class="ty">int16</span><span class="or">—</span><span class="sc">×0.1</span><span class="un">°C</span><span class="rw">R</span><span class="st ok">✓ ready</span></div>
+            <div class="trow2"><span class="cb on"></span><span class="a">40002</span><span class="n">press_pv</span><span class="ty">int16</span><span class="or">—</span><span class="sc">×0.001</span><span class="un">bar</span><span class="rw">R</span><span class="st ok">✓ ready</span></div>
+            <div class="trow2"><span class="cb on"></span><span class="a">40003</span><span class="n">flow_pv</span><span class="ty">int16</span><span class="or">—</span><span class="sc">×0.1</span><span class="un">L/min</span><span class="rw">R</span><span class="st ok">✓ ready</span></div>
+            <div class="trow2"><span class="cb on"></span><span class="a">40005</span><span class="n">temp_sp</span><span class="ty">float32</span><span class="or">AB CD</span><span class="sc">—</span><span class="un">°C</span><span class="rw">RW</span><span class="st ok">✓ ready</span></div>
+            <div class="trow2 warn"><span class="cb on"></span><span class="a">40006</span><span class="n">alarm_hi</span><span class="ty">int16</span><span class="or">—</span><span class="sc">×0.1</span><span class="un">°C</span><span class="rw">RW</span><span class="st w">⚠ overlaps 40005 float32</span></div>
+            <div class="trow2 warn"><span class="cb"></span><span class="a bad">4A001</span><span class="n"><span class="ed">fw_version<span class="caret"></span></span></span><span class="ty">int16</span><span class="or">—</span><span class="sc">—</span><span class="un">—</span><span class="rw">R</span><span class="st w">⚠ check address</span></div>
+            <div class="trow2"><span class="cb on"></span><span class="a">40010</span><span class="n">status_word</span><span class="ty">uint16 · bits</span><span class="or">—</span><span class="sc">—</span><span class="un">—</span><span class="rw">R</span><span class="st ok">✓ ready</span></div>
+            <div class="more">… 11 more points</div>
+          </div>
+
+          <div class="sfoot">
+            <span class="cb"></span><span class="sv">Save device profile</span>
+            <span class="fn">SUPCON_TCS-2000.json</span>
+            <span class="ghost">Cancel</span>
+            <div class="pwrap">
+              <span class="primary">Import 17 points</span>
+              <span class="sub">Creates 2 segmented poll tasks · ≤125 registers each</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

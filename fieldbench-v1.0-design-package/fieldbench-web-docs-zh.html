@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fieldbench 使用教程 — 串口 · Modbus · AI 调试工作台</title>
+<meta name="description" content="Fieldbench 快速上手：60 秒抓到第一帧，Modbus 主站/从站仿真、统一报文时间轴、AI 报文解释与点表导入的完整使用指南。">
+<style>
+:root{
+  --blue:#3E6AE1;--blue-tint:#3E6AE114;--carbon:#171A20;--graphite:#393C41;--pewter:#5C5E62;
+  --silver:#8E8E8E;--cloud:#EAEAEC;--ash:#F4F4F4;--bg:#FAFAFB;--r:4px;
+  --green:#1FA463;--amber:#D9870A;--red:#D9342B;
+  --f-addr:#8A56D6;--f-func:#0B3E97;--f-len:#00B386;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  color:var(--carbon);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.65}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.9em;background:var(--ash);border-radius:3px;padding:1px 6px;color:var(--graphite)}
+kbd{font-family:var(--mono);font-size:.85em;background:#fff;border:1px solid var(--cloud);border-bottom-width:2px;border-radius:4px;padding:1px 6px}
+
+.layout{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:220px 1fr;gap:48px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.toc{display:none}}
+
+/* header */
+header{border-bottom:1px solid var(--cloud);background:#fff;position:sticky;top:0;z-index:10}
+.hbar{max-width:1180px;margin:0 auto;padding:0 28px;height:56px;display:flex;align-items:center;gap:12px}
+.mark{width:16px;height:16px;border:2px solid var(--blue);border-radius:4px;position:relative;flex:none}
+.mark::after{content:'';position:absolute;left:3px;top:6.5px;width:7px;height:2px;background:var(--blue)}
+.hbar .name{font-weight:600;letter-spacing:.12em;font-size:13px}
+.hbar .crumb{color:var(--silver);font-size:13px}
+.hbar .right{margin-left:auto;display:flex;gap:22px;font-size:13px}
+
+/* toc */
+.toc{position:sticky;top:88px;align-self:start;padding:32px 0 60px;font-size:13px}
+.toc .cap{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--silver);text-transform:uppercase;margin-bottom:12px}
+.toc a{display:block;color:var(--pewter);padding:5px 0 5px 12px;border-left:2px solid transparent}
+.toc a:hover{color:var(--carbon);text-decoration:none}
+.toc a.h{color:var(--carbon);font-weight:500}
+
+/* main */
+main{padding:44px 0 90px;min-width:0}
+.eyebrow{font-size:13px;color:var(--blue);font-weight:500;letter-spacing:.04em}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 14px}
+.lede{font-size:16px;color:var(--graphite);max-width:640px;margin-bottom:8px}
+.meta{font-size:13px;color:var(--silver);margin-bottom:36px}
+h2{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:56px 0 6px;scroll-margin-top:80px}
+h2 .no{font-family:var(--mono);font-size:14px;color:var(--silver);font-weight:400;margin-right:10px}
+h3{font-size:15.5px;font-weight:600;margin:26px 0 6px}
+p{margin:10px 0;color:var(--graphite);font-size:14.5px}
+ul,ol{margin:10px 0 10px 22px;color:var(--graphite);font-size:14.5px}
+li{margin:5px 0}
+b,strong{color:var(--carbon);font-weight:600}
+
+.shot{margin:18px 0 6px;border:1px solid var(--cloud);border-radius:8px;overflow:hidden;background:#fff}
+.shot img{display:block;width:100%;height:auto}
+.cap{font-size:12.5px;color:var(--silver);margin:6px 0 0 2px}
+
+.tip{display:flex;gap:12px;background:var(--blue-tint);border-radius:8px;padding:13px 16px;margin:16px 0;font-size:13.5px;color:var(--graphite)}
+.tip::before{content:'💡';flex:none}
+.warn{display:flex;gap:12px;background:#D9870A12;border-radius:8px;padding:13px 16px;margin:16px 0;font-size:13.5px;color:var(--graphite)}
+.warn::before{content:'⚠️';flex:none}
+
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);
+  text-align:left;font-weight:500;padding:8px 14px 8px 0;border-bottom:1px solid var(--cloud)}
+td{padding:9px 14px 9px 0;border-bottom:1px solid #171a200b;color:var(--graphite);vertical-align:top}
+td code{white-space:nowrap}
+
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:-1px}
+.steps{counter-reset:step;margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #171a200b}
+.step::before{counter-increment:step;content:counter(step,decimal-leading-zero);
+  font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:600;padding-top:2px;flex:none}
+.step div{font-size:14.5px;color:var(--graphite)}
+.free{font-family:var(--mono);font-size:10px;letter-spacing:.08em;background:var(--ash);color:var(--pewter);
+  border-radius:20px;padding:2px 9px;vertical-align:2px;margin-left:6px}
+.pro{font-family:var(--mono);font-size:10px;letter-spacing:.08em;background:var(--blue-tint);color:var(--blue);
+  border-radius:20px;padding:2px 9px;vertical-align:2px;margin-left:6px}
+footer{border-top:1px solid var(--cloud);margin-top:70px;padding:26px 0 60px;font-size:12.5px;color:var(--silver)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <span class="mark"></span><span class="name">FIELDBENCH</span>
+    <span class="crumb">/ 文档 / 使用教程</span>
+    <nav class="right">
+      <a href="fieldbench-web-docs.html">English</a>
+      <a href="fieldbench-web-home.html">官网</a>
+      <a href="fieldbench-web-tools.html">免费工具</a>
+      <a href="#quickstart">快速上手</a>
+      <a href="#ai">AI 功能</a>
+      <a href="#activate">激活</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="cap">本页目录</div>
+  <a class="h" href="#quickstart">1 · 60 秒快速上手</a>
+  <a href="#connect">2 · 连接设备</a>
+  <a href="#sessions">3 · 三类会话</a>
+  <a href="#timeline">4 · 读懂报文时间轴</a>
+  <a href="#inspector">5 · 字节检查器</a>
+  <a class="h" href="#master">6 · Modbus 主站</a>
+  <a href="#registers">6.1 寄存器网格与写值</a>
+  <a href="#polling">6.2 轮询任务</a>
+  <a href="#scan">6.3 从站扫描</a>
+  <a href="#chart">7 · 数据曲线</a>
+  <a href="#slave">8 · 从站仿真</a>
+  <a class="h" href="#ai">9 · AI 报文解释</a>
+  <a href="#import">10 · AI 点表导入</a>
+  <a href="#export">11 · 导出与记录</a>
+  <a class="h" href="#activate">12 · 激活 Pro</a>
+  <a href="#faq">13 · 常见问题</a>
+</nav>
+
+<main>
+
+<div class="eyebrow">USER GUIDE · v1.0</div>
+<h1>Fieldbench 使用教程</h1>
+<p class="lede">串口、Modbus 在同一条报文时间轴上——选中任何一帧，AI 告诉你它是什么、哪里错了、下一步查什么。本教程带你从安装走到全部功能。</p>
+<p class="meta">适用版本 1.0 · Windows 10/11 x64 · 阅读时间约 10 分钟</p>
+
+<!-- ───────────────────────── 1 ───────────────────────── -->
+<h2 id="quickstart"><span class="no">01</span>60 秒快速上手</h2>
+<p>Fieldbench 免安装即可运行：下载 <b>portable zip</b> 解压双击，或运行安装包。首次启动不会给你一个空面板——直接弹出「新建连接」：</p>
+
+<div class="shot"><img src="img/dialog-newconnection.png" alt="首次启动的新建连接对话框" loading="lazy"></div>
+<p class="cap">首跑对话框：已插入的 USB 转串口会被自动枚举并默认选中</p>
+
+<div class="steps">
+  <div class="step"><div>插上 USB 转 485/232 转换器（CH340 / FTDI / CP210x / PL2303 均实测支持），端口已默认选中</div></div>
+  <div class="step"><div>核对波特率与校验位（设备手册上的值），<b>Start as</b> 保持 <b>Master</b></div></div>
+  <div class="step"><div>点 <b>Connect</b> —— 时间轴开始滚动，你已经在看总线上的第一帧了</div></div>
+</div>
+
+<div class="tip">手边没有设备？点对话框底部的 <b>Run demo</b>：应用内部会启动一对互联的模拟主站和从站（含正弦温度、随机压力、周期性 CRC 误码和越界异常），10 秒看完全部能力，不占用 Free 版的连接额度。</div>
+
+<!-- ───────────────────────── 2 ───────────────────────── -->
+<h2 id="connect"><span class="no">02</span>连接设备</h2>
+<p>三种连接方式，建立后随时可在顶部工具栏<b>热改参数</b>——改波特率、校验位立即生效，会话和已捕获的数据全部保留，绝不需要删掉重建：</p>
+<table>
+  <tr><th>类型</th><th>用途</th><th>参数</th></tr>
+  <tr><td><b>Serial 串口</b></td><td>485/232 现场总线、USB 转串口</td><td>波特率（标准档或任意自定义值）、数据位 5–8、校验 N/E/O/M/S、停止位 1/1.5/2、流控</td></tr>
+  <tr><td><b>TCP client</b></td><td>连接 Modbus TCP 设备/网关</td><td>目标 IP : 端口（默认 502）</td></tr>
+  <tr><td><b>TCP server</b></td><td>本机监听，做 TCP 从站仿真</td><td>监听端口，支持多个主站同时接入</td></tr>
+</table>
+<p>每次成功连接会自动存为<b>配置档</b>（左栏 PROFILES），下次一键重连。USB 设备意外拔出不会崩溃——会话保留，插回后点状态栏重连即可。</p>
+
+<!-- ───────────────────────── 3 ───────────────────────── -->
+<h2 id="sessions"><span class="no">03</span>三类会话</h2>
+<p>同一个连接可以开多个会话（视角），它们共享同一份字节流：</p>
+<table>
+  <tr><th>会话</th><th>做什么</th><th>典型场景</th></tr>
+  <tr><td><b>Monitor 监视</b></td><td>被动收听，不发一个字节</td><td>挂在 485 总线上抓包排查现网问题</td></tr>
+  <tr><td><b>Master 主站</b></td><td>主动轮询设备</td><td>读写寄存器、验证点表、联调仪表</td></tr>
+  <tr><td><b>Slave 从站</b> <span class="pro">PRO</span></td><td>模拟一台设备应答</td><td>上位机开发时手边没有 PLC</td></tr>
+</table>
+<div class="tip"><b>字节流是事实源，解析随时可换。</b>Monitor 会话默认 Raw 视角只显示字节块；当你切换到 Modbus 解析（工具栏 lens 开关），<b>全部历史数据会重新切帧、着色、解析</b>——先抓十分钟再决定怎么看，什么都不会丢。</div>
+
+<!-- ───────────────────────── 4 ───────────────────────── -->
+<h2 id="timeline"><span class="no">04</span>读懂报文时间轴</h2>
+<div class="shot"><img src="img/master-light.png" alt="主界面：报文时间轴、寄存器网格、字节检查器与 AI 面板" loading="lazy"></div>
+<p class="cap">Master 会话运行中：一帧 CRC 失败被选中，右栏给出字节级解析与 AI 诊断</p>
+
+<p>每行一帧，列依次是：<b>时间</b>（毫秒精度）、<b>Δ ms</b>（请求→响应延迟）、<b>方向</b>（TX↑ 橙 / RX↓ 蓝；总线监听时显示语义方向 M→S / S→M）、<b>长度</b>、<b>解析摘要</b>、<b>原始 hex</b>。</p>
+<p>协议字段全产品统一四色：<span class="swatch" style="background:#8A56D6"></span>从站地址 <code>@01</code>　<span class="swatch" style="background:#0B3E97"></span>功能码 <code>FC03</code>　<span class="swatch" style="background:#00B386"></span>长度　<span class="swatch" style="background:#D9342B"></span>校验/错误。行级状态一眼可辨：异常响应 <b style="color:#D9870A">EXC 02</b> 琥珀底、校验失败 <b style="color:#D9342B">CRC FAIL</b> 红底，行尾出现 <b style="color:#3E6AE1">✦</b> 图标可直接 AI 解释。</p>
+
+<h3>过滤与暂停</h3>
+<ul>
+  <li>过滤条：关键字（匹配 hex、ASCII、功能码、从站地址）、方向 All/TX/RX、仅异常帧</li>
+  <li><b>Pause 只暂停渲染，采集从不停止</b>——翻历史时新数据仍在后台入库</li>
+  <li>缓冲默认 10 万帧环形滚动（设置中可调）</li>
+</ul>
+
+<h3>协议自动识别</h3>
+<p>Monitor/Raw 流上，连续 3 块数据通过 CRC-16 校验（单帧巧合概率 1/65536，三帧即确定）时，时间轴顶部弹出非模态提示条：<b>「Modbus RTU detected — 12/12 chunks pass CRC-16 · Switch lens」</b>。点一下即切换解析，历史全量重解析；随机数据流永远不会误报。</p>
+
+<!-- ───────────────────────── 5 ───────────────────────── -->
+<h2 id="inspector"><span class="no">05</span>字节检查器</h2>
+<p>选中任意一帧，右栏上半部分即逐字节展开：每个字节按所属字段着色，<b>悬停任意字节</b>显示字段名和十进制/十六进制/二进制值；下方字段列表给出逐项解析（从站地址、功能码、字节数、数据、CRC——校验失败时同时显示期望值）。多选帧（<kbd>Ctrl</kbd>/<kbd>Shift</kbd> 点击）时检查器显示最后选中的一帧，AI 解释则携带全部选中帧。</p>
+
+<!-- ───────────────────────── 6 ───────────────────────── -->
+<h2 id="master"><span class="no">06</span>Modbus 主站</h2>
+<p>支持 RTU 与 TCP，功能码 01 / 02 / 03 / 04 / 05 / 06 / 0F / 10，超时重试每连接可配（默认 1000 ms × 3）。底部面板四个页签：<b>Registers · Poll tasks · Send · Chart</b>。</p>
+
+<h3 id="registers">6.1 寄存器网格与写值</h3>
+<ul>
+  <li>每行一个<b>标签</b>：地址（40001 式 PLC 地址显示）、名称、数据类型、当前值、趋势 sparkline、原始 hex、读写属性</li>
+  <li>数据类型 8 种：<code>bit / int16 / uint16 / int32 / uint32 / float32 / double / string</code>，多寄存器类型支持 4 种字节序 <code>AB CD / CD AB / BA DC / DC BA</code>，缩放与单位每标签独立配置</li>
+  <li><b>写值：</b>蓝色数值即可写——点击 → 输入 → <kbd>Enter</kbd>，自动选择 05/06/0F/10 下发并回读确认；写入失败在行内以 ⚠ 提示原因</li>
+</ul>
+
+<h3 id="polling">6.2 轮询任务</h3>
+<div class="shot"><img src="img/master-polltasks.png" alt="轮询任务页签" loading="lazy"></div>
+<p class="cap">多任务并行定义，同一连接内自动串行调度，互不冲突</p>
+<p>每个任务 = 从站地址 + 功能码 + 起始地址 + 数量 + 周期。开关即启停，行内显示实测周期与错误计数；▶ 按钮对停用任务做单次执行。多个任务读回的数据都汇入同一张寄存器网格。</p>
+
+<h3 id="scan">6.3 从站扫描</h3>
+<p>轮询超时排障的第一动作：工具栏 <b>Scan slaves</b> 遍历地址 1–247（探测功能码与超时可配，默认 FC03 × 200 ms），实时列出响应者及响应耗时——<b>回异常码也算活着</b>（说明设备在线只是地址范围不对）。串口下可勾选同时扫描常见波特率 × 校验矩阵，约加 4 分钟。找到后一键 <b>Open as Master</b>。</p>
+
+<!-- ───────────────────────── 7 ───────────────────────── -->
+<h2 id="chart"><span class="no">07</span>数据曲线</h2>
+<div class="shot"><img src="img/master-chart.png" alt="Chart 页签：多通道曲线与异常点标红" loading="lazy"></div>
+<p class="cap">异常帧在曲线上标红：点击红点直接跳回时间轴对应报文</p>
+<p>轮询中的数值标签自动成为曲线通道（Free 版 2 通道<span class="free">FREE</span>，Pro 无限）。窗口 60 s / 10 min / 全部，可暂停、可导出 CSV。<b>值不对 → 是哪帧 → 为什么</b>这条链是 Fieldbench 独有的：曲线上的红色异常点一点，时间轴跳转选中那一帧，再点 ✦ 让 AI 解释。</p>
+
+<!-- ───────────────────────── 8 ───────────────────────── -->
+<h2 id="slave"><span class="no">08</span>从站仿真 <span class="pro">PRO</span></h2>
+<div class="shot"><img src="img/slave.png" alt="从站仿真：四类寄存器区与值发生器" loading="lazy"></div>
+<p class="cap">TCP 从站监听 :502：请求/响应进同一时间轴，值发生器让数据「活」起来</p>
+<ul>
+  <li>RTU（串口）或 TCP（监听端口，<b>多个主站可同时接入</b>），从站 ID 可配</li>
+  <li>四类寄存器区页签：<b>Holding 4x · Input 3x · Coils 0x · Discrete 1x</b>，65536 地址空间稀疏存储——只有你定义过的地址存在，读到未定义地址自动回 <code>EXC 02</code>，未知功能码自动回 <code>EXC 01</code></li>
+  <li><b>值发生器</b>：每个标签可选 Static / Increment / Random / Sine，点 ✎ 配置幅值、周期、范围、步长——上位机开发者最常用的「假设备出活数据」</li>
+  <li>主站写进来的值即时反映在网格上并标注 <i>written by client</i></li>
+</ul>
+
+<!-- ───────────────────────── 9 ───────────────────────── -->
+<h2 id="ai"><span class="no">09</span>AI 报文解释</h2>
+<div class="shot"><img src="img/master-dark.png" alt="深色主题下的 AI 解释面板" loading="lazy"></div>
+<p class="cap">AI 输出固定结构：这是什么 → 异常在哪 → 原因按概率排序 → 下一步检查清单</p>
+<p><b>入口：</b>异常帧行尾的 ✦ 图标一键解释；或选中 1–N 帧后点右栏 AI 面板的 Explain。可以在输入框追加你自己的问题（"为什么每隔 30 帧坏一次？"）。</p>
+<p>五类问题它都给出工程师级的排查方向：</p>
+<table>
+  <tr><th>场景</th><th>AI 会告诉你</th></tr>
+  <tr><td>CRC 校验失败</td><td>区分单比特线路干扰 / CRC 字节序颠倒 / 波特率不匹配的特征，并给出期望校验值</td></tr>
+  <tr><td>异常码 01–04</td><td>翻译成人话 + 各自的排查清单（如 EXC 02 → 核对起始地址、数量、0/1 基偏移）</td></tr>
+  <tr><td>满屏乱码</td><td>识别波特率错误的典型字节直方图特征，建议参数矩阵扫描</td></tr>
+  <tr><td>发出无响应</td><td>结合当前连接参数生成核对单：从站地址、A/B 反接、终端电阻、波特率…</td></tr>
+  <tr><td>正常帧</td><td>逐字段讲解含义（也是学 Modbus 的好方法）</td></tr>
+</table>
+<p><b>隐私：</b>首次使用会弹窗说明发送范围——仅在你按下 Explain 时发送所选帧、连接参数与前后约 20 帧摘要，网关不存储任何内容；设置页可随时预览「将发送什么」。<b>断网时 AI 按钮置灰，其余全部功能照常。</b></p>
+<p><b>配额：</b>免费送 30 次解释试用；订阅 $6.9/月 得 1000 次/月。余额实时显示在状态栏与 AI 面板底部。</p>
+
+<!-- ───────────────────────── 10 ───────────────────────── -->
+<h2 id="import"><span class="no">10</span>AI 点表导入</h2>
+<p>拿到新设备的第一小时不用再抄手册了。Registers 页签 → <b>Import point map…</b>：</p>
+<div class="steps">
+  <div class="step"><div><b>投喂：</b>把手册寄存器表<b>截图</b>粘贴进来（<kbd>Paste image</kbd>），或直接粘贴表格文本 → Extract</div></div>
+  <div class="step"><div><b>确认地址基准（强制）：</b>顶部蓝条二选一——<code>4xxxx · PLC 1 基</code> 还是 <code>0 基协议地址</code>。这是点表导入出错的头号来源，所以绝不让 AI 猜</div></div>
+  <div class="step"><div><b>审核：</b>所有提取结果以「待确认」呈现，越界地址、区间重叠、类型冲突自动标黄标红，行内可改可删——<b>绝不静默入库</b></div></div>
+  <div class="step"><div><b>落地即可测：</b>点 Import 后写入寄存器网格并自动生成分段轮询任务（连续地址合并，单段 ≤125 寄存器），启动任务一键全读验证通信，缩放与单位即时生效</div></div>
+</div>
+<p>勾选 <b>Save device profile</b> 会同时导出设备档案 JSON，下台同型号设备直接复用，也可以发给同事。配额：免费 3 次提取试用，订阅含 30 次/月。</p>
+
+<!-- ───────────────────────── 11 ───────────────────────── -->
+<h2 id="export"><span class="no">11</span>导出与记录</h2>
+<ul>
+  <li><b>导出：</b>时间轴右上 <b>↓ Export</b> → CSV / JSON / 原始 bin / txt 日志。选中了帧就导出选中部分，否则导出全部——挂一晚上抓的包第二天直接发给厂商</li>
+  <li><b>Record：</b>工具栏红点开启边采边写盘（文本日志追加），环形缓冲只管屏幕显示，超长挂机取证不怕早晨的异常帧被冲掉</li>
+  <li><b>曲线 CSV：</b>Chart 页签单独导出（时间戳 + 各通道列）</li>
+</ul>
+
+<!-- ───────────────────────── 12 ───────────────────────── -->
+<h2 id="activate"><span class="no">12</span>激活 Pro</h2>
+<div class="shot"><img src="img/dialog-settings.png" alt="设置页：授权与离线激活" loading="lazy"></div>
+<p class="cap">设置 → License：机器码、在线激活与离线激活文件导入都在这里</p>
+<table>
+  <tr><th>版本</th><th>包含</th></tr>
+  <tr><td><b>Free</b></td><td>1 个活动连接 · Master 全功能码 · 时间轴/检查器全开 · 曲线 2 通道 · AI 试用（解释 30 次 + 提取 3 次）</td></tr>
+  <tr><td><b>Pro</b>（买断）</td><td>无限连接 · 从站仿真 · 曲线无限通道 · 优先支持 · 1 个 license 激活 2 台设备</td></tr>
+</table>
+<p>所有 Pro 功能可<b>免费全功能试用 14 天</b>，无需信用卡（设置页一键开启）。</p>
+<h3>在线激活（有网，10 秒）</h3>
+<p>购买后 license key（<code>FB1-XXXX-XXXX-XXXX</code>）即时发到邮箱 → 设置 → License → 输入 key → <b>Activate</b>。完成。</p>
+<h3>离线激活（现场无网机器）</h3>
+<div class="steps">
+  <div class="step"><div>在目标机器的设置页抄下<b>机器码</b>（形如 <code>8F3A-22C1-90DE-4471</code>）</div></div>
+  <div class="step"><div>在任何有网的设备打开 <code>fieldbench.app/activate</code>，输入 key + 机器码，下载激活文件</div></div>
+  <div class="step"><div>U 盘拷回目标机器 → <b>Import activation file…</b> → 激活完成</div></div>
+</div>
+<div class="tip"><b>激活后永久离线可用，无任何回连校验。</b>这是我们对工厂受控网络环境的承诺——软件绝不 phone home。换电脑时在官网自助解绑即可。</div>
+
+<!-- ───────────────────────── 13 ───────────────────────── -->
+<h2 id="faq"><span class="no">13</span>常见问题</h2>
+<h3>时间轴全是乱码/CRC FAIL？</h3>
+<p>九成是波特率或校验位不对。选几帧点 ✦ 让 AI 看字节特征，或直接 Scan slaves 勾选参数矩阵扫描，让它替你把 9600–115200 × N/E 全试一遍。</p>
+<h3>发请求没有任何响应？</h3>
+<p>按顺序查：① Scan slaves 确认从站地址；② 485 的 A/B 线对调试试（现场第一高发）；③ 终端电阻；④ 波特率/校验与设备一致。AI 的无响应核对单会结合你当前的连接参数生成。</p>
+<h3>Monitor 里为什么都是 RX？</h3>
+<p>被动挂在总线上时物理方向确实全是接收。切到 Modbus 解析后，Fieldbench 按帧语义（请求/响应结构）自动推断并显示 <b>M→S / S→M</b>，Δ 列即总线上真实的响应延迟。</p>
+<h3>自环测试怎么做？</h3>
+<p>本机 Master ↔ Slave 需要两个连接（串口用 com0com 虚拟串口对，或 TCP 用 127.0.0.1）。Free 版限 1 个连接，此场景需要 Pro——或先用 Demo 模式体验同样的效果。</p>
+<h3>深色主题 / 中文界面？</h3>
+<p>设置 → Appearance，主题与语言（English / 简体中文）即时切换，无需重启。</p>
+<h3>数据会上传吗？</h3>
+<p>不会。除了你主动点击 AI 解释/提取时发送所选内容外，一个字节都不出机器。遥测默认关闭。</p>
+
+<footer>
+  Fieldbench · 串口 · Modbus · AI 调试工作台 · <a href="#quickstart">回到顶部 ↑</a><br>
+  遇到本页未覆盖的问题：support@fieldbench.app
+</footer>
+
+</main>
+</div>
+</body>
+</html>

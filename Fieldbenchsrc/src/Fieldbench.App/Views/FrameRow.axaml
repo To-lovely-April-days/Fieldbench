@@ -1,0 +1,79 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="using:Fieldbench.App.Converters"
+             xmlns:lens="using:Fieldbench.Core.Lenses"
+             x:Class="Fieldbench.App.Views.FrameRow"
+             x:DataType="lens:Frame">
+
+    <UserControl.Styles>
+        <Style Selector="Border.rowHost.warn">
+            <Setter Property="Background" Value="{DynamicResource FbAmberRow}" />
+        </Style>
+        <Style Selector="Border.rowHost.err">
+            <Setter Property="Background" Value="{DynamicResource FbRedRow}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Border Classes="rowHost" Height="26"
+            Classes.warn="{Binding Status, Converter={x:Static conv:StatusConverters.IsWarning}}"
+            Classes.err="{Binding Status, Converter={x:Static conv:StatusConverters.IsError}}"
+            BorderBrush="{DynamicResource FbRowLine}" BorderThickness="0,0,0,1">
+        <Grid Margin="14,0,6,0" ColumnDefinitions="96,52,52,40,*,300,30" VerticalAlignment="Center">
+
+            <!-- time -->
+            <TextBlock Grid.Column="0" Classes="mono" FontSize="11" Foreground="{DynamicResource FbSilver}"
+                       Text="{Binding TimestampUtc, Converter={x:Static conv:FrameConverters.Time}}"
+                       VerticalAlignment="Center" />
+
+            <!-- Δ ms -->
+            <TextBlock Grid.Column="1" Classes="mono" FontSize="10.5" Foreground="{DynamicResource FbSilver}"
+                       Text="{Binding DeltaMs, Converter={x:Static conv:FrameConverters.Delta}}"
+                       TextAlignment="Right" Margin="0,0,12,0" VerticalAlignment="Center" />
+
+            <!-- direction -->
+            <TextBlock Grid.Column="2" Classes="mono" FontSize="10" FontWeight="Medium" LetterSpacing="0.8"
+                       Text="{Binding ., Converter={x:Static conv:FrameConverters.DirText}}"
+                       Foreground="{Binding ., Converter={x:Static conv:StatusConverters.DirBrush}}"
+                       VerticalAlignment="Center" />
+
+            <!-- length -->
+            <TextBlock Grid.Column="3" Classes="mono" FontSize="11" Foreground="{DynamicResource FbSilver}"
+                       Text="{Binding Bytes.Length}" VerticalAlignment="Center" />
+
+            <!-- summary -->
+            <DockPanel Grid.Column="4" Margin="0,0,14,0" LastChildFill="False" VerticalAlignment="Center">
+                <TextBlock DockPanel.Dock="Left" Classes="mono" FontSize="11" FontWeight="Medium"
+                           Foreground="{DynamicResource FbFieldAddr}" Text="{Binding AddressToken}"
+                           IsVisible="{Binding AddressToken, Converter={x:Static conv:FrameConverters.IsNotNull}}"
+                           Margin="0,0,9,0" VerticalAlignment="Center" />
+                <TextBlock DockPanel.Dock="Left" Classes="mono" FontSize="11" FontWeight="Medium"
+                           Foreground="{DynamicResource FbFieldFunc}" Text="{Binding FunctionToken}"
+                           IsVisible="{Binding FunctionToken, Converter={x:Static conv:FrameConverters.IsNotNull}}"
+                           Margin="0,0,9,0" VerticalAlignment="Center" />
+                <TextBlock DockPanel.Dock="Left" FontSize="11.5" Foreground="{DynamicResource FbGraphite}"
+                           Text="{Binding Summary}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                <Border DockPanel.Dock="Right" CornerRadius="20" Padding="8,2" VerticalAlignment="Center"
+                        Background="{Binding ., Converter={x:Static conv:StatusConverters.TagBackground}}"
+                        IsVisible="{Binding StatusTag, Converter={x:Static conv:FrameConverters.IsNotNull}}">
+                    <TextBlock Classes="mono" FontSize="9.5" LetterSpacing="0.8"
+                               Text="{Binding StatusTag}"
+                               Foreground="{Binding ., Converter={x:Static conv:StatusConverters.TagForeground}}" />
+                </Border>
+            </DockPanel>
+
+            <!-- hex -->
+            <TextBlock Grid.Column="5" Classes="mono" FontSize="11" Foreground="{DynamicResource FbSilver}"
+                       Text="{Binding ., Converter={x:Static conv:FrameConverters.HexPreview}}"
+                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+
+            <!-- inline AI icon (abnormal rows only — the conversion spot) -->
+            <Button Grid.Column="6" Width="20" Height="20" Padding="0" CornerRadius="4"
+                    Background="{DynamicResource FbBlueTint}" BorderThickness="0"
+                    IsVisible="{Binding IsAbnormal}"
+                    Click="OnAiClick"
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <TextBlock Text="✦" FontSize="11" Foreground="{DynamicResource FbBlueOn}" />
+            </Button>
+        </Grid>
+    </Border>
+</UserControl>

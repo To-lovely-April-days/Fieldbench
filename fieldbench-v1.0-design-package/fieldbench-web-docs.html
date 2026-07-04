@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fieldbench User Guide — Serial · Modbus · AI Workbench</title>
+<meta name="description" content="Get started with Fieldbench: first frame in 60 seconds, Modbus master and slave simulation, the unified frame timeline, AI frame explanation and AI point map import — the complete guide.">
+<style>
+:root{
+  --blue:#3E6AE1;--blue-tint:#3E6AE114;--carbon:#171A20;--graphite:#393C41;--pewter:#5C5E62;
+  --silver:#8E8E8E;--cloud:#EAEAEC;--ash:#F4F4F4;--bg:#FAFAFB;--r:4px;
+  --green:#1FA463;--amber:#D9870A;--red:#D9342B;
+  --f-addr:#8A56D6;--f-func:#0B3E97;--f-len:#00B386;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  color:var(--carbon);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.65}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:var(--mono);font-size:.9em;background:var(--ash);border-radius:3px;padding:1px 6px;color:var(--graphite)}
+kbd{font-family:var(--mono);font-size:.85em;background:#fff;border:1px solid var(--cloud);border-bottom-width:2px;border-radius:4px;padding:1px 6px}
+
+.layout{max-width:1180px;margin:0 auto;padding:0 28px;display:grid;grid-template-columns:220px 1fr;gap:48px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.toc{display:none}}
+
+/* header */
+header{border-bottom:1px solid var(--cloud);background:#fff;position:sticky;top:0;z-index:10}
+.hbar{max-width:1180px;margin:0 auto;padding:0 28px;height:56px;display:flex;align-items:center;gap:12px}
+.mark{width:16px;height:16px;border:2px solid var(--blue);border-radius:4px;position:relative;flex:none}
+.mark::after{content:'';position:absolute;left:3px;top:6.5px;width:7px;height:2px;background:var(--blue)}
+.hbar .name{font-weight:600;letter-spacing:.12em;font-size:13px}
+.hbar .crumb{color:var(--silver);font-size:13px}
+.hbar .right{margin-left:auto;display:flex;gap:22px;font-size:13px}
+
+/* toc */
+.toc{position:sticky;top:88px;align-self:start;padding:32px 0 60px;font-size:13px}
+.toc .cap{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--silver);text-transform:uppercase;margin-bottom:12px}
+.toc a{display:block;color:var(--pewter);padding:5px 0 5px 12px;border-left:2px solid transparent}
+.toc a:hover{color:var(--carbon);text-decoration:none}
+.toc a.h{color:var(--carbon);font-weight:500}
+
+/* main */
+main{padding:44px 0 90px;min-width:0}
+.eyebrow{font-size:13px;color:var(--blue);font-weight:500;letter-spacing:.04em}
+h1{font-size:34px;font-weight:600;letter-spacing:-.02em;margin:10px 0 14px}
+.lede{font-size:16px;color:var(--graphite);max-width:640px;margin-bottom:8px}
+.meta{font-size:13px;color:var(--silver);margin-bottom:36px}
+h2{font-size:22px;font-weight:600;letter-spacing:-.01em;margin:56px 0 6px;scroll-margin-top:80px}
+h2 .no{font-family:var(--mono);font-size:14px;color:var(--silver);font-weight:400;margin-right:10px}
+h3{font-size:15.5px;font-weight:600;margin:26px 0 6px}
+p{margin:10px 0;color:var(--graphite);font-size:14.5px}
+ul,ol{margin:10px 0 10px 22px;color:var(--graphite);font-size:14.5px}
+li{margin:5px 0}
+b,strong{color:var(--carbon);font-weight:600}
+
+.shot{margin:18px 0 6px;border:1px solid var(--cloud);border-radius:8px;overflow:hidden;background:#fff}
+.shot img{display:block;width:100%;height:auto}
+.cap{font-size:12.5px;color:var(--silver);margin:6px 0 0 2px}
+
+.tip{display:flex;gap:12px;background:var(--blue-tint);border-radius:8px;padding:13px 16px;margin:16px 0;font-size:13.5px;color:var(--graphite)}
+.tip::before{content:'💡';flex:none}
+.warn{display:flex;gap:12px;background:#D9870A12;border-radius:8px;padding:13px 16px;margin:16px 0;font-size:13.5px;color:var(--graphite)}
+.warn::before{content:'⚠️';flex:none}
+
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);
+  text-align:left;font-weight:500;padding:8px 14px 8px 0;border-bottom:1px solid var(--cloud)}
+td{padding:9px 14px 9px 0;border-bottom:1px solid #171a200b;color:var(--graphite);vertical-align:top}
+td code{white-space:nowrap}
+
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:7px;vertical-align:-1px}
+.steps{counter-reset:step;margin:14px 0}
+.step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #171a200b}
+.step::before{counter-increment:step;content:counter(step,decimal-leading-zero);
+  font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:600;padding-top:2px;flex:none}
+.step div{font-size:14.5px;color:var(--graphite)}
+.free{font-family:var(--mono);font-size:10px;letter-spacing:.08em;background:var(--ash);color:var(--pewter);
+  border-radius:20px;padding:2px 9px;vertical-align:2px;margin-left:6px}
+.pro{font-family:var(--mono);font-size:10px;letter-spacing:.08em;background:var(--blue-tint);color:var(--blue);
+  border-radius:20px;padding:2px 9px;vertical-align:2px;margin-left:6px}
+footer{border-top:1px solid var(--cloud);margin-top:70px;padding:26px 0 60px;font-size:12.5px;color:var(--silver)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <span class="mark"></span><span class="name">FIELDBENCH</span>
+    <span class="crumb">/ Docs / User guide</span>
+    <nav class="right">
+      <a href="fieldbench-web-home.html">Home</a>
+      <a href="fieldbench-web-tools.html">Free tools</a>
+      <a href="#quickstart">Quick start</a>
+      <a href="#ai">AI</a>
+      <a href="#activate">Activate</a>
+      <a href="#faq">FAQ</a>
+      <a href="fieldbench-web-docs-zh.html">中文</a>
+    </nav>
+  </div>
+</header>
+
+<div class="layout">
+
+<nav class="toc">
+  <div class="cap">On this page</div>
+  <a class="h" href="#quickstart">1 · 60-second quick start</a>
+  <a href="#connect">2 · Connecting</a>
+  <a href="#sessions">3 · The three session types</a>
+  <a href="#timeline">4 · Reading the frame timeline</a>
+  <a href="#inspector">5 · Byte inspector</a>
+  <a class="h" href="#master">6 · Modbus master</a>
+  <a href="#registers">6.1 Register grid &amp; writes</a>
+  <a href="#polling">6.2 Poll tasks</a>
+  <a href="#scan">6.3 Slave scan</a>
+  <a href="#chart">7 · Charts</a>
+  <a href="#slave">8 · Slave simulation</a>
+  <a class="h" href="#ai">9 · AI frame explanation</a>
+  <a href="#import">10 · AI point map import</a>
+  <a href="#export">11 · Export &amp; recording</a>
+  <a class="h" href="#activate">12 · Activating Pro</a>
+  <a href="#faq">13 · FAQ</a>
+</nav>
+
+<main>
+
+<div class="eyebrow">USER GUIDE · v1.0</div>
+<h1>Fieldbench User Guide</h1>
+<p class="lede">Serial and Modbus on one frame timeline — select any frame and the AI tells you what it is, what's wrong, and what to check next. This guide takes you from install to every feature.</p>
+<p class="meta">For version 1.0 · Windows 10/11 x64 · about a 10-minute read</p>
+
+<!-- ───────────────────────── 1 ───────────────────────── -->
+<h2 id="quickstart"><span class="no">01</span>60-second quick start</h2>
+<p>Fieldbench runs without installing: download the <b>portable zip</b>, unzip, double-click — or run the installer. First launch doesn't greet you with an empty dashboard; it opens <b>New connection</b> right away:</p>
+
+<div class="shot"><img src="img/dialog-newconnection.png" alt="The New connection dialog shown on first launch" loading="lazy"></div>
+<p class="cap">First-run dialog: any plugged-in USB-serial adapter is enumerated and pre-selected</p>
+
+<div class="steps">
+  <div class="step"><div>Plug in your USB-to-485/232 adapter (CH340 / FTDI / CP210x / PL2303 all field-tested) — the port is already selected</div></div>
+  <div class="step"><div>Check baud rate and parity against the device manual, leave <b>Start as</b> on <b>Master</b></div></div>
+  <div class="step"><div>Hit <b>Connect</b> — the timeline starts scrolling and you're looking at your first frame on the bus</div></div>
+</div>
+
+<div class="tip">No device on hand? Click <b>Run demo</b> at the bottom of the dialog: the app spins up an internal pair of wired-together master and slave (sine temperature, random pressure, periodic CRC corruption and out-of-range exceptions). See everything in 10 seconds — it doesn't use your Free connection slot.</div>
+
+<!-- ───────────────────────── 2 ───────────────────────── -->
+<h2 id="connect"><span class="no">02</span>Connecting</h2>
+<p>Three connection types. Once connected, parameters are <b>hot-editable</b> in the top toolbar — change baud or parity and it applies instantly; the session and everything already captured stay put. You never delete and re-create a connection:</p>
+<table>
+  <tr><th>Type</th><th>For</th><th>Parameters</th></tr>
+  <tr><td><b>Serial</b></td><td>485/232 field buses, USB-serial adapters</td><td>Baud (standard rates or any custom value), data bits 5–8, parity N/E/O/M/S, stop bits 1/1.5/2, flow control</td></tr>
+  <tr><td><b>TCP client</b></td><td>Connecting to Modbus TCP devices / gateways</td><td>Target IP : port (502 default)</td></tr>
+  <tr><td><b>TCP server</b></td><td>Listening locally for TCP slave simulation</td><td>Listen port; multiple masters may connect at once</td></tr>
+</table>
+<p>Every successful connection is saved as a <b>profile</b> (PROFILES in the left rail) for one-click reconnect. Yanking the USB adapter mid-session won't crash anything — the session survives; plug back in and hit reconnect in the status bar.</p>
+
+<!-- ───────────────────────── 3 ───────────────────────── -->
+<h2 id="sessions"><span class="no">03</span>The three session types</h2>
+<p>One connection can host several sessions (views), all sharing the same byte stream:</p>
+<table>
+  <tr><th>Session</th><th>What it does</th><th>Typical use</th></tr>
+  <tr><td><b>Monitor</b></td><td>Listens passively, transmits nothing</td><td>Clipping onto a live 485 bus to debug a production problem</td></tr>
+  <tr><td><b>Master</b></td><td>Actively polls devices</td><td>Reading/writing registers, verifying point maps, commissioning instruments</td></tr>
+  <tr><td><b>Slave</b> <span class="pro">PRO</span></td><td>Simulates a responding device</td><td>Building host software with no PLC on the desk</td></tr>
+</table>
+<div class="tip"><b>Bytes are the source of truth; parsing is just a view.</b> A Monitor session starts in the Raw lens showing byte chunks; flip to the Modbus lens (toolbar switch) and <b>the entire history is re-framed, re-colored and re-parsed</b>. Capture for ten minutes first, decide how to look at it later — nothing is ever lost.</div>
+
+<!-- ───────────────────────── 4 ───────────────────────── -->
+<h2 id="timeline"><span class="no">04</span>Reading the frame timeline</h2>
+<div class="shot"><img src="img/master-light.png" alt="Main window: frame timeline, register grid, byte inspector and AI panel" loading="lazy"></div>
+<p class="cap">A Master session running: one CRC-failed frame selected, byte-level parsing and AI diagnosis in the right panel</p>
+
+<p>One frame per row. The columns: <b>Time</b> (millisecond precision), <b>Δ ms</b> (request→response latency), <b>Direction</b> (TX↑ amber / RX↓ blue; on a passively monitored bus you get semantic direction, M→S / S→M), <b>Length</b>, <b>parsed summary</b>, <b>raw hex</b>.</p>
+<p>Protocol fields use the same four colors everywhere in the product: <span class="swatch" style="background:#8A56D6"></span>slave address <code>@01</code>&nbsp;&nbsp;<span class="swatch" style="background:#0B3E97"></span>function code <code>FC03</code>&nbsp;&nbsp;<span class="swatch" style="background:#00B386"></span>length&nbsp;&nbsp;<span class="swatch" style="background:#D9342B"></span>checksum / error. Row states read at a glance: exception responses tint amber with <b style="color:#D9870A">EXC 02</b>, checksum failures tint red with <b style="color:#D9342B">CRC FAIL</b>, and a <b style="color:#3E6AE1">✦</b> icon appears at the row's end for one-click AI explanation.</p>
+
+<h3>Filtering &amp; pause</h3>
+<ul>
+  <li>Filter bar: keyword (matches hex, ASCII, function code, slave address), direction All/TX/RX, errors-only</li>
+  <li><b>Pause pauses rendering only — capture never stops.</b> Scroll through history while new data keeps landing in the background</li>
+  <li>Ring buffer defaults to 100,000 frames (adjustable in Settings)</li>
+</ul>
+
+<h3>Protocol auto-detect</h3>
+<p>On a Monitor/Raw stream, when 3 consecutive chunks pass CRC-16 validation (a single-frame coincidence is 1 in 65,536 — three in a row is certainty), a non-modal bar appears above the timeline: <b>"Modbus RTU detected — 12/12 chunks pass CRC-16 · Switch lens"</b>. One click switches the lens and re-parses the full history. Random data will never trigger a false positive.</p>
+
+<!-- ───────────────────────── 5 ───────────────────────── -->
+<h2 id="inspector"><span class="no">05</span>Byte inspector</h2>
+<p>Select any frame and the top half of the right panel expands it byte by byte: each byte is colored by the field it belongs to, and <b>hovering any byte</b> shows the field name plus its decimal / hex / binary value. Below, the field list gives the item-by-item parse (slave address, function code, byte count, data, CRC — with the expected value shown whenever the checksum fails). With multiple frames selected (<kbd>Ctrl</kbd>/<kbd>Shift</kbd> click) the inspector shows the last one; AI explanation carries all of them.</p>
+
+<!-- ───────────────────────── 6 ───────────────────────── -->
+<h2 id="master"><span class="no">06</span>Modbus master</h2>
+<p>RTU and TCP, function codes 01 / 02 / 03 / 04 / 05 / 06 / 0F / 10; timeout and retry are per-connection (default 1000 ms × 3). The bottom panel has four tabs: <b>Registers · Poll tasks · Send · Chart</b>.</p>
+
+<h3 id="registers">6.1 Register grid &amp; writing values</h3>
+<ul>
+  <li>One <b>tag</b> per row: address (shown 40001-style, PLC convention), name, data type, live value, trend sparkline, raw hex, R/W attribute</li>
+  <li>8 data types: <code>bit / int16 / uint16 / int32 / uint32 / float32 / double / string</code>; multi-register types support all 4 byte orders <code>AB CD / CD AB / BA DC / DC BA</code>; scale and unit are configured per tag</li>
+  <li><b>Writing:</b> blue values are writable — click, type, <kbd>Enter</kbd>. Fieldbench picks 05/06/0F/10 automatically, writes, and reads back to confirm; a failed write shows ⚠ with the reason inline</li>
+</ul>
+
+<h3 id="polling">6.2 Poll tasks</h3>
+<div class="shot"><img src="img/master-polltasks.png" alt="The Poll tasks tab" loading="lazy"></div>
+<p class="cap">Define tasks in parallel; within one connection they're automatically scheduled serially, never colliding</p>
+<p>Each task = slave address + function code + start address + quantity + interval. The switch starts and stops it; the row shows measured cycle time and error count; ▶ runs a disabled task once. Data from every task lands in the same register grid.</p>
+
+<h3 id="scan">6.3 Slave scan</h3>
+<p>The first move when polls time out: <b>Scan slaves</b> in the toolbar walks addresses 1–247 (probe FC and timeout configurable, default FC03 × 200 ms) and lists responders with their response time — <b>an exception reply still counts as alive</b> (the device is on the bus; your address range is just wrong). On serial you can additionally sweep the common baud × parity matrix (~4 extra minutes). Found one? <b>Open as Master</b> in one click.</p>
+
+<!-- ───────────────────────── 7 ───────────────────────── -->
+<h2 id="chart"><span class="no">07</span>Charts</h2>
+<div class="shot"><img src="img/master-chart.png" alt="Chart tab: multi-channel curves with the anomaly marked in red" loading="lazy"></div>
+<p class="cap">Faulty frames are pinned on the curve: click the red dot to jump back to that exact frame in the timeline</p>
+<p>Numeric tags being polled become chart channels automatically (2 channels on Free<span class="free">FREE</span>, unlimited on Pro). Windows of 60 s / 10 min / all, pausable, CSV export. The chain <b>value looks wrong → which frame → why</b> is unique to Fieldbench: click the red anomaly dot on the curve, the timeline jumps to and selects that frame, then hit ✦ to have the AI explain it.</p>
+
+<!-- ───────────────────────── 8 ───────────────────────── -->
+<h2 id="slave"><span class="no">08</span>Slave simulation <span class="pro">PRO</span></h2>
+<div class="shot"><img src="img/slave.png" alt="Slave simulation: the four register areas and value generators" loading="lazy"></div>
+<p class="cap">A TCP slave listening on :502 — requests and responses share the timeline; value generators make the data feel alive</p>
+<ul>
+  <li>RTU (serial) or TCP (listening port, <b>multiple masters may connect at once</b>); unit ID configurable</li>
+  <li>Four register-area tabs: <b>Holding 4x · Input 3x · Coils 0x · Discrete 1x</b>, a sparse 65,536-address space — only addresses you've defined exist; reads to undefined addresses answer <code>EXC 02</code>, unknown function codes answer <code>EXC 01</code>, automatically</li>
+  <li><b>Value generators</b>: each tag can be Static / Increment / Random / Sine — click ✎ to set amplitude, period, range, step. The classic "fake device with live data" for host-software developers</li>
+  <li>Values written by a master show up in the grid instantly, marked <i>written by client</i></li>
+</ul>
+
+<!-- ───────────────────────── 9 ───────────────────────── -->
+<h2 id="ai"><span class="no">09</span>AI frame explanation</h2>
+<div class="shot"><img src="img/master-dark.png" alt="The AI explanation panel in the dark theme" loading="lazy"></div>
+<p class="cap">The AI always answers in the same shape: what this is → where it's wrong → causes ranked by likelihood → what to check next</p>
+<p><b>Entry points:</b> the ✦ icon at the end of any faulty row explains it in one click; or select 1–N frames and hit Explain in the right-hand AI panel. You can append your own question in the input box ("why does it fail every 30 frames?").</p>
+<p>Five classes of trouble, each answered with engineer-grade direction:</p>
+<table>
+  <tr><th>Scenario</th><th>What the AI tells you</th></tr>
+  <tr><td>CRC failure</td><td>Distinguishes single-bit wire noise / swapped CRC byte order / baud mismatch by their signatures, and shows the expected checksum</td></tr>
+  <tr><td>Exception codes 01–04</td><td>Plain-language translation plus the checklist for each (e.g. EXC 02 → verify start address, quantity, 0-vs-1-based offset)</td></tr>
+  <tr><td>Screen full of garbage</td><td>Recognizes the byte-histogram signature of a wrong baud rate and suggests a parameter-matrix scan</td></tr>
+  <tr><td>Request, no response</td><td>Builds a checklist from your current connection parameters: slave address, A/B swapped, termination, baud…</td></tr>
+  <tr><td>A perfectly good frame</td><td>Explains every field — also a fine way to learn Modbus</td></tr>
+</table>
+<p><b>Privacy:</b> a first-use dialog spells out exactly what gets sent — only when you press Explain: the selected frames, connection parameters and a ~20-frame summary of surrounding traffic. The gateway stores nothing; Settings has a live "preview what gets sent". <b>Offline, the AI button simply grays out — everything else keeps working.</b></p>
+<p><b>Quota:</b> 30 free explanation trials included; the subscription ($6.9/mo) carries 1,000 per month. Your balance shows live in the status bar and at the bottom of the AI panel.</p>
+
+<!-- ───────────────────────── 10 ───────────────────────── -->
+<h2 id="import"><span class="no">10</span>AI point map import</h2>
+<p>Stop spending the first hour with a new device copying its manual by hand. Registers tab → <b>Import point map…</b>:</p>
+<div class="steps">
+  <div class="step"><div><b>Feed it:</b> paste a <b>screenshot</b> of the manual's register table (<kbd>Paste image</kbd>) or paste the table text → Extract</div></div>
+  <div class="step"><div><b>Confirm the address base (mandatory):</b> the blue bar on top makes you choose — <code>4xxxx · PLC, 1-based</code> or <code>0-based protocol addresses</code>. It's the #1 source of import mistakes, so the AI is never allowed to guess it</div></div>
+  <div class="step"><div><b>Review:</b> every extracted row arrives as "pending"; out-of-range addresses, overlapping spans and type conflicts are flagged amber/red, and everything is editable or deletable inline — <b>nothing ever imports silently</b></div></div>
+  <div class="step"><div><b>Land it and test:</b> Import writes the tags into the register grid and auto-generates segmented poll tasks (contiguous addresses merged, ≤125 registers per request). Start the tasks and one read-all verifies communication — scaling and units apply immediately</div></div>
+</div>
+<p>Tick <b>Save device profile</b> to also export a device-profile JSON — reuse it on the next unit of the same model, or hand it to a colleague. Quota: 3 free extraction trials; the subscription includes 30 per month.</p>
+
+<!-- ───────────────────────── 11 ───────────────────────── -->
+<h2 id="export"><span class="no">11</span>Export &amp; recording</h2>
+<ul>
+  <li><b>Export:</b> <b>↓ Export</b> at the timeline's top right → CSV / JSON / raw bin / txt log. With frames selected it exports the selection, otherwise everything — hand last night's capture straight to the vendor in the morning</li>
+  <li><b>Record:</b> the red dot in the toolbar streams the capture to disk as it happens (appending text log); the ring buffer only feeds the screen, so an overnight stakeout never loses its early-morning fault to buffer wraparound</li>
+  <li><b>Chart CSV:</b> exported separately from the Chart tab (timestamp + one column per channel)</li>
+</ul>
+
+<!-- ───────────────────────── 12 ───────────────────────── -->
+<h2 id="activate"><span class="no">12</span>Activating Pro</h2>
+<div class="shot"><img src="img/dialog-settings.png" alt="Settings: license and offline activation" loading="lazy"></div>
+<p class="cap">Settings → License: machine code, online activation and activation-file import all live here</p>
+<table>
+  <tr><th>Edition</th><th>Includes</th></tr>
+  <tr><td><b>Free</b></td><td>1 active connection · full Master with all function codes · full timeline/inspector · 2 chart channels · AI trial (30 explanations + 3 extractions)</td></tr>
+  <tr><td><b>Pro</b> (one-time)</td><td>Unlimited connections · slave simulation · unlimited chart channels · priority support · 1 license activates 2 devices</td></tr>
+</table>
+<p>Every Pro feature comes with a <b>14-day full trial</b>, no credit card — one click in Settings.</p>
+<h3>Online activation (with internet, 10 seconds)</h3>
+<p>Your license key (<code>FB1-XXXX-XXXX-XXXX</code>) arrives by email the moment you buy → Settings → License → paste the key → <b>Activate</b>. Done.</p>
+<h3>Offline activation (air-gapped machine on site)</h3>
+<div class="steps">
+  <div class="step"><div>On the target machine, copy the <b>machine code</b> from Settings (looks like <code>8F3A-22C1-90DE-4471</code>)</div></div>
+  <div class="step"><div>On any device with internet, open <code>fieldbench.app/activate</code>, enter key + machine code, download the activation file</div></div>
+  <div class="step"><div>USB stick it back to the target machine → <b>Import activation file…</b> → activated</div></div>
+</div>
+<div class="tip"><b>Once activated, the app works offline forever — there is no phone-home validation of any kind.</b> That's our commitment to locked-down plant networks. Moving to a new PC? Deactivate the old one self-service on the website.</div>
+
+<!-- ───────────────────────── 13 ───────────────────────── -->
+<h2 id="faq"><span class="no">13</span>FAQ</h2>
+<h3>The timeline is all garbage / CRC FAIL?</h3>
+<p>Nine times out of ten it's the wrong baud rate or parity. Select a few frames and hit ✦ so the AI reads the byte signature — or run Scan slaves with the parameter matrix ticked and let it try 9600–115200 × N/E for you.</p>
+<h3>Requests get no response at all?</h3>
+<p>In order: ① Scan slaves to confirm the address; ② swap the 485 A/B wires and retry (the #1 field culprit); ③ termination resistors; ④ baud/parity match the device. The AI's no-response checklist is generated from your current connection parameters.</p>
+<h3>Why is everything RX in Monitor?</h3>
+<p>Clipped passively onto a bus, the physical direction really is all receive. Switch to the Modbus lens and Fieldbench infers roles from frame semantics (request/response structure), showing <b>M→S / S→M</b> — and the Δ column becomes the bus's real response latency.</p>
+<h3>How do I do a loopback test?</h3>
+<p>Master ↔ Slave on one machine needs two connections (a com0com virtual serial pair, or TCP over 127.0.0.1). Free is limited to 1 connection, so this scenario needs Pro — or use Demo mode first, which shows the same thing.</p>
+<h3>Dark theme / Chinese interface?</h3>
+<p>Settings → Appearance. Theme and language (English / 简体中文) switch instantly, no restart.</p>
+<h3>Does any data leave my machine?</h3>
+<p>No. Except for the content you explicitly send when clicking AI Explain / Extract, not a single byte leaves the machine. Telemetry is off by default.</p>
+
+<footer>
+  Fieldbench · Serial · Modbus · AI workbench · <a href="#quickstart">Back to top ↑</a><br>
+  Anything this page doesn't cover: support@fieldbench.app
+</footer>
+
+</main>
+</div>
+</body>
+</html>

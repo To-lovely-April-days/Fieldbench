@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — field notes on serial &amp; Modbus | Fieldbench</title>
+<meta name="description" content="Practical troubleshooting notes for automation engineers: CRC failures, exception codes, RS-485 wiring, byte order and frame timing.">
+<style>
+:root{--blue:#3E6AE1;--blue-tint:#3E6AE114;--carbon:#171A20;--graphite:#393C41;--pewter:#5C5E62;--silver:#8E8E8E;--cloud:#EAEAEC;--ash:#F4F4F4;--bg:#FAFAFB;--r:4px;
+--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--carbon);background:var(--white,#fff);-webkit-font-smoothing:antialiased;line-height:1.55}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 28px}
+nav.top{height:60px;border-bottom:1px solid var(--cloud);position:sticky;top:0;background:rgba(255,255,255,.95);z-index:10}
+.nav-in{max-width:1120px;margin:0 auto;padding:0 28px;height:60px;display:flex;align-items:center;gap:28px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:500;font-size:13px;letter-spacing:.14em}
+.logo .mark{width:16px;height:16px;border:2px solid var(--blue);border-radius:4px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:3px;top:6px;width:7px;height:2px;background:var(--blue)}
+.nav-links{display:flex;gap:24px;font-size:13.5px;color:var(--pewter)}
+.nav-cta{margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r);font-weight:500;background:var(--blue);color:#fff;height:38px;padding:0 20px;font-size:13.5px}
+.head{padding:56px 0 14px}
+.head .kick{font-size:13px;color:var(--blue);font-weight:500}
+.head h1{font-size:34px;font-weight:500;letter-spacing:-.02em;margin-top:12px}
+.head p{font-size:14px;color:var(--pewter);margin-top:8px}
+.post{display:block;border:1px solid var(--cloud);border-radius:12px;padding:22px 24px;margin-top:16px}
+.post .meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--silver);display:flex;gap:12px;align-items:center}
+.post .meta .draft{color:var(--pewter);background:var(--ash);border-radius:20px;padding:2px 9px;letter-spacing:.06em}
+.post h2{font-size:19px;font-weight:500;margin-top:9px;letter-spacing:-.01em}
+.post p{font-size:13.5px;color:var(--pewter);margin-top:7px;line-height:1.6}
+.post .go{margin-top:12px;font-size:13px;color:var(--blue);font-weight:500}
+.post.live:hover{border-color:var(--blue)}
+.post.draft-card{background:var(--bg)}
+.note{margin-top:26px;font-size:12.5px;color:var(--silver)}
+footer{border-top:1px solid var(--cloud);padding:28px 0 44px;margin-top:56px}
+footer .wrap{display:flex;gap:18px;font-size:12.5px;color:var(--silver);max-width:760px}
+footer a{color:var(--pewter)}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="nav-in">
+    <a class="logo" href="fieldbench-web-home.html"><span class="mark"></span>FIELDBENCH</a>
+    <div class="nav-links"><a href="fieldbench-web-home.html#features">Features</a><a href="fieldbench-web-home.html#pricing">Pricing</a><a href="fieldbench-web-docs.html">Docs</a><a href="fieldbench-web-tools.html">Free tools</a></div>
+    <div class="nav-cta"><a class="btn" href="fieldbench-web-home.html#pricing">Download free</a></div>
+  </div>
+</nav>
+
+<div class="head wrap">
+  <div class="kick">FIELD NOTES</div>
+  <h1>Things that break on the bus.</h1>
+  <p>Troubleshooting notes from the workbench — written for search, kept honest for engineers.</p>
+</div>
+
+<div class="wrap">
+  <a class="post live" href="fieldbench-web-blog-crc-check-failed.html">
+    <div class="meta"><span>TROUBLESHOOTING</span><span>JULY 2026 · 6 MIN</span></div>
+    <h2>Modbus CRC check failed: the 5 real causes — and how to tell them apart</h2>
+    <p>A CRC failure means the frame arrived but the math didn't. Noise, termination, clock drift, bad reframing or a second master — each leaves a different fingerprint. Here's the 5-minute triage.</p>
+    <div class="go">Read →</div>
+  </a>
+
+  <div class="post draft-card">
+    <div class="meta"><span>TROUBLESHOOTING</span><span class="draft">PUBLISHES AT LAUNCH</span></div>
+    <h2>Modbus Exception Code 02 "Illegal Data Address": causes &amp; fixes</h2>
+    <p>Nine times out of ten it's the 40001-versus-0-based offset. The tenth time is more interesting.</p>
+  </div>
+
+  <div class="post draft-card">
+    <div class="meta"><span>HARDWARE</span><span class="draft">PUBLISHES AT LAUNCH</span></div>
+    <h2>RS-485 A/B wiring, termination and biasing — a field checklist</h2>
+    <p>The five-minute physical-layer check that saves an afternoon of protocol debugging.</p>
+  </div>
+
+  <div class="note">One post a week after launch. Titles are whatever engineers actually type into the search box.</div>
+</div>
+
+<footer><div class="wrap"><span>© 2026 Fieldbench</span><a href="fieldbench-web-home.html">Home</a><a href="fieldbench-web-docs.html">Docs</a><a href="fieldbench-web-tools.html">Free tools</a></div></footer>
+</body>
+</html>

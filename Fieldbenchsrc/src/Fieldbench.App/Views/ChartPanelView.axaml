@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             xmlns:c="using:Fieldbench.App.Controls"
+             x:Class="Fieldbench.App.Views.ChartPanelView"
+             x:DataType="vm:ChartPanelViewModel">
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="14,8,14,6">
+
+        <!-- channel chips + window controls -->
+        <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,6">
+            <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding Channels}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" Spacing="16" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ChartChannelViewModel">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Rectangle Width="8" Height="2" RadiusX="1" RadiusY="1" VerticalAlignment="Center">
+                                <Rectangle.Fill>
+                                    <SolidColorBrush Color="{Binding ColorHex}" />
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <TextBlock Text="{Binding Name}" FontSize="11.5" Foreground="{DynamicResource FbGraphite}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding CurrentValue}" Classes="mono" FontSize="11.5" FontWeight="Medium"
+                                       Foreground="{DynamicResource FbCarbon}" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding Unit}" FontSize="10" Foreground="{DynamicResource FbSilver}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+                <Border Classes="seg" Height="24">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Classes="seg-item" GroupName="cw" Content="60 s" FontSize="11" Height="22"
+                                     IsChecked="{Binding Window, Converter={x:Static vm:ChartWindowConv.Sixty}}" />
+                        <Rectangle Width="1" Fill="{DynamicResource FbCloud}" />
+                        <RadioButton Classes="seg-item" GroupName="cw" Content="10 min" FontSize="11" Height="22"
+                                     IsChecked="{Binding Window, Converter={x:Static vm:ChartWindowConv.TenMin}}" />
+                        <Rectangle Width="1" Fill="{DynamicResource FbCloud}" />
+                        <RadioButton Classes="seg-item" GroupName="cw" Content="All" FontSize="11" Height="22"
+                                     IsChecked="{Binding Window, Converter={x:Static vm:ChartWindowConv.All}}" />
+                    </StackPanel>
+                </Border>
+                <Button Classes="mini" Width="60" Content="⏸ Pause" FontSize="10"
+                        Command="{Binding TogglePauseCommand}" />
+                <Button Classes="mini" Width="90" Content="{DynamicResource L.ExportCsv}" FontSize="10"
+                        Command="{Binding ExportCsvCommand}" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- plot -->
+        <c:FieldChart Grid.Row="1" Name="Plot" Chart="{Binding}" Revision="{Binding Revision}" />
+
+        <!-- x hint -->
+        <TextBlock Grid.Row="2" Text="{DynamicResource L.JumpTimeline}" FontSize="10.5"
+                   Foreground="{DynamicResource FbSilver}" HorizontalAlignment="Right" Margin="0,2,0,0" />
+    </Grid>
+</UserControl>

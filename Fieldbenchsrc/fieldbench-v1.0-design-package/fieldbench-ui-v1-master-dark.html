@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fieldbench — UI mock v1 · Master session · dark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#101316; --bg-1:#15181c; --bg-2:#1a1e23; --bg-3:#20252b; --bg-4:#262c33;
+  --stroke:#262b31; --stroke-strong:#343b43;
+  --txt-1:#e6e9ec; --txt-2:#98a1ab; --txt-3:#5c6570;
+  --acc:#45b3c2; --acc-dim:rgba(69,179,194,.14);
+  --tx:#dca54c; --rx:#5aa7dc;
+  --ok:#5fae66; --warn:#dca54c; --err:#e05252; --err-dim:rgba(224,82,82,.07);
+  --ai:#a488e0; --ai-dim:rgba(164,136,224,.12);
+  --f-addr:#c48fe0; --f-func:#6fa8ee; --f-len:#57bdb0; --f-data:#aab4bf; --f-crc:#83b878;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0c0e;font-family:var(--sans);color:var(--txt-1);display:flex;justify-content:center;padding:28px 16px}
+.frame{width:1440px;height:876px;background:var(--bg-0);border:1px solid var(--stroke);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.5)}
+
+/* ── titlebar + session tabs ── */
+.titlebar{height:38px;display:flex;align-items:stretch;background:var(--bg-0);border-bottom:1px solid var(--stroke);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:8px;padding:0 16px;font-weight:600;font-size:12px;letter-spacing:.14em}
+.logo .mark{width:14px;height:14px;border:1.5px solid var(--acc);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:3px;top:5.5px;width:6px;height:1.5px;background:var(--acc)}
+.tabs{display:flex;align-items:flex-end;gap:2px;flex:1;padding:6px 8px 0}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;height:32px;font-size:12px;color:var(--txt-2);background:transparent;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;cursor:default;white-space:nowrap}
+.tab .dot{width:6px;height:6px;border-radius:50%;background:var(--txt-3)}
+.tab .dot.on{background:var(--ok)}
+.tab.active{background:var(--bg-1);border-color:var(--stroke);color:var(--txt-1)}
+.tab .kind{font-size:10px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.08em}
+.tab.active .kind{color:var(--acc)}
+.tab-new{width:28px;height:28px;margin-bottom:2px;display:flex;align-items:center;justify-content:center;color:var(--txt-3);font-size:15px;border-radius:5px}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 8px}
+.winctl span{width:34px;height:26px;display:flex;align-items:center;justify-content:center;color:var(--txt-3);font-size:12px;border-radius:4px}
+
+/* ── toolbar ── */
+.toolbar{height:46px;display:flex;align-items:center;gap:10px;padding:0 12px;background:var(--bg-1);border-bottom:1px solid var(--stroke);flex-shrink:0}
+.tgroup{display:flex;align-items:center;gap:6px}
+.tsep{width:1px;height:22px;background:var(--stroke);margin:0 4px}
+.field{display:flex;align-items:center;gap:7px;height:30px;padding:0 10px;background:var(--bg-3);border:1px solid var(--stroke);border-radius:5px;font-size:12px}
+.field .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--txt-3)}
+.field .val{font-family:var(--mono);font-size:12px;color:var(--txt-1)}
+.field .car{color:var(--txt-3);font-size:9px;margin-left:2px}
+.seg{display:flex;height:30px;background:var(--bg-3);border:1px solid var(--stroke);border-radius:5px;overflow:hidden}
+.seg span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--txt-2)}
+.seg span.on{background:var(--acc-dim);color:var(--acc);font-weight:500;box-shadow:inset 0 0 0 1px rgba(69,179,194,.35)}
+.btn{display:flex;align-items:center;gap:7px;height:30px;padding:0 13px;border:1px solid var(--stroke);border-radius:5px;background:var(--bg-3);font-size:12px;color:var(--txt-1);cursor:default;white-space:nowrap}
+.btn.ghost{background:transparent}
+.btn .ic{font-size:11px;color:var(--txt-2)}
+.btn.rec .ic{color:var(--err)}
+.spacer{flex:1}
+.connpill{display:flex;align-items:center;gap:8px;height:30px;padding:0 13px;border-radius:5px;background:rgba(95,174,102,.1);border:1px solid rgba(95,174,102,.3);font-size:12px}
+.connpill .dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.connpill b{font-weight:500}
+.connpill .t{font-family:var(--mono);color:var(--txt-2);font-size:11.5px}
+
+/* ── main grid ── */
+.main{flex:1;display:grid;grid-template-columns:216px 1fr 318px;min-height:0}
+
+/* left rail */
+.rail{background:var(--bg-1);border-right:1px solid var(--stroke);display:flex;flex-direction:column;padding:12px 0}
+.rail h4{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--txt-3);padding:6px 14px}
+.tree{display:flex;flex-direction:column;margin-bottom:14px}
+.trow{display:flex;align-items:center;gap:8px;height:30px;padding:0 14px;font-size:12px;color:var(--txt-2)}
+.trow .st{width:6px;height:6px;border-radius:50%;background:var(--txt-3);flex-shrink:0}
+.trow .st.on{background:var(--ok)}
+.trow.conn{color:var(--txt-1);font-weight:500}
+.trow.sess{padding-left:34px;position:relative}
+.trow.sess::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--stroke)}
+.trow.sess .kind{font-size:10px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.06em;margin-left:auto}
+.trow.active{background:var(--acc-dim);color:var(--txt-1);box-shadow:inset 2px 0 0 var(--acc)}
+.trow.active .kind{color:var(--acc)}
+.trow .mono{font-family:var(--mono);font-size:11px}
+.railbtn{margin:auto 12px 4px;height:32px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px dashed var(--stroke-strong);border-radius:5px;color:var(--txt-2);font-size:12px}
+
+/* center */
+.center{display:flex;flex-direction:column;min-width:0;background:var(--bg-0)}
+.timeline{flex:1;display:flex;flex-direction:column;min-height:0}
+.thead{display:grid;grid-template-columns:118px 52px 46px 1fr 380px 40px;gap:0;height:26px;align-items:center;padding:0 4px 0 12px;border-bottom:1px solid var(--stroke);background:var(--bg-1)}
+.thead span{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3)}
+.rows{flex:1;overflow:hidden;font-size:12px}
+.row{display:grid;grid-template-columns:118px 52px 46px 1fr 380px 40px;align-items:center;height:28px;padding:0 4px 0 12px;border-bottom:1px solid rgba(38,43,49,.5)}
+.row:nth-child(even){background:rgba(255,255,255,.012)}
+.row .ts{font-family:var(--mono);font-size:11.5px;color:var(--txt-3)}
+.row .ts b{color:var(--txt-2);font-weight:400}
+.dir{display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;letter-spacing:.05em}
+.dir.tx{color:var(--tx)} .dir.rx{color:var(--rx)}
+.row .len{font-family:var(--mono);font-size:11.5px;color:var(--txt-3)}
+.sum{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
+.chip{font-family:var(--mono);font-size:10.5px;padding:1.5px 6px;border-radius:3px;white-space:nowrap}
+.chip.addr{color:var(--f-addr);background:rgba(196,143,224,.1)}
+.chip.func{color:var(--f-func);background:rgba(111,168,238,.1)}
+.chip.ok{color:var(--ok);background:rgba(95,174,102,.1)}
+.chip.warn{color:var(--warn);background:rgba(220,165,76,.12)}
+.chip.err{color:var(--err);background:rgba(224,82,82,.13)}
+.sum .txt{color:var(--txt-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .hex{font-family:var(--mono);font-size:11.5px;color:var(--txt-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .hex .hl{color:var(--err)}
+.aibtn{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--ai);font-size:12px;visibility:hidden}
+.row.warn .aibtn,.row.err .aibtn{visibility:visible;background:var(--ai-dim)}
+.row.warn{background:rgba(220,165,76,.045)}
+.row.err{background:var(--err-dim)}
+.row.sel{background:#1e252c;box-shadow:inset 2px 0 0 var(--acc),inset 0 0 0 1px rgba(69,179,194,.22)}
+.row.sel.err{background:#251f22}
+
+/* protocol panel */
+.proto{height:252px;border-top:1px solid var(--stroke);background:var(--bg-1);display:flex;flex-direction:column;flex-shrink:0}
+.ptabs{display:flex;align-items:center;height:34px;border-bottom:1px solid var(--stroke);padding:0 8px;gap:2px}
+.ptab{padding:0 13px;height:33px;display:flex;align-items:center;font-size:12px;color:var(--txt-2);border-bottom:2px solid transparent}
+.ptab.on{color:var(--txt-1);border-bottom-color:var(--acc)}
+.pollstrip{display:flex;align-items:center;gap:10px;height:38px;padding:0 14px;border-bottom:1px solid var(--stroke);font-size:12px}
+.pollstrip .live{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 6px rgba(95,174,102,.7)}
+.pollstrip .name{font-weight:500}
+.pollstrip .meta{font-family:var(--mono);font-size:11.5px;color:var(--txt-2)}
+.pollstrip .mini{width:24px;height:24px;border:1px solid var(--stroke);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--txt-2)}
+.grid{flex:1;overflow:hidden}
+.ghead,.grow{display:grid;grid-template-columns:86px 1fr 120px 90px 150px 170px 56px;align-items:center;padding:0 14px}
+.ghead{height:26px;border-bottom:1px solid var(--stroke)}
+.ghead span{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3)}
+.grow{height:30px;border-bottom:1px solid rgba(38,43,49,.5);font-size:12px}
+.grow .a{font-family:var(--mono);color:var(--txt-2)}
+.grow .n{color:var(--txt-1)}
+.grow .ty{font-family:var(--mono);font-size:11px;color:var(--txt-3)}
+.grow .v{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--txt-1)}
+.grow .v small{font-size:10.5px;color:var(--txt-3);font-weight:400;margin-left:5px}
+.grow .raw{font-family:var(--mono);font-size:11px;color:var(--txt-3)}
+.grow .rw{font-size:10px;color:var(--txt-3);letter-spacing:.06em}
+.grow.editable .v{color:var(--acc)}
+.grow.editable .rw{color:var(--acc)}
+
+/* right side */
+.side{background:var(--bg-1);border-left:1px solid var(--stroke);display:flex;flex-direction:column;min-height:0}
+.shead{display:flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-bottom:1px solid var(--stroke);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3);flex-shrink:0}
+.shead .fid{font-family:var(--mono);text-transform:none;letter-spacing:0;color:var(--txt-2);margin-left:auto;font-size:11px}
+.inspector{padding:12px 14px;border-bottom:1px solid var(--stroke)}
+.bytes{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;margin-bottom:12px}
+.by{height:24px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11.5px;border-radius:3px;background:var(--bg-3)}
+.by.addr{color:var(--f-addr);background:rgba(196,143,224,.12)}
+.by.func{color:var(--f-func);background:rgba(111,168,238,.12)}
+.by.len{color:var(--f-len);background:rgba(87,189,176,.12)}
+.by.data{color:var(--f-data)}
+.by.crcbad{color:#fff;background:rgba(224,82,82,.55);box-shadow:inset 0 0 0 1px var(--err)}
+.flds{display:flex;flex-direction:column;gap:1px;margin-bottom:10px}
+.fld{display:flex;align-items:center;gap:9px;height:24px;font-size:11.5px}
+.fld .sw{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.fld .k{color:var(--txt-2);width:96px}
+.fld .v{font-family:var(--mono);color:var(--txt-1)}
+.fld.bad .v{color:var(--err)}
+.fld .exp{font-family:var(--mono);color:var(--txt-3);font-size:11px;margin-left:auto}
+.legend{display:flex;gap:12px;padding-top:9px;border-top:1px solid var(--stroke)}
+.legend span{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt-3);text-transform:uppercase;letter-spacing:.06em}
+.legend i{width:7px;height:7px;border-radius:2px}
+
+/* AI panel */
+.ai{flex:1;display:flex;flex-direction:column;min-height:0}
+.ai .shead{color:var(--ai);border-bottom-color:var(--stroke)}
+.ai .shead .sp{font-size:13px}
+.aibody{flex:1;padding:12px 14px;overflow:hidden;display:flex;flex-direction:column;gap:11px}
+.aibody p{font-size:12px;line-height:1.55;color:var(--txt-1)}
+.aibody p b{font-weight:500;color:var(--err)}
+.causes{display:flex;flex-direction:column;gap:5px}
+.cause{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--txt-2)}
+.cause .rank{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);width:12px}
+.cause .bar{height:3px;border-radius:2px;background:var(--ai);opacity:.85}
+.cause .pc{font-family:var(--mono);font-size:10.5px;color:var(--txt-3);margin-left:auto}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.check{display:flex;align-items:center;gap:6px;padding:4.5px 10px;border:1px solid var(--stroke-strong);border-radius:14px;font-size:11.5px;color:var(--txt-1)}
+.check .n{font-family:var(--mono);font-size:10px;color:var(--ai)}
+.aiask{margin-top:auto;display:flex;align-items:center;gap:8px;height:32px;padding:0 11px;background:var(--bg-3);border:1px solid var(--stroke);border-radius:5px;font-size:12px;color:var(--txt-3)}
+.aifoot{display:flex;align-items:center;height:30px;padding:0 14px;border-top:1px solid var(--stroke);font-size:11px;color:var(--txt-3);flex-shrink:0}
+.aifoot b{color:var(--ai);font-weight:500;margin:0 4px}
+.aifoot a{margin-left:auto;color:var(--acc);text-decoration:none;font-size:11px}
+
+/* statusbar */
+.status{height:27px;display:flex;align-items:center;gap:18px;padding:0 14px;background:var(--bg-1);border-top:1px solid var(--stroke);font-size:11px;color:var(--txt-3);flex-shrink:0}
+.status .item{display:flex;align-items:center;gap:6px}
+.status .mono{font-family:var(--mono);font-size:11px;color:var(--txt-2)}
+.status .dot{width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.status .e{color:var(--err)}
+.status .ai-q{color:var(--ai)}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs">
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">monitor</span></div>
+      <div class="tab active"><span class="dot on"></span>COM3 <span class="kind">master</span></div>
+      <div class="tab"><span class="dot"></span>192.168.1.50 <span class="kind">slave</span></div>
+      <div class="tab-new">+</div>
+    </div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="tgroup">
+      <div class="field"><span class="lbl">Port</span><span class="val">COM3 · CH340</span><span class="car">▾</span></div>
+      <div class="field"><span class="lbl">Baud</span><span class="val">9600</span><span class="car">▾</span></div>
+      <div class="field"><span class="val">8-N-1</span><span class="car">▾</span></div>
+    </div>
+    <div class="tsep"></div>
+    <div class="seg"><span>Raw</span><span class="on">Modbus RTU · Master</span></div>
+    <div class="tsep"></div>
+    <div class="tgroup">
+      <div class="btn ghost"><span class="ic">◎</span>Scan slaves</div>
+      <div class="btn ghost rec"><span class="ic">●</span>Record</div>
+      <div class="btn ghost"><span class="ic">⌫</span>Clear</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="connpill"><span class="dot"></span><b>Connected</b><span class="t">00:12:41</span></div>
+  </div>
+
+  <div class="main">
+
+    <aside class="rail">
+      <h4>Connections</h4>
+      <div class="tree">
+        <div class="trow conn"><span class="st on"></span>COM3 — CH340 <span class="mono" style="margin-left:auto;color:var(--txt-3)">9600</span></div>
+        <div class="trow sess">Monitor <span class="kind">raw</span></div>
+        <div class="trow sess active">Master <span class="kind">rtu</span></div>
+        <div class="trow conn"><span class="st"></span>192.168.1.50<span class="mono" style="margin-left:auto;color:var(--txt-3)">:502</span></div>
+        <div class="trow sess">Slave <span class="kind">tcp</span></div>
+      </div>
+      <h4>Profiles</h4>
+      <div class="tree">
+        <div class="trow">Boiler skid A</div>
+        <div class="trow">Test bench 485</div>
+      </div>
+      <div class="railbtn">+ New connection</div>
+    </aside>
+
+    <section class="center">
+      <div class="timeline">
+        <div class="thead"><span>Time</span><span>Dir</span><span>Len</span><span>Frame</span><span>Hex</span><span></span></div>
+        <div class="rows">
+          <div class="row"><span class="ts">14:32:01.<b>203</b></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:01.<b>217</b></span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">20 bytes</span><span class="chip ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:01.<b>703</b></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:01.<b>719</b></span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">20 bytes</span><span class="chip ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:02.<b>203</b></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row warn"><span class="ts">14:32:02.<b>224</b></span><span class="dir rx">RX ↓</span><span class="len">5</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC83</span><span class="chip warn">Exception 02 · Illegal data address</span></span><span class="hex">01 83 02 C0 F1</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:02.<b>703</b></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row err sel"><span class="ts">14:32:02.<b>731</b></span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">20 bytes</span><span class="chip err">CRC ✕</span></span><span class="hex">01 03 14 00 E6 00 E7 01 90 … 00 2A <span class="hl">3B 91</span></span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:03.<b>203</b></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:03.<b>219</b></span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="chip addr">@01</span><span class="chip func">FC03</span><span class="txt">20 bytes</span><span class="chip ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+        </div>
+      </div>
+
+      <div class="proto">
+        <div class="ptabs">
+          <div class="ptab on">Registers</div>
+          <div class="ptab">Poll tasks</div>
+          <div class="ptab">Send</div>
+        </div>
+        <div class="pollstrip">
+          <span class="live"></span><span class="name">Task 1</span>
+          <span class="meta">@01 · FC03 · 0–9 · 500 ms</span>
+          <span class="meta" style="color:var(--ok)">running</span>
+          <span class="mini">⏸</span><span class="mini">▶</span>
+          <span class="spacer"></span>
+          <span class="meta">last cycle 16 ms</span>
+        </div>
+        <div class="grid">
+          <div class="ghead"><span>Address</span><span>Tag</span><span>Type</span><span>Order</span><span>Value</span><span>Raw</span><span>R/W</span></div>
+          <div class="grow"><span class="a">40001</span><span class="n">temp_pv</span><span class="ty">uint16 ×0.1</span><span class="ty">—</span><span class="v">22.9<small>°C</small></span><span class="raw">00 E5</span><span class="rw">R</span></div>
+          <div class="grow"><span class="a">40002</span><span class="n">press_pv</span><span class="ty">uint16 ×0.001</span><span class="ty">—</span><span class="v">1.013<small>bar</small></span><span class="raw">03 F5</span><span class="rw">R</span></div>
+          <div class="grow"><span class="a">40003</span><span class="n">flow_pv</span><span class="ty">uint16 ×0.1</span><span class="ty">—</span><span class="v">40.0<small>L/min</small></span><span class="raw">01 90</span><span class="rw">R</span></div>
+          <div class="grow editable"><span class="a">40005</span><span class="n">temp_sp</span><span class="ty">float32</span><span class="ty">AB CD</span><span class="v">25.0<small>°C</small></span><span class="raw">41 C8 00 00</span><span class="rw">RW</span></div>
+          <div class="grow"><span class="a">40009</span><span class="n">status</span><span class="ty">uint16 · bits</span><span class="ty">—</span><span class="v">0x0003</span><span class="raw">00 03</span><span class="rw">R</span></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="inspector">
+        <div class="shead" style="border:none;padding:0 0 10px;height:auto">Byte inspector <span class="fid">frame #1047 · RX · 25 B</span></div>
+        <div class="bytes">
+          <span class="by addr">01</span><span class="by func">03</span><span class="by len">14</span><span class="by data">00</span><span class="by data">E6</span><span class="by data">00</span><span class="by data">E7</span><span class="by data">01</span>
+          <span class="by data">90</span><span class="by data">00</span><span class="by data">FA</span><span class="by data">04</span><span class="by data">DC</span><span class="by data">00</span><span class="by data">03</span><span class="by data">09</span>
+          <span class="by data">C4</span><span class="by data">00</span><span class="by data">00</span><span class="by data">00</span><span class="by data">01</span><span class="by data">00</span><span class="by data">2A</span><span class="by crcbad">3B</span>
+          <span class="by crcbad">91</span>
+        </div>
+        <div class="flds">
+          <div class="fld"><span class="sw" style="background:var(--f-addr)"></span><span class="k">Slave address</span><span class="v">0x01</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-func)"></span><span class="k">Function</span><span class="v">0x03 · Read holding</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-len)"></span><span class="k">Byte count</span><span class="v">0x14 · 20</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-data)"></span><span class="k">Data</span><span class="v">10 registers</span></div>
+          <div class="fld bad"><span class="sw" style="background:var(--err)"></span><span class="k">CRC-16</span><span class="v">3B 91 ✕</span><span class="exp">expected 3A 91</span></div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--f-addr)"></i>Addr</span>
+          <span><i style="background:var(--f-func)"></i>Func</span>
+          <span><i style="background:var(--f-len)"></i>Len</span>
+          <span><i style="background:var(--f-data)"></i>Data</span>
+          <span><i style="background:var(--f-crc)"></i>CRC</span>
+        </div>
+      </div>
+
+      <div class="ai">
+        <div class="shead"><span class="sp">✦</span>AI explain <span class="fid">frame #1047</span></div>
+        <div class="aibody">
+          <p>Valid FC03 response structure from slave 1 with 20 data bytes, but the received checksum <b>3B 91</b> doesn't match computed <b>3A 91</b> — a single-bit error, most likely corruption on the wire rather than a framing or baud problem.</p>
+          <div class="causes">
+            <div class="cause"><span class="rank">1</span>Electrical noise on A/B lines<span class="bar" style="width:64px"></span><span class="pc">likely</span></div>
+            <div class="cause"><span class="rank">2</span>Missing 120 Ω termination<span class="bar" style="width:40px"></span><span class="pc">possible</span></div>
+            <div class="cause"><span class="rank">3</span>Marginal baud timing at slave<span class="bar" style="width:18px"></span><span class="pc">low</span></div>
+          </div>
+          <div class="checks">
+            <span class="check"><span class="n">01</span>Verify bus termination</span>
+            <span class="check"><span class="n">02</span>Check cable shield / routing</span>
+            <span class="check"><span class="n">03</span>Retry read ↻</span>
+          </div>
+          <div class="aiask">Ask about this frame…</div>
+        </div>
+        <div class="aifoot">Trial <b>27 / 30</b> left <a href="#">Subscribe</a></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="status">
+    <span class="item"><span class="dot"></span><span class="mono">COM3 · 9600 8N1</span></span>
+    <span class="item">TX <span class="mono">8.4 KB</span></span>
+    <span class="item">RX <span class="mono">41.2 KB</span></span>
+    <span class="item">Frames <span class="mono">1,047</span></span>
+    <span class="item e">Errors <span class="mono" style="color:var(--err)">3</span></span>
+    <span class="item">Buffer <span class="mono">12% · 100k</span></span>
+    <span class="spacer"></span>
+    <span class="item ai-q">✦ <span class="mono" style="color:var(--ai)">27</span></span>
+    <span class="item"><span class="mono">60 fps</span></span>
+  </div>
+
+</div>
+</body>
+</html>

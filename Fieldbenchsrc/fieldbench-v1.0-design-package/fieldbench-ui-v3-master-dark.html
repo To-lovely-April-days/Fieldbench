@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — UI mock v3 · Tesla minimal · dark</title>
+<style>
+:root{
+  --blue:#537BE8; --blue-tint:rgba(83,123,232,.16); --blue-tint2:rgba(83,123,232,.1);
+  --carbon:#EFF1F4; --graphite:#C6CAD1; --pewter:#9AA0A8; --silver:#6A7078;
+  --cloud:rgba(255,255,255,.07); --ash:#23262C; --bg:#141619; --white:#1B1E23;
+  --green:#2CB474; --amber:#E09A24; --red:#E2503F;
+  --f-addr:#A47BE8; --f-func:#6E9FEF; --f-len:#1FC7A0; --f-data:#9AA3AD;
+  --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0B0C0E;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid rgba(255,255,255,.09);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.titlebar{height:40px;display:flex;align-items:stretch;border-bottom:1px solid var(--cloud);background:var(--bg);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tabs{display:flex;align-items:flex-end;flex:1;padding:6px 10px 0;gap:2px}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;height:34px;font-size:12px;color:var(--silver);border:1px solid transparent;border-bottom:none;border-radius:var(--r) var(--r) 0 0}
+.tab .dot{width:5px;height:5px;border-radius:50%;background:#3A3E45}
+.tab .dot.on{background:var(--green)}
+.tab .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.tab.active{background:var(--white);border-color:var(--cloud);color:var(--carbon)}
+.tab.active .kind{color:var(--blue)}
+.tab-new{width:30px;height:30px;margin-bottom:3px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:14px}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 10px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.toolbar{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--white);border-bottom:1px solid var(--cloud);flex-shrink:0}
+.ctl{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.ctl .cell{display:flex;align-items:center;gap:7px;padding:0 11px;font-size:12px}
+.ctl .cell + .cell{border-left:1px solid var(--cloud)}
+.ctl .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--silver)}
+.ctl .v{font-family:var(--mono);font-size:11.5px;color:var(--carbon)}
+.ctl .car{color:var(--silver);font-size:8px}
+.lens{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.lens span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--pewter)}
+.lens span.on{background:var(--blue-tint);color:#8FA9F2;font-weight:500}
+.acts{display:flex;align-items:center;gap:4px}
+.act{display:flex;align-items:center;gap:7px;height:28px;padding:0 11px;border-radius:var(--r);font-size:12px;color:var(--pewter)}
+.act .ic{font-size:10px;color:var(--silver)}
+.act.rec .ic{color:var(--red)}
+.spacer{flex:1}
+.run{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pewter)}
+.run .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.run b{font-weight:500;color:var(--carbon)}
+.run .t{font-family:var(--mono);font-size:11.5px;color:var(--silver)}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr 316px;min-height:0}
+.rail{background:var(--bg);border-right:1px solid var(--cloud);display:flex;flex-direction:column;padding:14px 0 10px}
+.rh{display:flex;align-items:center;height:24px;padding:0 14px;margin-bottom:2px}
+.rh span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.rh i{margin-left:auto;font-style:normal;color:var(--silver);font-size:13px}
+.tree{display:flex;flex-direction:column;margin-bottom:16px}
+.trow{display:flex;align-items:center;gap:8px;height:28px;padding:0 14px;font-size:12px;color:var(--pewter)}
+.trow .st{width:5px;height:5px;border-radius:50%;background:#3A3E45;flex-shrink:0}
+.trow .st.on{background:var(--green)}
+.trow.conn{color:var(--carbon)}
+.trow .m{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.trow.sess{padding-left:35px;position:relative}
+.trow.sess::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--cloud)}
+.trow.sess .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-left:auto}
+.trow.active{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue);color:var(--carbon)}
+.trow.active .kind{color:#8FA9F2}
+.center{display:flex;flex-direction:column;min-width:0;background:var(--white)}
+.timeline{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
+.thead{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px 30px;height:26px;align-items:center;padding:0 6px 0 14px;border-bottom:1px solid var(--cloud)}
+.thead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.rows{flex:1;overflow:hidden}
+.row{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px 30px;align-items:center;height:26px;padding:0 6px 0 14px;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px}
+.row .ts{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.row .ts b{color:var(--graphite);font-weight:400}
+.row .dt{font-family:var(--mono);font-size:10.5px;color:var(--silver);text-align:right;padding-right:12px}
+.dir{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em}
+.dir.tx{color:var(--amber)} .dir.rx{color:#4E9BE8}
+.row .len{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.sum{display:flex;align-items:center;gap:9px;min-width:0;overflow:hidden;padding-right:14px}
+.tok{font-family:var(--mono);font-size:11px;font-weight:500}
+.tok.addr{color:var(--f-addr)} .tok.func{color:var(--f-func)}
+.sum .txt{color:var(--graphite);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;margin-left:auto;flex-shrink:0;padding:2px 8px;border-radius:20px}
+.tag.ok{color:var(--green);padding:0}
+.tag.warn{color:var(--amber);background:rgba(224,154,36,.14)}
+.tag.err{color:#F0938A;background:rgba(226,80,63,.16)}
+.row .hex{font-family:var(--mono);font-size:11px;color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .hex .hl{color:var(--red)}
+.aibtn{width:20px;height:20px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:#8FA9F2;font-size:11px;visibility:hidden}
+.row.warn .aibtn,.row.err .aibtn{visibility:visible;background:var(--blue-tint)}
+.row.warn{background:rgba(224,154,36,.05)}
+.row.err{background:rgba(226,80,63,.06)}
+.row.sel{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue)}
+.sbar{position:absolute;right:3px;top:32px;width:3px;height:96px;border-radius:2px;background:rgba(255,255,255,.12)}
+.proto{height:246px;border-top:1px solid var(--cloud);background:var(--white);display:flex;flex-direction:column;flex-shrink:0}
+.ptabs{display:flex;align-items:center;height:34px;border-bottom:1px solid var(--cloud);padding:0 14px;gap:20px}
+.ptab{height:33px;display:flex;align-items:center;font-size:12px;color:var(--silver);border-bottom:1.5px solid transparent}
+.ptab.on{color:var(--carbon);border-bottom-color:var(--blue);font-weight:500}
+.ptabs .task{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--pewter)}
+.ptabs .task .live{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.ptabs .task .m{font-family:var(--mono);font-size:10.5px;color:var(--silver)}
+.ptabs .task .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--green)}
+.mini{width:22px;height:22px;border:1px solid var(--cloud);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--pewter)}
+.ghead,.grow{display:grid;grid-template-columns:80px 1fr 128px 128px 92px 148px 44px;align-items:center;padding:0 14px}
+.ghead{height:26px;border-bottom:1px solid var(--cloud)}
+.ghead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.grow{height:29px;border-bottom:1px solid rgba(255,255,255,.03);font-size:12px}
+.grow .a{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.grow .n{color:var(--carbon);font-size:12px}
+.grow .ty{font-family:var(--mono);font-size:10.5px;color:var(--silver)}
+.grow .v{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--carbon)}
+.grow .v small{font-size:10px;color:var(--silver);font-weight:400;margin-left:4px}
+.grow .sp svg{display:block}
+.grow .raw{font-family:var(--mono);font-size:10.5px;color:var(--silver)}
+.grow .rw{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--silver)}
+.grow.editable .v,.grow.editable .rw{color:#8FA9F2}
+.side{background:var(--white);border-left:1px solid var(--cloud);display:flex;flex-direction:column;min-height:0}
+.shead{display:flex;align-items:baseline;gap:8px;padding:13px 16px 10px;flex-shrink:0}
+.shead .t{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.shead .fid{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.inspector{padding:0 16px 14px;border-bottom:1px solid var(--cloud)}
+.bytes{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin-bottom:12px}
+.by{height:22px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;border-radius:3px;background:var(--ash);color:var(--f-data)}
+.by.addr{color:var(--f-addr);background:rgba(164,123,232,.13)}
+.by.func{color:var(--f-func);background:rgba(110,159,239,.13)}
+.by.len{color:var(--f-len);background:rgba(31,199,160,.13)}
+.by.crcbad{color:#F5B5AE;background:rgba(226,80,63,.24);box-shadow:inset 0 0 0 1px rgba(226,80,63,.55)}
+.flds{display:flex;flex-direction:column;margin-bottom:11px}
+.fld{display:flex;align-items:center;gap:10px;height:25px;font-size:11.5px;border-bottom:1px solid rgba(255,255,255,.03)}
+.fld:last-child{border-bottom:none}
+.fld .sw{width:2px;height:12px;border-radius:1px;flex-shrink:0}
+.fld .k{color:var(--silver);width:94px;font-size:11px}
+.fld .v{font-family:var(--mono);color:var(--carbon);font-size:11.5px}
+.fld.bad .v{color:#F0938A}
+.fld .exp{font-family:var(--mono);color:var(--silver);font-size:10.5px;margin-left:auto}
+.legend{display:flex;gap:14px;padding-top:10px;border-top:1px solid var(--cloud)}
+.legend span{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--silver)}
+.legend i{width:2px;height:10px;border-radius:1px}
+.ai{flex:1;display:flex;flex-direction:column;min-height:0}
+.ai .shead .t,.ai .shead .sp{color:#8FA9F2}
+.aibody{flex:1;padding:0 16px;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+.aibody p{font-size:12px;line-height:1.6;color:var(--graphite)}
+.aibody p b{font-weight:500;color:var(--carbon);font-family:var(--mono);font-size:11.5px}
+.aibody p .bad{color:#F0938A}
+.causes{display:flex;flex-direction:column}
+.cause{display:flex;align-items:center;gap:10px;height:26px;font-size:11.5px;color:var(--carbon);border-bottom:1px solid rgba(255,255,255,.03)}
+.cause .rank{font-family:var(--mono);font-size:10px;color:var(--silver)}
+.cause .meter{width:56px;height:2px;border-radius:1px;background:var(--ash);margin-left:auto;position:relative;overflow:hidden}
+.cause .meter i{position:absolute;left:0;top:0;bottom:0;background:var(--blue);border-radius:1px}
+.cause .lv{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--silver);width:52px;text-align:right}
+.checks{display:flex;flex-direction:column}
+.check{display:flex;align-items:center;gap:10px;height:26px;font-size:11.5px;color:var(--graphite);border-bottom:1px solid rgba(255,255,255,.03)}
+.check .n{font-family:var(--mono);font-size:10px;color:#8FA9F2}
+.check .go{margin-left:auto;color:var(--silver);font-size:10px}
+.aiask{margin:auto 16px 12px;display:flex;align-items:center;height:30px;padding:0 11px;background:var(--ash);border:1px solid var(--cloud);border-radius:var(--r);font-size:11.5px;color:var(--silver)}
+.aifoot{display:flex;align-items:center;height:32px;padding:0 16px;border-top:1px solid var(--cloud);font-size:11px;color:var(--silver);flex-shrink:0}
+.aifoot b{font-family:var(--mono);color:#8FA9F2;font-weight:500;margin:0 4px;font-size:11px}
+.aifoot a{margin-left:auto;color:#8FA9F2;text-decoration:none;font-weight:500}
+.status{height:28px;display:flex;align-items:center;padding:0 14px;background:var(--white);border-top:1px solid var(--cloud);font-size:11px;color:var(--silver);flex-shrink:0}
+.status .item{display:flex;align-items:center;gap:6px;padding:0 14px;border-left:1px solid var(--cloud);font-family:var(--mono);font-size:10.5px}
+.status .item:first-child{border-left:none;padding-left:0}
+.status .item b{color:var(--graphite);font-weight:400}
+.status .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.status .e b{color:#F0938A}
+.status .gauge{width:44px;height:3px;border-radius:2px;background:var(--ash);position:relative;overflow:hidden}
+.status .gauge i{position:absolute;left:0;top:0;bottom:0;width:12%;background:var(--silver)}
+.status .aiq{color:#8FA9F2} .status .aiq b{color:#8FA9F2}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs">
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">mon</span></div>
+      <div class="tab active"><span class="dot on"></span>COM3 <span class="kind">rtu·m</span></div>
+      <div class="tab"><span class="dot"></span>192.168.1.50 <span class="kind">tcp·s</span></div>
+      <div class="tab-new">+</div>
+    </div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="ctl">
+      <div class="cell"><span class="k">Port</span><span class="v">COM3 · CH340</span><span class="car">▾</span></div>
+      <div class="cell"><span class="k">Baud</span><span class="v">9600</span><span class="car">▾</span></div>
+      <div class="cell"><span class="v">8-N-1</span><span class="car">▾</span></div>
+    </div>
+    <div class="lens"><span>Raw</span><span class="on">Modbus RTU · Master</span></div>
+    <div class="acts">
+      <div class="act"><span class="ic">◎</span>Scan slaves</div>
+      <div class="act rec"><span class="ic">●</span>Record</div>
+      <div class="act"><span class="ic">⌫</span>Clear</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="run"><span class="dot"></span><b>Connected</b><span class="t">00:12:41</span></div>
+  </div>
+
+  <div class="main">
+
+    <aside class="rail">
+      <div class="rh"><span>Connections</span><i>+</i></div>
+      <div class="tree">
+        <div class="trow conn"><span class="st on"></span>COM3 — CH340<span class="m">9600</span></div>
+        <div class="trow sess">Monitor<span class="kind">raw</span></div>
+        <div class="trow sess active">Master<span class="kind">rtu</span></div>
+        <div class="trow conn"><span class="st"></span>192.168.1.50<span class="m">:502</span></div>
+        <div class="trow sess">Slave<span class="kind">tcp</span></div>
+      </div>
+      <div class="rh"><span>Profiles</span></div>
+      <div class="tree">
+        <div class="trow">Boiler skid A</div>
+        <div class="trow">Test bench 485</div>
+      </div>
+    </aside>
+
+    <section class="center">
+      <div class="timeline">
+        <div class="thead"><span>Time</span><span style="text-align:right;padding-right:12px">Δ ms</span><span>Dir</span><span>Len</span><span>Frame</span><span>Hex</span><span></span></div>
+        <div class="rows">
+          <div class="row"><span class="ts">14:32:01.<b>203</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:01.<b>217</b></span><span class="dt">14</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:01.<b>703</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:01.<b>719</b></span><span class="dt">16</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:02.<b>203</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row warn"><span class="ts">14:32:02.<b>224</b></span><span class="dt">21</span><span class="dir rx">RX ↓</span><span class="len">5</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC83</span><span class="txt">Illegal data address</span><span class="tag warn">EXC 02</span></span><span class="hex">01 83 02 C0 F1</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:02.<b>703</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row err sel"><span class="ts">14:32:02.<b>731</b></span><span class="dt">28</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag err">CRC FAIL</span></span><span class="hex">01 03 14 00 E6 00 E7 01 90 … 00 2A <span class="hl">3B 91</span></span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:03.<b>203</b></span><span class="dt"></span><span class="dir tx">TX ↑</span><span class="len">8</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9</span></span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:03.<b>219</b></span><span class="dt">16</span><span class="dir rx">RX ↓</span><span class="len">25</span><span class="sum"><span class="tok addr">@01</span><span class="tok func">FC03</span><span class="txt">20 bytes</span><span class="tag ok">OK</span></span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+        </div>
+        <div class="sbar"></div>
+      </div>
+
+      <div class="proto">
+        <div class="ptabs">
+          <div class="ptab on">Registers</div>
+          <div class="ptab">Poll tasks</div>
+          <div class="ptab">Send</div>
+          <div class="task">
+            <span class="live"></span>Task 1
+            <span class="m">@01 · FC03 · 0–9 · 500 ms</span>
+            <span class="st">RUN</span>
+            <span class="mini">⏸</span><span class="mini">▶</span>
+            <span class="m">cycle 16 ms</span>
+          </div>
+        </div>
+        <div class="ghead"><span>Address</span><span>Tag</span><span>Type</span><span>Value</span><span>Trend</span><span>Raw</span><span>R/W</span></div>
+        <div class="grow"><span class="a">40001</span><span class="n">temp_pv</span><span class="ty">uint16 ×0.1</span><span class="v">22.9<small>°C</small></span><span class="sp"><svg width="64" height="16" viewBox="0 0 64 16"><polyline points="0,11 9,10.5 18,10 27,9.5 36,9 45,8 54,7.5 64,7" fill="none" stroke="rgba(83,123,232,.6)" stroke-width="1.25"/></svg></span><span class="raw">00 E5</span><span class="rw">R</span></div>
+        <div class="grow"><span class="a">40002</span><span class="n">press_pv</span><span class="ty">uint16 ×0.001</span><span class="v">1.013<small>bar</small></span><span class="sp"><svg width="64" height="16" viewBox="0 0 64 16"><polyline points="0,8 9,8.4 18,8 27,8.5 36,8.1 45,8.4 54,8 64,8.2" fill="none" stroke="rgba(83,123,232,.6)" stroke-width="1.25"/></svg></span><span class="raw">03 F5</span><span class="rw">R</span></div>
+        <div class="grow"><span class="a">40003</span><span class="n">flow_pv</span><span class="ty">uint16 ×0.1</span><span class="v">40.0<small>L/min</small></span><span class="sp"><svg width="64" height="16" viewBox="0 0 64 16"><polyline points="0,13 10,12.5 20,11 28,6.5 38,5.5 48,5 56,5 64,5" fill="none" stroke="rgba(83,123,232,.6)" stroke-width="1.25"/></svg></span><span class="raw">01 90</span><span class="rw">R</span></div>
+        <div class="grow editable"><span class="a">40005</span><span class="n">temp_sp</span><span class="ty">float32 · AB CD</span><span class="v">25.0<small>°C</small></span><span class="sp"><svg width="64" height="16" viewBox="0 0 64 16"><polyline points="0,8 64,8" fill="none" stroke="rgba(83,123,232,.35)" stroke-width="1.25"/></svg></span><span class="raw">41 C8 00 00</span><span class="rw">RW</span></div>
+        <div class="grow"><span class="a">40009</span><span class="n">status</span><span class="ty">uint16 · bits</span><span class="v">0x0003</span><span class="sp"></span><span class="raw">00 03</span><span class="rw">R</span></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="inspector">
+        <div class="shead" style="padding-left:0;padding-right:0"><span class="t">Byte inspector</span><span class="fid">#1047 · RX · 25 B</span></div>
+        <div class="bytes">
+          <span class="by addr">01</span><span class="by func">03</span><span class="by len">14</span><span class="by">00</span><span class="by">E6</span><span class="by">00</span><span class="by">E7</span><span class="by">01</span>
+          <span class="by">90</span><span class="by">00</span><span class="by">FA</span><span class="by">04</span><span class="by">DC</span><span class="by">00</span><span class="by">03</span><span class="by">09</span>
+          <span class="by">C4</span><span class="by">00</span><span class="by">00</span><span class="by">00</span><span class="by">01</span><span class="by">00</span><span class="by">2A</span><span class="by crcbad">3B</span>
+          <span class="by crcbad">91</span>
+        </div>
+        <div class="flds">
+          <div class="fld"><span class="sw" style="background:var(--f-addr)"></span><span class="k">Slave address</span><span class="v">0x01</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-func)"></span><span class="k">Function</span><span class="v">0x03 · Read holding</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-len)"></span><span class="k">Byte count</span><span class="v">0x14 · 20</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-data)"></span><span class="k">Data</span><span class="v">10 registers</span></div>
+          <div class="fld bad"><span class="sw" style="background:var(--red)"></span><span class="k">CRC-16</span><span class="v">3B 91 ✕</span><span class="exp">expected 3A 91</span></div>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--f-addr)"></i>Addr</span>
+          <span><i style="background:var(--f-func)"></i>Func</span>
+          <span><i style="background:var(--f-len)"></i>Len</span>
+          <span><i style="background:var(--f-data)"></i>Data</span>
+          <span><i style="background:var(--red)"></i>CRC</span>
+        </div>
+      </div>
+
+      <div class="ai">
+        <div class="shead"><span class="sp">✦</span><span class="t">AI explain</span><span class="fid">#1047</span></div>
+        <div class="aibody">
+          <p>Valid FC03 response from slave 1 with 20 data bytes, but received checksum <b class="bad">3B 91</b> ≠ computed <b>3A 91</b> — a single-bit error, most likely corruption on the wire rather than framing or baud mismatch.</p>
+          <div class="causes">
+            <div class="cause"><span class="rank">1</span>Electrical noise on A/B lines<span class="meter"><i style="width:78%"></i></span><span class="lv">likely</span></div>
+            <div class="cause"><span class="rank">2</span>Missing 120 Ω termination<span class="meter"><i style="width:44%"></i></span><span class="lv">possible</span></div>
+            <div class="cause"><span class="rank">3</span>Marginal baud timing at slave<span class="meter"><i style="width:16%"></i></span><span class="lv">low</span></div>
+          </div>
+          <div class="checks">
+            <div class="check"><span class="n">01</span>Verify bus termination<span class="go">→</span></div>
+            <div class="check"><span class="n">02</span>Check cable shield and routing<span class="go">→</span></div>
+            <div class="check"><span class="n">03</span>Retry read<span class="go">↻</span></div>
+          </div>
+        </div>
+        <div class="aiask">Ask about this frame…</div>
+        <div class="aifoot">Trial <b>27 / 30</b> left <a href="#">Subscribe</a></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="status">
+    <span class="item"><span class="dot"></span><b>COM3 · 9600 8N1</b></span>
+    <span class="item">TX <b>8.4 KB</b></span>
+    <span class="item">RX <b>41.2 KB</b></span>
+    <span class="item">FRM <b>1,047</b></span>
+    <span class="item e">ERR <b>3</b></span>
+    <span class="item">BUF <span class="gauge"><i></i></span><b>12%</b></span>
+    <span class="spacer"></span>
+    <span class="item aiq">✦ <b>27</b></span>
+    <span class="item">60 FPS</span>
+  </div>
+
+</div>
+</body>
+</html>

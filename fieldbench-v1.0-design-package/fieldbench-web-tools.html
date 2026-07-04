@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Modbus Tools — CRC-16 Calculator, TCP Frame Parser, Function &amp; Exception Codes | Fieldbench</title>
+<meta name="description" content="Free online Modbus tools: instant CRC-16 calculator, Modbus TCP frame parser, function code reference and exception code lookup with real troubleshooting steps.">
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --carbon:#171A20; --graphite:#393C41;
+  --pewter:#5C5E62; --silver:#8E8E8E; --cloud:#EAEAEC; --ash:#F4F4F4;
+  --bg:#FAFAFB; --white:#FFFFFF; --green:#1FA463; --amber:#D9870A; --red:#D9342B;
+  --f-addr:#8A56D6; --f-func:#0B3E97; --f-len:#00B386; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--carbon);background:var(--white);-webkit-font-smoothing:antialiased;line-height:1.55;font-variant-numeric:tabular-nums}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 28px}
+nav.top{height:60px;border-bottom:1px solid var(--cloud);position:sticky;top:0;background:rgba(255,255,255,.95);z-index:10}
+.nav-in{max-width:1120px;margin:0 auto;padding:0 28px;height:60px;display:flex;align-items:center;gap:28px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:500;font-size:13px;letter-spacing:.14em}
+.logo .mark{width:16px;height:16px;border:2px solid var(--blue);border-radius:4px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:3px;top:6px;width:7px;height:2px;background:var(--blue)}
+.nav-links{display:flex;gap:24px;font-size:13.5px;color:var(--pewter)}
+.nav-cta{margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r);font-weight:500}
+.btn.primary{background:var(--blue);color:#fff;height:38px;padding:0 20px;font-size:13.5px}
+.head{padding:56px 0 8px;text-align:center}
+.head .kick{font-size:13px;color:var(--blue);font-weight:500}
+.head h1{font-size:36px;font-weight:500;letter-spacing:-.02em;margin-top:12px}
+.head p{font-size:14.5px;color:var(--pewter);margin-top:10px}
+.jump{display:flex;gap:8px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.jump a{font-size:12.5px;color:var(--graphite);background:var(--bg);border:1px solid var(--cloud);border-radius:20px;padding:6px 14px}
+.tool{padding:56px 0 8px}
+.tool h2{font-size:22px;font-weight:500;letter-spacing:-.01em;display:flex;align-items:baseline;gap:10px}
+.tool h2 .n{font-family:var(--mono);font-size:12px;color:var(--blue)}
+.tool .sub{font-size:13.5px;color:var(--pewter);margin-top:6px}
+.panel{margin-top:18px;border:1px solid var(--cloud);border-radius:12px;overflow:hidden}
+.pin{padding:18px 20px}
+.lbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver);display:block;margin-bottom:7px}
+input.hex{width:100%;height:44px;border:1px solid var(--cloud);border-radius:var(--r);padding:0 14px;font-family:var(--mono);font-size:14px;color:var(--carbon);outline:none}
+input.hex:focus{border-color:var(--blue)}
+.out{border-top:1px solid var(--cloud);background:var(--bg);padding:16px 20px}
+.orow{display:flex;align-items:center;gap:12px;padding:5px 0;font-size:13px;color:var(--pewter)}
+.orow b{font-family:var(--mono);font-size:14px;font-weight:500;color:var(--carbon)}
+.orow .crc{color:var(--blue)}
+.orow .err{color:var(--red);font-size:12.5px}
+.frameout{font-family:var(--mono);font-size:13px;color:var(--graphite);word-spacing:2px}
+.frameout .c{color:var(--blue);font-weight:500}
+.fields{display:flex;flex-direction:column}
+.fld{display:flex;align-items:center;gap:10px;min-height:28px;font-size:12.5px;border-bottom:1px solid rgba(23,26,32,.045)}
+.fld:last-child{border-bottom:none}
+.fld .sw{width:2px;height:13px;border-radius:1px;flex-shrink:0}
+.fld .k{color:var(--silver);width:120px;font-size:12px}
+.fld .v{font-family:var(--mono);font-size:12.5px;color:var(--carbon)}
+.fld .note{margin-left:auto;font-size:11.5px;color:var(--silver)}
+.fld .note.bad{color:var(--red)}
+table{width:100%;border-collapse:collapse;margin-top:18px;font-size:13px}
+th{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver);text-align:left;padding:10px 12px;border-bottom:1px solid var(--cloud);font-weight:400}
+td{padding:10px 12px;border-bottom:1px solid rgba(23,26,32,.05);vertical-align:top;color:var(--graphite)}
+td.c{font-family:var(--mono);font-size:12px;color:var(--f-func);font-weight:500;white-space:nowrap}
+td b{font-weight:500;color:var(--carbon)}
+td small{color:var(--silver)}
+.banner{margin:64px 0;background:var(--bg);border:1px solid var(--cloud);border-radius:12px;padding:22px 26px;display:flex;align-items:center;gap:18px}
+.banner p{font-size:13.5px;color:var(--graphite);flex:1;line-height:1.6}
+.banner p b{font-weight:500}
+footer{border-top:1px solid var(--cloud);padding:28px 0 44px;margin-top:40px}
+footer .wrap{display:flex;gap:18px;font-size:12.5px;color:var(--silver)}
+footer a{color:var(--pewter)}
+@media(max-width:700px){.banner{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="nav-in">
+    <a class="logo" href="fieldbench-web-home.html"><span class="mark"></span>FIELDBENCH</a>
+    <div class="nav-links"><a href="fieldbench-web-home.html#features">Features</a><a href="fieldbench-web-home.html#pricing">Pricing</a><a href="fieldbench-web-docs.html">Docs</a><a href="fieldbench-web-blog.html">Blog</a></div>
+    <div class="nav-cta"><a class="btn primary" href="fieldbench-web-home.html#pricing">Download free</a></div>
+  </div>
+</nav>
+
+<div class="head wrap">
+  <div class="kick">FREE TOOLS · NO SIGN-UP · RUNS IN YOUR BROWSER</div>
+  <h1>Modbus tools engineers bookmark.</h1>
+  <p>Everything computes locally — nothing you paste leaves this page.</p>
+  <div class="jump"><a href="#crc">CRC-16 calculator</a><a href="#parser">TCP frame parser</a><a href="#codes">Function codes</a><a href="#exceptions">Exception codes</a></div>
+</div>
+
+<section class="tool wrap" id="crc">
+  <h2><span class="n">01</span>Modbus CRC-16 calculator</h2>
+  <div class="sub">Paste the frame without CRC. Polynomial 0xA001 (reflected), init 0xFFFF, appended low byte first — the Modbus RTU standard.</div>
+  <div class="panel">
+    <div class="pin">
+      <span class="lbl">Frame bytes (hex, spaces optional)</span>
+      <input class="hex" id="crcin" value="01 03 00 00 00 0A" spellcheck="false">
+    </div>
+    <div class="out" id="crcout"></div>
+  </div>
+</section>
+
+<section class="tool wrap" id="parser">
+  <h2><span class="n">02</span>Modbus TCP frame parser</h2>
+  <div class="sub">Paste a full ADU. MBAP header and PDU are split into named fields — exceptions are decoded automatically.</div>
+  <div class="panel">
+    <div class="pin">
+      <span class="lbl">Frame bytes (hex)</span>
+      <input class="hex" id="pin" value="00 A1 00 00 00 06 01 03 00 00 00 0A" spellcheck="false">
+    </div>
+    <div class="out" id="pout"></div>
+  </div>
+</section>
+
+<section class="tool wrap" id="codes">
+  <h2><span class="n">03</span>Function code reference</h2>
+  <div class="sub">The codes you'll actually meet in the field, with the request → response shape.</div>
+  <table>
+    <tr><th style="width:70px">FC</th><th style="width:220px">Name</th><th>Request → response</th></tr>
+    <tr><td class="c">01</td><td><b>Read Coils</b> <small>0x area</small></td><td>start + quantity → packed bits</td></tr>
+    <tr><td class="c">02</td><td><b>Read Discrete Inputs</b> <small>1x area</small></td><td>start + quantity → packed bits</td></tr>
+    <tr><td class="c">03</td><td><b>Read Holding Registers</b> <small>4x area</small></td><td>start + quantity → byte count + register values</td></tr>
+    <tr><td class="c">04</td><td><b>Read Input Registers</b> <small>3x area</small></td><td>start + quantity → byte count + register values</td></tr>
+    <tr><td class="c">05</td><td><b>Write Single Coil</b></td><td>address + FF00/0000 → echo</td></tr>
+    <tr><td class="c">06</td><td><b>Write Single Register</b></td><td>address + value → echo</td></tr>
+    <tr><td class="c">0F</td><td><b>Write Multiple Coils</b></td><td>start + quantity + packed bits → start + quantity</td></tr>
+    <tr><td class="c">10</td><td><b>Write Multiple Registers</b></td><td>start + quantity + values → start + quantity</td></tr>
+    <tr><td class="c">16</td><td><b>Mask Write Register</b></td><td>address + AND + OR masks → echo</td></tr>
+    <tr><td class="c">17</td><td><b>Read/Write Multiple</b></td><td>write block + read block in one transaction</td></tr>
+    <tr><td class="c">2B</td><td><b>Encapsulated Interface</b></td><td>MEI 0x0E: read device identification</td></tr>
+  </table>
+</section>
+
+<section class="tool wrap" id="exceptions">
+  <h2><span class="n">04</span>Exception codes — and what to check first</h2>
+  <div class="sub">Response FC = request FC + 0x80, one data byte carries the code. Definitions are everywhere; the third column is what matters.</div>
+  <table>
+    <tr><th style="width:70px">Code</th><th style="width:200px">Name</th><th>Most likely cause · check first</th></tr>
+    <tr><td class="c">01</td><td><b>Illegal Function</b></td><td>Device doesn't implement that FC. Check the manual's supported-FC list; try 03 instead of 04 (or vice versa).</td></tr>
+    <tr><td class="c">02</td><td><b>Illegal Data Address</b></td><td>Start address or quantity runs past the map. Nine times out of ten it's the 40001-vs-0-based offset — subtract 1 and retry.</td></tr>
+    <tr><td class="c">03</td><td><b>Illegal Data Value</b></td><td>Quantity of 0, &gt;125 registers, or a write value outside limits. Check the count field before the payload.</td></tr>
+    <tr><td class="c">04</td><td><b>Slave Device Failure</b></td><td>Device-internal fault while answering. Power-cycle the slave; check its own error indicators.</td></tr>
+    <tr><td class="c">05</td><td><b>Acknowledge</b></td><td>Long-running command accepted, not finished. Poll again later — not an error.</td></tr>
+    <tr><td class="c">06</td><td><b>Slave Device Busy</b></td><td>Retry with backoff. If constant, another master or a firmware task is hogging it.</td></tr>
+    <tr><td class="c">08</td><td><b>Memory Parity Error</b></td><td>Device memory fault on file-record access. Usually a dying device.</td></tr>
+    <tr><td class="c">0A</td><td><b>Gateway Path Unavailable</b></td><td>The TCP→RTU gateway can't route. Check gateway config and the serial side's wiring.</td></tr>
+    <tr><td class="c">0B</td><td><b>Gateway Target Failed</b></td><td>Gateway is fine, the serial slave behind it didn't answer. Debug the RTU segment: address, baud, A/B lines.</td></tr>
+  </table>
+</section>
+
+<div class="wrap">
+  <div class="banner">
+    <p><b>This page is 1% of Fieldbench.</b> The desktop workbench does all of this live on your COM port — with a unified timeline, slave simulation, and an AI that explains broken frames. Free for single-connection work.</p>
+    <a class="btn primary" href="fieldbench-web-home.html#pricing">Download for Windows</a>
+  </div>
+</div>
+
+<footer><div class="wrap"><span>© 2026 Fieldbench</span><a href="fieldbench-web-home.html">Home</a><a href="fieldbench-web-docs.html">Docs</a><a href="fieldbench-web-blog.html">Blog</a></div></footer>
+
+<script>
+function parseHex(s){
+  var clean=s.replace(/0x/gi,' ').replace(/[^0-9a-fA-F]/g,'');
+  if(clean.length===0)return{bytes:[],err:null};
+  if(clean.length%2)return{bytes:null,err:'Odd number of hex digits — one nibble is missing.'};
+  var b=[];for(var i=0;i<clean.length;i+=2)b.push(parseInt(clean.substr(i,2),16));
+  return{bytes:b,err:null};
+}
+function hx(n,w){return n.toString(16).toUpperCase().padStart(w||2,'0')}
+function crc16(bytes){var c=0xFFFF;for(var i=0;i<bytes.length;i++){c^=bytes[i];for(var j=0;j<8;j++){c=(c&1)?((c>>1)^0xA001):(c>>1)}}return c}
+var FC={1:'Read Coils',2:'Read Discrete Inputs',3:'Read Holding Registers',4:'Read Input Registers',5:'Write Single Coil',6:'Write Single Register',15:'Write Multiple Coils',16:'Write Multiple Registers',22:'Mask Write Register',23:'Read/Write Multiple',43:'Encapsulated Interface'};
+var EXC={1:'Illegal Function',2:'Illegal Data Address',3:'Illegal Data Value',4:'Slave Device Failure',5:'Acknowledge',6:'Slave Device Busy',8:'Memory Parity Error',10:'Gateway Path Unavailable',11:'Gateway Target Failed'};
+
+function runCrc(){
+  var r=parseHex(document.getElementById('crcin').value),o=document.getElementById('crcout');
+  if(r.err){o.innerHTML='<div class="orow"><span class="err">'+r.err+'</span></div>';return}
+  if(!r.bytes.length){o.innerHTML='<div class="orow"><span class="err">Paste some bytes above.</span></div>';return}
+  var c=crc16(r.bytes),lo=hx(c&255),hi=hx(c>>8);
+  var full=r.bytes.map(function(b){return hx(b)}).join(' ');
+  o.innerHTML='<div class="orow">CRC-16 (Modbus) <b class="crc">'+lo+' '+hi+'</b><span style="font-size:11.5px;color:var(--silver)">low byte first · raw 0x'+hx(c,4)+'</span></div>'+
+  '<div class="orow" style="align-items:flex-start"><span style="width:110px;flex-shrink:0;padding-top:1px">Full frame</span><span class="frameout">'+full+' <span class="c">'+lo+' '+hi+'</span></span></div>'+
+  '<div class="orow" style="font-size:11.5px;color:var(--silver)">'+r.bytes.length+' bytes in · '+(r.bytes.length+2)+' bytes on the wire</div>';
+}
+function runParse(){
+  var r=parseHex(document.getElementById('pin').value),o=document.getElementById('pout');
+  if(r.err){o.innerHTML='<div class="orow"><span class="err">'+r.err+'</span></div>';return}
+  var b=r.bytes;
+  if(b.length<8){o.innerHTML='<div class="orow"><span class="err">A Modbus TCP ADU is at least 8 bytes (MBAP 7 + FC).</span></div>';return}
+  var trans=(b[0]<<8)|b[1],proto=(b[2]<<8)|b[3],len=(b[4]<<8)|b[5],unit=b[6],fc=b[7],data=b.slice(8);
+  var lenOk=(len===b.length-6);
+  var rows='';
+  function row(color,k,v,note,bad){rows+='<div class="fld"><span class="sw" style="background:'+color+'"></span><span class="k">'+k+'</span><span class="v">'+v+'</span>'+(note?'<span class="note'+(bad?' bad':'')+'">'+note+'</span>':'')+'</div>'}
+  row('var(--f-len)','Transaction','0x'+hx(trans,4));
+  row('var(--f-len)','Protocol','0x'+hx(proto,4),proto===0?'Modbus':'not 0 — not Modbus?',proto!==0);
+  row('var(--f-len)','Length',String(len),lenOk?'matches byte count':'actual is '+(b.length-6),!lenOk);
+  row('var(--f-addr)','Unit ID','0x'+hx(unit));
+  if(fc>=0x80){
+    var ex=data.length?data[0]:null;
+    row('var(--red)','Function','0x'+hx(fc)+' · exception to FC'+hx(fc-0x80));
+    row('var(--red)','Exception',ex!==null?('0x'+hx(ex)+' · '+(EXC[ex]||'Unknown')):'missing code byte');
+  }else{
+    row('var(--f-func)','Function','0x'+hx(fc)+(FC[fc]?' · '+FC[fc]:' · vendor-specific'));
+    row('var(--pewter)','Data',data.length+' byte'+(data.length===1?'':'s')+(data.length?' · '+data.map(function(x){return hx(x)}).join(' ').slice(0,60)+(data.length>20?' …':''):''));
+  }
+  o.innerHTML='<div class="fields">'+rows+'</div>';
+}
+document.getElementById('crcin').addEventListener('input',runCrc);
+document.getElementById('pin').addEventListener('input',runParse);
+runCrc();runParse();
+</script>
+</body>
+</html>

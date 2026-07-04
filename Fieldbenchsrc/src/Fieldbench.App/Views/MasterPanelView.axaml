@@ -1,0 +1,199 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             xmlns:v="using:Fieldbench.App.Views"
+             xmlns:c="using:Fieldbench.App.Controls"
+             xmlns:conv="using:Fieldbench.App.Converters"
+             x:Class="Fieldbench.App.Views.MasterPanelView"
+             x:DataType="vm:MasterPanelViewModel">
+
+    <Grid RowDefinitions="34,*">
+
+        <!-- tab strip -->
+        <Border Grid.Row="0" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1">
+            <DockPanel Margin="14,0" LastChildFill="False">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <RadioButton Classes="ptab" GroupName="mtab" Content="{DynamicResource L.Registers}"
+                                 IsChecked="{Binding ActiveTabIndex, Converter={x:Static vm:TabIndex.Zero}}" />
+                    <RadioButton Classes="ptab" GroupName="mtab" Content="{DynamicResource L.PollTasks}"
+                                 IsChecked="{Binding ActiveTabIndex, Converter={x:Static vm:TabIndex.One}}" />
+                    <RadioButton Classes="ptab" GroupName="mtab" Content="{DynamicResource L.Send}"
+                                 IsChecked="{Binding ActiveTabIndex, Converter={x:Static vm:TabIndex.Two}}" />
+                    <RadioButton Classes="ptab" GroupName="mtab" Content="{DynamicResource L.Chart}"
+                                 IsChecked="{Binding ActiveTabIndex, Converter={x:Static vm:TabIndex.Three}}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10" DockPanel.Dock="Right" VerticalAlignment="Center">
+                    <Button Classes="act" Content="{DynamicResource L.ImportPointMap}" FontSize="11.5"
+                            Foreground="{DynamicResource FbBlue}"
+                            Command="{Binding Session.ImportPointMapCommand}" />
+                    <Ellipse Width="6" Height="6" Fill="{DynamicResource FbGreen}"
+                             IsVisible="{Binding HasRunningTask}" />
+                    <TextBlock Text="{Binding RunningTaskSummary}" Classes="mono" FontSize="10.5"
+                               Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding RunningTaskCycle}" Classes="mono" FontSize="10.5"
+                               Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Panel Grid.Row="1">
+
+            <!-- ── Registers ── -->
+            <Grid RowDefinitions="26,*" IsVisible="{Binding ActiveTabIndex, Converter={x:Static vm:TabIndex.Zero}}">
+                <Grid Grid.Row="0" Margin="14,0" ColumnDefinitions="80,*,128,128,92,148,44">
+                    <TextBlock Grid.Column="0" Text="{DynamicResource L.Address}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="1" Text="{DynamicResource L.Tag}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{DynamicResource L.Type}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="3" Text="{DynamicResource L.Value}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="4" Text="{DynamicResource L.Trend}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="5" Text="{DynamicResource L.RawCol}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="6" Text="{DynamicResource L.RW}" Classes="micro" VerticalAlignment="Center" />
+                </Grid>
+                <Border Grid.Row="0" VerticalAlignment="Bottom" Height="1" Background="{DynamicResource FbCloud}" />
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Registers}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:RegisterRowViewModel">
+                                    <Border Height="29" BorderBrush="{DynamicResource FbRowLine}" BorderThickness="0,0,0,1">
+                                        <Grid Margin="14,0" ColumnDefinitions="80,*,128,128,92,148,44"
+                                              VerticalAlignment="Center">
+                                            <TextBlock Grid.Column="0" Text="{Binding Address}" Classes="mono" FontSize="11"
+                                                       Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12"
+                                                       Foreground="{DynamicResource FbCarbon}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding TypeLabel}" Classes="mono" FontSize="10.5"
+                                                       Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+
+                                            <!-- value: display or inline edit -->
+                                            <Panel Grid.Column="3" VerticalAlignment="Center">
+                                                <Button Padding="0" Background="Transparent" BorderThickness="0"
+                                                        Command="{Binding BeginEditCommand}"
+                                                        IsVisible="{Binding !IsEditing}"
+                                                        ToolTip.Tip="{Binding WriteError}"
+                                                        HorizontalAlignment="Left">
+                                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                                        <TextBlock Text="⚠" FontSize="10"
+                                                                   Foreground="{DynamicResource FbRed}"
+                                                                   VerticalAlignment="Center"
+                                                                   IsVisible="{Binding WriteError, Converter={x:Static conv:FrameConverters.IsNotNull}}" />
+                                                        <TextBlock Text="{Binding Value}" Classes="mono" FontSize="12"
+                                                                   FontWeight="Medium"
+                                                                   Foreground="{DynamicResource FbCarbon}"
+                                                                   Classes.editable="{Binding IsWritable}">
+                                                            <TextBlock.Styles>
+                                                                <Style Selector="TextBlock.editable">
+                                                                    <Setter Property="Foreground" Value="{DynamicResource FbBlueOn}" />
+                                                                </Style>
+                                                            </TextBlock.Styles>
+                                                        </TextBlock>
+                                                        <TextBlock Text="{Binding Unit}" FontSize="10"
+                                                                   Foreground="{DynamicResource FbSilver}"
+                                                                   VerticalAlignment="Bottom" Margin="0,0,0,1" />
+                                                    </StackPanel>
+                                                </Button>
+                                                <TextBox Text="{Binding EditValue}" IsVisible="{Binding IsEditing}"
+                                                         MinHeight="24" Height="24" FontSize="11.5" Width="110"
+                                                         HorizontalAlignment="Left"
+                                                         KeyDown="OnEditKeyDown" />
+                                            </Panel>
+
+                                            <c:Sparkline Grid.Column="4" Width="64" Height="16" HorizontalAlignment="Left"
+                                                         Values="{Binding Sparkline}" Stroke="{DynamicResource FbBlue}" />
+                                            <TextBlock Grid.Column="5" Text="{Binding RawHex}" Classes="mono" FontSize="10.5"
+                                                       Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="6" Text="{Binding RwLabel}" Classes="micro"
+                                                       VerticalAlignment="Center"
+                                                       Classes.editable="{Binding IsWritable}">
+                                                <TextBlock.Styles>
+                                                    <Style Selector="TextBlock.editable">
+                                                        <Setter Property="Foreground" Value="{DynamicResource FbBlueOn}" />
+                                                    </Style>
+                                                </TextBlock.Styles>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Classes="act" Content="{DynamicResource L.NewTag}" Foreground="{DynamicResource FbBlue}"
+                                FontWeight="Medium" Margin="14,4" Command="{Binding AddTagCommand}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- ── Poll tasks ── -->
+            <Grid RowDefinitions="26,*" IsVisible="{Binding ActiveTabIndex, Converter={x:Static vm:TabIndex.One}}">
+                <Grid Grid.Row="0" Margin="14,0" ColumnDefinitions="26,96,*,90,92,70,64,96">
+                    <TextBlock Grid.Column="1" Text="{DynamicResource L.Task}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{DynamicResource L.Target}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="3" Text="{DynamicResource L.Interval}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="4" Text="{DynamicResource L.LastCycle}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="5" Text="{DynamicResource L.Errors}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="6" Text="{DynamicResource L.Enabled}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="7" Text="{DynamicResource L.Actions}" Classes="micro" VerticalAlignment="Center"
+                               TextAlignment="Right" />
+                </Grid>
+                <Border Grid.Row="0" VerticalAlignment="Bottom" Height="1" Background="{DynamicResource FbCloud}" />
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel>
+                        <ItemsControl ItemsSource="{Binding Tasks}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:PollTaskRowViewModel">
+                                    <Border Height="34" BorderBrush="{DynamicResource FbRowLine}" BorderThickness="0,0,0,1">
+                                        <Grid Margin="14,0" ColumnDefinitions="26,96,*,90,92,70,64,96"
+                                              VerticalAlignment="Center">
+                                            <Ellipse Grid.Column="0" Classes="dot" Classes.on="{Binding IsRunning}"
+                                                     HorizontalAlignment="Left" Width="6" Height="6" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12" FontWeight="Medium"
+                                                       Foreground="{DynamicResource FbCarbon}" VerticalAlignment="Center" />
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding UnitToken}" Classes="mono" FontSize="11"
+                                                           Foreground="{DynamicResource FbFieldAddr}" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding FcToken}" Classes="mono" FontSize="11"
+                                                           Foreground="{DynamicResource FbFieldFunc}" VerticalAlignment="Center" />
+                                                <TextBlock Text="{Binding Target}" FontSize="11.5"
+                                                           Foreground="{DynamicResource FbGraphite}" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="3" Text="{Binding Interval}" Classes="mono" FontSize="11"
+                                                       Foreground="{DynamicResource FbPewter}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="4" Text="{Binding LastCycle}" Classes="mono" FontSize="11"
+                                                       Foreground="{DynamicResource FbPewter}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="5" Text="{Binding Errors}" Classes="mono" FontSize="11"
+                                                       Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center"
+                                                       Classes.bad="{Binding HasErrors}">
+                                                <TextBlock.Styles>
+                                                    <Style Selector="TextBlock.bad">
+                                                        <Setter Property="Foreground" Value="{DynamicResource FbRed}" />
+                                                    </Style>
+                                                </TextBlock.Styles>
+                                            </TextBlock>
+                                            <ToggleSwitch Grid.Column="6" IsChecked="{Binding IsEnabled}"
+                                                          MinHeight="20" Height="20" HorizontalAlignment="Left" />
+                                            <StackPanel Grid.Column="7" Orientation="Horizontal" Spacing="6"
+                                                        HorizontalAlignment="Right">
+                                                <Button Classes="mini" Content="▶" Command="{Binding RunOnceCommand}" />
+                                                <Button Classes="mini" Content="🗑" Command="{Binding RemoveCommand}" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button Classes="act" Content="{DynamicResource L.NewTask}" Foreground="{DynamicResource FbBlue}"
+                                FontWeight="Medium" Margin="14,4" Command="{Binding AddTaskCommand}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- ── Send ── -->
+            <v:SendPanelView DataContext="{Binding Sender}"
+                             IsVisible="{Binding $parent[v:MasterPanelView].((vm:MasterPanelViewModel)DataContext).ActiveTabIndex, Converter={x:Static vm:TabIndex.Two}}" />
+
+            <!-- ── Chart ── -->
+            <v:ChartPanelView DataContext="{Binding Chart}"
+                              IsVisible="{Binding $parent[v:MasterPanelView].((vm:MasterPanelViewModel)DataContext).ActiveTabIndex, Converter={x:Static vm:TabIndex.Three}}" />
+
+        </Panel>
+    </Grid>
+</UserControl>

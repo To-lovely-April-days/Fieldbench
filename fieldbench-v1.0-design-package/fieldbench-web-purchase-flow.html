@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fieldbench — 购买与订阅流程稿</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --carbon:#171A20; --graphite:#393C41;
+  --pewter:#5C5E62; --silver:#8E8E8E; --cloud:#EAEAEC; --ash:#F4F4F4;
+  --bg:#FAFAFB; --white:#FFFFFF; --green:#1FA463; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--carbon);background:#EDEEF0;-webkit-font-smoothing:antialiased;line-height:1.5;font-variant-numeric:tabular-nums;padding:40px 16px}
+.board{max-width:1000px;margin:0 auto}
+.bh{margin-bottom:28px}
+.bh h1{font-size:26px;font-weight:500;display:flex;align-items:center;gap:12px}
+.bh h1 .mark{width:22px;height:22px;border:2px solid var(--blue);border-radius:5px;position:relative}
+.bh h1 .mark::after{content:'';position:absolute;left:4px;top:9px;width:10px;height:2px;background:var(--blue)}
+.bh p{font-size:13.5px;color:var(--pewter);margin-top:8px}
+.stage{margin-bottom:36px}
+.cap{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+.cap .n{font-family:var(--mono);font-size:11px;color:var(--blue);letter-spacing:.1em}
+.cap h2{font-size:16px;font-weight:500}
+.cap p{font-size:12.5px;color:var(--silver)}
+.frame{background:var(--white);border:1px solid var(--cloud);border-radius:10px;overflow:hidden;position:relative}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:var(--r);font-weight:500}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.tint{background:var(--blue-tint);color:var(--blue)}
+.btn.ghost{color:var(--pewter)}
+.mono{font-family:var(--mono)}
+
+/* S1 checkout */
+.chk-bg{background:rgba(23,26,32,.26);padding:44px 0;display:flex;justify-content:center}
+.chk{width:420px;background:var(--white);border:1px solid var(--cloud);border-radius:10px;overflow:hidden}
+.chk-h{padding:18px 22px 0;display:flex;align-items:center}
+.chk-h .t{font-size:14px;font-weight:500}
+.chk-h .x{margin-left:auto;color:var(--silver);font-size:12px}
+.order{margin:14px 22px 0;background:var(--ash);border-radius:8px;padding:13px 15px}
+.orow{display:flex;font-size:12.5px;color:var(--graphite);padding:2.5px 0}
+.orow b{font-weight:500;color:var(--carbon)}
+.orow .r{margin-left:auto;font-family:var(--mono);font-size:12px}
+.orow.tot{border-top:1px solid var(--cloud);margin-top:7px;padding-top:8px}
+.orow.tot .r{font-weight:500}
+.chk-f{padding:16px 22px 0;display:flex;flex-direction:column;gap:10px}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver)}
+.fld .in{height:34px;display:flex;align-items:center;padding:0 11px;border:1px solid var(--cloud);border-radius:var(--r);font-size:12.5px;color:var(--carbon)}
+.fld .in.mono{font-family:var(--mono);font-size:12px}
+.fld .in .car{margin-left:auto;color:var(--silver);font-size:8px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.paybtn{margin:16px 22px 0;height:42px;font-size:14px}
+.chk-foot{padding:12px 22px 18px;font-size:10.5px;color:var(--silver);text-align:center}
+
+/* S2 success */
+.suc{padding:56px 0;text-align:center}
+.suc .ok{width:44px;height:44px;border-radius:50%;background:#1FA46314;color:var(--green);display:inline-flex;align-items:center;justify-content:center;font-size:19px}
+.suc h2{font-size:26px;font-weight:500;margin-top:16px}
+.suc .sub{font-size:14px;color:var(--pewter);margin-top:8px}
+.keybox{margin:24px auto 0;max-width:460px;background:var(--ash);border-radius:8px;padding:16px 18px;text-align:left}
+.keybox .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver)}
+.keybox .v{display:flex;align-items:center;margin-top:6px}
+.keybox .v b{font-family:var(--mono);font-size:16px;font-weight:500;letter-spacing:.04em}
+.keybox .v a{margin-left:auto;color:var(--blue);font-size:12px;font-weight:500;text-decoration:none}
+.keybox .m{font-size:11.5px;color:var(--silver);margin-top:8px}
+.suc .dl{margin-top:22px;height:44px;padding:0 26px;font-size:14px}
+.steps3{display:flex;gap:14px;max-width:640px;margin:30px auto 0;text-align:left}
+.st3{flex:1;background:var(--white);border:1px solid var(--cloud);border-radius:8px;padding:14px 15px}
+.st3 .n{font-family:var(--mono);font-size:10px;color:var(--blue);letter-spacing:.1em}
+.st3 p{font-size:12px;color:var(--graphite);margin-top:6px;line-height:1.5}
+.suc .ref{font-size:11.5px;color:var(--silver);margin-top:22px}
+
+/* S3 email */
+.mailwrap{padding:36px 0;display:flex;justify-content:center;background:var(--bg)}
+.mail{width:560px;background:var(--white);border:1px solid var(--cloud);border-radius:10px;overflow:hidden}
+.mail-h{padding:16px 22px;border-bottom:1px solid var(--cloud)}
+.mail-h .fr{font-size:12px;color:var(--pewter)}
+.mail-h .fr b{color:var(--carbon);font-weight:500}
+.mail-h .sj{font-size:14.5px;font-weight:500;margin-top:5px}
+.mail-b{padding:20px 22px}
+.mail-b p{font-size:13px;color:var(--graphite);line-height:1.65;margin-bottom:12px}
+.mail-key{background:var(--ash);border-radius:8px;padding:13px 15px;font-family:var(--mono);font-size:15px;font-weight:500;text-align:center;letter-spacing:.05em;margin-bottom:12px}
+.mail-b .btn{height:38px;padding:0 20px;font-size:13px}
+.mail-b .li{font-size:12.5px;color:var(--pewter);margin-top:12px;line-height:1.7}
+.mail-b .li a{color:var(--blue);text-decoration:none;font-weight:500}
+.mail-f{padding:12px 22px;border-top:1px solid var(--cloud);font-size:10.5px;color:var(--silver)}
+
+/* S4 ai */
+.ai2{display:grid;grid-template-columns:1fr 1fr}
+.ai2 .l{padding:34px 34px;border-right:1px solid var(--cloud)}
+.ai2 h3{font-size:16px;font-weight:500;display:flex;gap:8px;align-items:center}
+.ai2 h3 i{font-style:normal;color:var(--blue)}
+.tgl{display:flex;height:30px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;margin-top:16px;width:max-content}
+.tgl span{display:flex;align-items:center;padding:0 16px;font-size:12.5px;color:var(--pewter)}
+.tgl .on{background:var(--blue-tint);color:var(--blue);font-weight:500}
+.ai2 .pr{margin-top:16px;display:flex;align-items:baseline;gap:8px}
+.ai2 .pr b{font-size:32px;font-weight:500}
+.ai2 .pr span{font-size:12.5px;color:var(--silver)}
+.ai2 ul{list-style:none;margin-top:14px}
+.ai2 li{font-size:12.5px;color:var(--graphite);padding:4px 0;display:flex;gap:8px}
+.ai2 li i{font-style:normal;color:var(--blue);font-size:11px}
+.ai2 .l .btn{margin-top:18px;height:40px;padding:0 22px;font-size:13.5px}
+.ai2 .r{padding:34px 34px;background:var(--bg)}
+.ai2 .r .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver)}
+.aikey{background:var(--white);border:1px solid var(--cloud);border-radius:8px;padding:13px 15px;margin-top:8px;display:flex;align-items:center}
+.aikey b{font-family:var(--mono);font-size:14px;font-weight:500;letter-spacing:.04em}
+.aikey a{margin-left:auto;color:var(--blue);font-size:12px;font-weight:500;text-decoration:none}
+.ai2 .r .how{margin-top:16px;font-size:12.5px;color:var(--pewter);line-height:1.8}
+.ai2 .r .how b{color:var(--carbon);font-weight:500}
+.ai2 .r .note{margin-top:14px;font-size:11.5px;color:var(--silver);line-height:1.6}
+.arch{margin-top:10px;font-size:12px;color:var(--silver);line-height:1.7;background:var(--white);border:1px solid var(--cloud);border-radius:8px;padding:12px 14px;font-family:var(--mono)}
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="bh">
+    <h1><span class="mark"></span>Fieldbench · 购买与订阅流程</h1>
+    <p>无账号体系:购买产出 key,key 即身份。Pro key 激活软件,AI key 鉴权网关。Paddle 为 Merchant of Record,发票 / VAT / 退款全部由其承担。以下四态为用户旅程顺序。</p>
+  </div>
+
+  <div class="stage">
+    <div class="cap"><span class="n">S1</span><h2>Paddle 结账浮层</h2><p>定价页点击 Buy Pro 后,Paddle overlay 覆盖当前页,不跳转 · 税费按买家所在地自动计算</p></div>
+    <div class="frame">
+      <div class="chk-bg">
+        <div class="chk">
+          <div class="chk-h"><span class="t">Secure checkout</span><span class="x">✕</span></div>
+          <div class="order">
+            <div class="orow"><b>Fieldbench Pro</b><span class="r">$69.00</span></div>
+            <div class="orow"><span>Launch discount (30% off $99)</span><span class="r">applied</span></div>
+            <div class="orow"><span>Sales tax / VAT</span><span class="r">$0.00</span></div>
+            <div class="orow tot"><b>Total due today</b><span class="r">$69.00</span></div>
+          </div>
+          <div class="chk-f">
+            <div class="fld"><span class="k">Email — your license goes here</span><span class="in">you@company.com</span></div>
+            <div class="fld"><span class="k">Country</span><span class="in">United States<span class="car">▾</span></span></div>
+            <div class="fld"><span class="k">Card number</span><span class="in mono">4242 4242 4242 4242</span></div>
+            <div class="two">
+              <div class="fld"><span class="k">Expiry</span><span class="in mono">08 / 29</span></div>
+              <div class="fld"><span class="k">CVC</span><span class="in mono">•••</span></div>
+            </div>
+          </div>
+          <div class="btn primary paybtn" style="display:flex">Pay $69.00</div>
+          <div class="chk-foot">Powered by Paddle · Merchant of record · Invoice emailed automatically · 30-day refund</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="cap"><span class="n">S2</span><h2>购买成功页</h2><p>fieldbench.app/thanks · key 页面直出 + 邮件双保险,三步激活指引,离线激活路径明示</p></div>
+    <div class="frame">
+      <div class="suc">
+        <span class="ok">✓</span>
+        <h2>You're in.</h2>
+        <div class="sub">Your license key — also sent to <b>you@company.com</b> with your invoice.</div>
+        <div class="keybox">
+          <span class="k">Fieldbench Pro · License key</span>
+          <div class="v"><b>FB1-8K2M-Q7RV-TX9A</b><a href="#">Copy</a></div>
+          <div class="m">Good for 2 devices · manage or move them anytime at fieldbench.app/activate</div>
+        </div>
+        <a class="btn primary dl" href="#" style="display:inline-flex">Download Fieldbench for Windows</a>
+        <div class="steps3">
+          <div class="st3"><div class="n">01</div><p>Install (or unzip the portable build) and launch.</p></div>
+          <div class="st3"><div class="n">02</div><p>Settings → License → paste your key → Activate.</p></div>
+          <div class="st3"><div class="n">03</div><p>Air-gapped PC? Exchange its machine code for an activation file at fieldbench.app/activate.</p></div>
+        </div>
+        <div class="ref">Not for you? Reply to the receipt email within 30 days for a full refund.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="cap"><span class="n">S3</span><h2>License 交付邮件</h2><p>Paddle webhook → license 生成器 → 即时发信 · 主题行直给 key,现场翻邮件不费劲</p></div>
+    <div class="frame">
+      <div class="mailwrap">
+        <div class="mail">
+          <div class="mail-h">
+            <div class="fr">From <b>Fieldbench</b> &lt;license@fieldbench.app&gt;</div>
+            <div class="sj">Your Fieldbench Pro key: FB1-8K2M-Q7RV-TX9A</div>
+          </div>
+          <div class="mail-b">
+            <p>Thanks for buying Fieldbench Pro. Here's everything you need:</p>
+            <div class="mail-key">FB1-8K2M-Q7RV-TX9A</div>
+            <a class="btn tint" href="#" style="display:inline-flex">Download for Windows</a>
+            <div class="li">
+              · Activate: Settings → License → paste key<br>
+              · Offline machine? <a href="#">fieldbench.app/activate</a> exchanges its machine code for an activation file<br>
+              · 2 devices per key · <a href="#">manage devices</a> · your Paddle invoice is attached
+            </div>
+          </div>
+          <div class="mail-f">Fieldbench · 30-day money-back · Reply to this email for support (answered by the engineer who built it)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="cap"><span class="n">S4</span><h2>AI 订阅 · 购买与接入</h2><p>入口:官网定价卡 / App 内 Subscribe 按钮跳浏览器 · 产出独立 AI key,App 粘贴一次即接入网关</p></div>
+    <div class="frame">
+      <div class="ai2">
+        <div class="l">
+          <h3><i>✦</i>AI Assistant</h3>
+          <div class="tgl"><span>Monthly · $6.9</span><span class="on">Yearly · $49</span></div>
+          <div class="pr"><b>$49</b><span>/ year · save 41%</span></div>
+          <ul>
+            <li><i>✓</i>1,000 frame explanations / month</li>
+            <li><i>✓</i>30 point map extractions / month</li>
+            <li><i>✓</i>Works on Free or Pro</li>
+            <li><i>✓</i>Cancel anytime — the tool keeps working</li>
+          </ul>
+          <a class="btn primary" href="#" style="display:inline-flex">Subscribe — $49 / yr</a>
+        </div>
+        <div class="r">
+          <span class="k">After checkout · your AI key</span>
+          <div class="aikey"><b>AIK-4F7Q-M2XD-88PL</b><a href="#">Copy</a></div>
+          <div class="how"><b>Connect once:</b> Settings → AI assistant → paste key.<br>Quota refreshes monthly; usage meters live in the same panel.</div>
+          <div class="arch">key ──▶ gateway (Cloudflare) ──▶ model API<br>· auth + quota count only<br>· frames never stored · sent only on Explain</div>
+          <div class="note">与 Pro key 相互独立:AI 可单独退订,工具本体不受影响;Pro 退款不影响已付 AI 周期。Paddle 管理订阅生命周期(升降级 / 取消 / 卡片更新)。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

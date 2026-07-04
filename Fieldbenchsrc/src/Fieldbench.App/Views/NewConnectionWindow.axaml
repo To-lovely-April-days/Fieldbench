@@ -1,0 +1,148 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Fieldbench.App.ViewModels"
+        xmlns:conv="using:Fieldbench.App.Converters"
+        x:Class="Fieldbench.App.Views.NewConnectionWindow"
+        x:DataType="vm:NewConnectionViewModel"
+        Title="New connection"
+        Width="492" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{DynamicResource FbPanel}"
+        FontFamily="{StaticResource FbSans}"
+        FontSize="12">
+
+    <StackPanel>
+        <DockPanel Margin="20,18,20,0">
+            <TextBlock Text="{DynamicResource L.NewConnection}" FontSize="16" FontWeight="Medium" />
+            <Button Classes="act" Content="✕" FontSize="11" DockPanel.Dock="Right" HorizontalAlignment="Right"
+                    Command="{Binding CancelCommand}" />
+        </DockPanel>
+
+        <StackPanel Margin="20,16,20,0">
+            <!-- kind selector -->
+            <Border Classes="seg" Height="32" Margin="0,0,0,16">
+                <Grid ColumnDefinitions="*,1,*,1,*">
+                    <RadioButton Grid.Column="0" Classes="seg-item" GroupName="kind" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" Content="{DynamicResource L.Serial}"
+                                 IsChecked="{Binding KindIndex, Converter={x:Static vm:TabIndex.Zero}}" />
+                    <Rectangle Grid.Column="1" Fill="{DynamicResource FbCloud}" />
+                    <RadioButton Grid.Column="2" Classes="seg-item" GroupName="kind" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" Content="{DynamicResource L.TcpClient}"
+                                 IsChecked="{Binding KindIndex, Converter={x:Static vm:TabIndex.One}}" />
+                    <Rectangle Grid.Column="3" Fill="{DynamicResource FbCloud}" />
+                    <RadioButton Grid.Column="4" Classes="seg-item" GroupName="kind" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" Content="{DynamicResource L.TcpServer}"
+                                 IsChecked="{Binding KindIndex, Converter={x:Static vm:TabIndex.Two}}" />
+                </Grid>
+            </Border>
+
+            <!-- serial params 6-grid -->
+            <Grid ColumnDefinitions="*,12,*" RowDefinitions="Auto,10,Auto,10,Auto" IsVisible="{Binding IsSerial}"
+                  Margin="0,0,0,16">
+                <StackPanel Grid.Row="0" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.Port}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding Ports}" SelectedItem="{Binding SelectedPort}"
+                              HorizontalAlignment="Stretch" FontFamily="{StaticResource FbMono}" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Row="0" Grid.Column="2" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.BaudRate}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding BaudRates}" SelectedItem="{Binding BaudRate}"
+                              HorizontalAlignment="Stretch" FontFamily="{StaticResource FbMono}" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.DataBits}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding DataBitsOptions}" SelectedItem="{Binding DataBits}"
+                              HorizontalAlignment="Stretch" FontFamily="{StaticResource FbMono}" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Row="2" Grid.Column="2" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.Parity}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding ParityOptions}" SelectedItem="{Binding Parity}"
+                              HorizontalAlignment="Stretch" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.StopBits}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding StopBitsOptions}" SelectedItem="{Binding StopBits}"
+                              HorizontalAlignment="Stretch" FontSize="12" />
+                </StackPanel>
+                <StackPanel Grid.Row="4" Grid.Column="2" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.FlowControl}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding FlowOptions}" SelectedItem="{Binding FlowControl}"
+                              HorizontalAlignment="Stretch" FontSize="12" />
+                </StackPanel>
+            </Grid>
+
+            <!-- tcp client -->
+            <Grid ColumnDefinitions="*,12,*" IsVisible="{Binding IsTcpClient}" Margin="0,0,0,16">
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.Host}" Classes="micro" />
+                    <TextBox Text="{Binding Host}" Classes="mono" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.PortNumber}" Classes="micro" />
+                    <NumericUpDown Value="{Binding Port}" Minimum="1" Maximum="65535" FormatString="0" />
+                </StackPanel>
+            </Grid>
+
+            <!-- tcp server -->
+            <Grid ColumnDefinitions="*,12,*" IsVisible="{Binding IsTcpServer}" Margin="0,0,0,16">
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.Listen}" Classes="micro" />
+                    <NumericUpDown Value="{Binding ListenPort}" Minimum="1" Maximum="65535" FormatString="0" />
+                </StackPanel>
+            </Grid>
+
+            <!-- start as -->
+            <TextBlock Text="{DynamicResource L.StartAs}" Classes="micro" Margin="0,0,0,5" />
+            <Border Classes="seg" Height="32">
+                <Grid ColumnDefinitions="*,1,*,1,*">
+                    <RadioButton Grid.Column="0" Classes="seg-item" GroupName="startas" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" Content="{DynamicResource L.Monitor}"
+                                 IsChecked="{Binding StartAs, Converter={x:Static vm:TabIndex.Zero}}" />
+                    <Rectangle Grid.Column="1" Fill="{DynamicResource FbCloud}" />
+                    <RadioButton Grid.Column="2" Classes="seg-item" GroupName="startas" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" Content="{DynamicResource L.Master}"
+                                 IsChecked="{Binding StartAs, Converter={x:Static vm:TabIndex.One}}" />
+                    <Rectangle Grid.Column="3" Fill="{DynamicResource FbCloud}" />
+                    <RadioButton Grid.Column="4" Classes="seg-item" GroupName="startas" HorizontalAlignment="Stretch"
+                                 HorizontalContentAlignment="Center" Content="{DynamicResource L.Slave}"
+                                 IsChecked="{Binding StartAs, Converter={x:Static vm:TabIndex.Two}}" />
+                </Grid>
+            </Border>
+
+            <TextBlock Text="{DynamicResource L.StartAsHint}" FontSize="11.5" Foreground="{DynamicResource FbSilver}"
+                       TextWrapping="Wrap" LineHeight="17" Margin="0,8,0,14" />
+
+            <TextBlock Text="{Binding Error}" FontSize="11.5" Foreground="{DynamicResource FbRed}" TextWrapping="Wrap"
+                       Margin="0,0,0,10"
+                       IsVisible="{Binding Error, Converter={x:Static conv:FrameConverters.IsNotNull}}" />
+
+            <!-- demo note -->
+            <Border Background="{DynamicResource FbAsh}" CornerRadius="8" Padding="14,12" Margin="0,0,0,16">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Padding="0" Background="Transparent" BorderThickness="0"
+                            VerticalAlignment="Center" Command="{Binding RunDemoCommand}">
+                        <TextBlock Text="{DynamicResource L.RunDemo}" FontSize="12" FontWeight="Medium"
+                                   Foreground="{DynamicResource FbBlue}" />
+                    </Button>
+                    <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource FbPewter}"
+                               LineHeight="17" Margin="0,0,12,0">
+                        <Run Text="{DynamicResource L.NoDevice}" FontWeight="Medium"
+                             Foreground="{DynamicResource FbGraphite}" />
+                        <Run Text=" " />
+                        <Run Text="{DynamicResource L.NoDeviceHint}" />
+                    </TextBlock>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- footer -->
+        <Border BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,1,0,0" Padding="20,14">
+            <DockPanel LastChildFill="False">
+                <Button Classes="ghost" Content="{DynamicResource L.Cancel}" Command="{Binding CancelCommand}" />
+                <Button Classes="primary" Content="{DynamicResource L.Connect}" DockPanel.Dock="Right"
+                        Command="{Binding ConnectCommand}" />
+            </DockPanel>
+        </Border>
+    </StackPanel>
+</Window>

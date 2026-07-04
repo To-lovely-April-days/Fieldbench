@@ -1,0 +1,271 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Fieldbench.App.ViewModels"
+        xmlns:conv="using:Fieldbench.App.Converters"
+        x:Class="Fieldbench.App.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Title="Settings"
+        Width="1000" Height="700"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource FbBg}"
+        FontFamily="{StaticResource FbSans}"
+        FontSize="12">
+
+    <Window.Styles>
+        <Style Selector="RadioButton.nav">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="bg" Height="32" Padding="16,0">
+                        <Grid>
+                            <Rectangle Name="bar" Width="2" HorizontalAlignment="Left" Margin="-16,0,0,0"
+                                       Fill="Transparent" />
+                            <ContentPresenter Content="{TemplateBinding Content}" VerticalAlignment="Center"
+                                              TextElement.FontSize="12.5" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Setter Property="Foreground" Value="{DynamicResource FbPewter}" />
+        </Style>
+        <Style Selector="RadioButton.nav:checked /template/ Border#bg">
+            <Setter Property="Background" Value="{DynamicResource FbBlueTint2}" />
+        </Style>
+        <Style Selector="RadioButton.nav:checked /template/ Rectangle#bar">
+            <Setter Property="Fill" Value="{DynamicResource FbBlue}" />
+        </Style>
+        <Style Selector="RadioButton.nav:checked">
+            <Setter Property="Foreground" Value="{DynamicResource FbCarbon}" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{DynamicResource FbPanel}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="20,18" />
+        </Style>
+        <Style Selector="TextBlock.cardTitle">
+            <Setter Property="FontSize" Value="13.5" />
+            <Setter Property="FontWeight" Value="Medium" />
+        </Style>
+        <Style Selector="TextBlock.k">
+            <Setter Property="Foreground" Value="{DynamicResource FbSilver}" />
+            <Setter Property="FontSize" Value="11.5" />
+            <Setter Property="Width" Value="150" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="212,*">
+
+        <!-- nav -->
+        <Border Grid.Column="0" Background="{DynamicResource FbBg}" BorderBrush="{DynamicResource FbCloud}"
+                BorderThickness="0,0,1,0" Padding="0,16">
+            <StackPanel>
+                <RadioButton Classes="nav" GroupName="sec" Content="{DynamicResource L.General}"
+                             IsChecked="{Binding SectionIndex, Converter={x:Static vm:TabIndex.Zero}}" />
+                <RadioButton Classes="nav" GroupName="sec" Content="{DynamicResource L.Appearance}"
+                             IsChecked="{Binding SectionIndex, Converter={x:Static vm:TabIndex.One}}" />
+                <RadioButton Classes="nav" GroupName="sec" Content="{DynamicResource L.AiAssistant}"
+                             IsChecked="{Binding SectionIndex, Converter={x:Static vm:TabIndex.Two}}" />
+                <RadioButton Classes="nav" GroupName="sec" Content="{DynamicResource L.License}"
+                             IsChecked="{Binding SectionIndex, Converter={x:Static vm:TabIndex.Three}}" />
+            </StackPanel>
+        </Border>
+
+        <!-- content -->
+        <ScrollViewer Grid.Column="1" Background="{DynamicResource FbPanel}">
+            <StackPanel MaxWidth="660" Margin="26" Spacing="16" HorizontalAlignment="Center">
+
+                <!-- General / Appearance -->
+                <Border Classes="card" IsVisible="{Binding SectionIndex, Converter={x:Static vm:TabIndex.Zero}}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Classes="cardTitle" Text="{DynamicResource L.General}" />
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.BufferSize}" />
+                            <NumericUpDown Value="{Binding BufferFrames}" Minimum="1000" Maximum="2000000"
+                                           Increment="10000" FormatString="0" Width="180" HorizontalAlignment="Left" />
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.NotifyUpdates}" />
+                            <ToggleSwitch IsChecked="{Binding CheckUpdates}" HorizontalAlignment="Left" />
+                        </DockPanel>
+                        <TextBlock Text="{DynamicResource L.NeverSilent}" FontSize="11"
+                                   Foreground="{DynamicResource FbSilver}" Margin="150,0,0,0" />
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Telemetry}" />
+                            <ToggleSwitch IsChecked="{Binding TelemetryOptIn}" HorizontalAlignment="Left" />
+                        </DockPanel>
+                        <TextBlock Text="{DynamicResource L.TelemetryOff}" FontSize="11"
+                                   Foreground="{DynamicResource FbSilver}" Margin="150,0,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card" IsVisible="{Binding SectionIndex, Converter={x:Static vm:TabIndex.One}}">
+                    <StackPanel Spacing="12">
+                        <TextBlock Classes="cardTitle" Text="{DynamicResource L.Appearance}" />
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Theme}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{DynamicResource L.ThemeLight}" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource FbGraphite}" />
+                                <ToggleSwitch IsChecked="{Binding IsDarkTheme}" />
+                                <TextBlock Text="{DynamicResource L.ThemeDark}" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource FbGraphite}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Language}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="English" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource FbGraphite}" />
+                                <ToggleSwitch IsChecked="{Binding IsChinese}" />
+                                <TextBlock Text="简体中文" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource FbGraphite}" />
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- AI assistant -->
+                <Border Classes="card" IsVisible="{Binding SectionIndex, Converter={x:Static vm:TabIndex.Two}}">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="9">
+                            <Ellipse Width="6" Height="6" Fill="{DynamicResource FbBlue}" VerticalAlignment="Center" />
+                            <TextBlock Classes="cardTitle" Text="{DynamicResource L.AiAssistant}" />
+                        </StackPanel>
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Explanations}" />
+                            <StackPanel>
+                                <Border Width="220" Height="3" CornerRadius="2" Background="{DynamicResource FbCloud}"
+                                        HorizontalAlignment="Left" Margin="0,0,0,4">
+                                    <Rectangle HorizontalAlignment="Left" Fill="{DynamicResource FbBlue}"
+                                               Width="{Binding ExplainRatio, Converter={x:Static vm:UiMath.Times220}}" />
+                                </Border>
+                                <TextBlock Text="{Binding ExplainUsage}" Classes="mono" FontSize="10"
+                                           Foreground="{DynamicResource FbSilver}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.PointExtractions}" />
+                            <StackPanel>
+                                <Border Width="220" Height="3" CornerRadius="2" Background="{DynamicResource FbCloud}"
+                                        HorizontalAlignment="Left" Margin="0,0,0,4">
+                                    <Rectangle HorizontalAlignment="Left" Fill="{DynamicResource FbBlue}"
+                                               Width="{Binding ExtractRatio, Converter={x:Static vm:UiMath.Times220}}" />
+                                </Border>
+                                <TextBlock Text="{Binding ExtractUsage}" Classes="mono" FontSize="10"
+                                           Foreground="{DynamicResource FbSilver}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <Border Height="1" Background="{DynamicResource FbCloud}" Margin="0,4" />
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Privacy}" />
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource L.PrivacyNote}" FontSize="12"
+                                           Foreground="{DynamicResource FbGraphite}" TextWrapping="Wrap" />
+                                <Button Classes="ghost" Padding="0" Margin="0,6,0,0" HorizontalAlignment="Left"
+                                        Command="{Binding PreviewPrivacyCommand}">
+                                    <TextBlock Text="{DynamicResource L.PreviewSent}" FontSize="11.5" FontWeight="Medium"
+                                               Foreground="{DynamicResource FbBlue}" />
+                                </Button>
+                            </StackPanel>
+                        </DockPanel>
+                        <Border Background="{DynamicResource FbAsh}" CornerRadius="8" Padding="13,11"
+                                IsVisible="{Binding PrivacyPreview, Converter={x:Static conv:FrameConverters.IsNotNull}}">
+                            <ScrollViewer MaxHeight="180">
+                                <TextBlock Text="{Binding PrivacyPreview}" Classes="mono" FontSize="10"
+                                           Foreground="{DynamicResource FbPewter}" TextWrapping="Wrap" />
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- License -->
+                <Border Classes="card" IsVisible="{Binding SectionIndex, Converter={x:Static vm:TabIndex.Three}}">
+                    <StackPanel Spacing="12">
+                        <DockPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="9">
+                                <Ellipse Width="6" Height="6" Fill="{DynamicResource FbGreen}" VerticalAlignment="Center" />
+                                <TextBlock Classes="cardTitle" Text="Fieldbench Pro" />
+                            </StackPanel>
+                            <Border DockPanel.Dock="Right" HorizontalAlignment="Right" CornerRadius="20" Padding="10,3"
+                                    Background="{DynamicResource FbGreenTint}">
+                                <TextBlock Text="{Binding TierLabel}" FontSize="11" FontWeight="Medium"
+                                           Foreground="{DynamicResource FbGreen}" />
+                            </Border>
+                        </DockPanel>
+
+                        <DockPanel IsVisible="{Binding IsPro}">
+                            <TextBlock Classes="k" Text="{DynamicResource L.LicenseKey}" />
+                            <TextBlock Text="{Binding LicenseKeyMasked}" Classes="mono" FontSize="11.5"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                        <DockPanel IsVisible="{Binding IsPro}">
+                            <TextBlock Classes="k" Text="{DynamicResource L.LicensedTo}" />
+                            <TextBlock Text="{Binding LicensedTo}" FontSize="12" Foreground="{DynamicResource FbGraphite}"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Validation}" />
+                            <TextBlock Text="{DynamicResource L.NoPhoneHome}" FontSize="12"
+                                       Foreground="{DynamicResource FbGraphite}" TextWrapping="Wrap"
+                                       VerticalAlignment="Center" />
+                        </DockPanel>
+
+                        <Button Classes="primary" Content="{DynamicResource L.StartTrial}" HorizontalAlignment="Left"
+                                Command="{Binding StartTrialCommand}" IsVisible="{Binding CanStartTrial}" />
+
+                        <!-- online one-click activation -->
+                        <DockPanel IsVisible="{Binding !IsPro}">
+                            <TextBlock Classes="k" Text="{DynamicResource L.LicenseKey}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBox Text="{Binding LicenseKeyInput}" Classes="mono" Width="240"
+                                         Watermark="FB1-XXXX-XXXX-XXXX" MinHeight="30" FontSize="11.5" />
+                                <Button Classes="primary" Height="30" Content="{DynamicResource L.Activate}"
+                                        Command="{Binding ActivateOnlineCommand}"
+                                        IsEnabled="{Binding !IsActivating}" />
+                            </StackPanel>
+                        </DockPanel>
+
+                        <Border Height="1" Background="{DynamicResource FbCloud}" Margin="0,4" />
+
+                        <!-- offline activation -->
+                        <Border Background="{DynamicResource FbAsh}" CornerRadius="8" Padding="15,13">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Height="28" Padding="13,0" VerticalAlignment="Center"
+                                        Background="{DynamicResource FbPanel}" BorderBrush="{DynamicResource FbCloud}"
+                                        BorderThickness="1" CornerRadius="4" FontSize="11.5"
+                                        Foreground="{DynamicResource FbGraphite}"
+                                        Content="{DynamicResource L.ImportActivation}"
+                                        Click="OnImportActivation" />
+                                <TextBlock TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource FbPewter}"
+                                           LineHeight="18" Margin="0,0,12,0">
+                                    <Run Text="{DynamicResource L.OfflineActivation}" FontWeight="Medium"
+                                         Foreground="{DynamicResource FbGraphite}" />
+                                    <Run Text="{DynamicResource L.MachineCodeIs}" />
+                                    <Run Text="{Binding MachineCode}" FontFamily="{StaticResource FbMono}"
+                                         Foreground="{DynamicResource FbCarbon}" />
+                                    <Run Text="{DynamicResource L.OfflineHow}" />
+                                </TextBlock>
+                            </DockPanel>
+                        </Border>
+
+                        <TextBlock Text="{Binding ActivationMessage}" FontSize="11.5"
+                                   Foreground="{DynamicResource FbBlue}" TextWrapping="Wrap"
+                                   IsVisible="{Binding ActivationMessage, Converter={x:Static conv:FrameConverters.IsNotNull}}" />
+
+                        <DockPanel>
+                            <TextBlock Classes="k" Text="{DynamicResource L.Version}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{Binding AppVersion}" Classes="mono" FontSize="11.5"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

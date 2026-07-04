@@ -1,0 +1,244 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Fieldbench.App.ViewModels"
+        xmlns:v="using:Fieldbench.App.Views"
+        x:Class="Fieldbench.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Fieldbench"
+        Width="1440" Height="860"
+        MinWidth="1100" MinHeight="640"
+        Background="{DynamicResource FbBg}"
+        FontFamily="{StaticResource FbSans}"
+        FontSize="12">
+
+    <DockPanel>
+
+        <!-- ── titlebar: logo · session tabs · window controls ── -->
+        <Border DockPanel.Dock="Top" Height="40" Background="{DynamicResource FbBg}"
+                BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="16,0" Spacing="9"
+                            VerticalAlignment="Center">
+                    <Border Width="13" Height="13" BorderBrush="{DynamicResource FbBlue}" BorderThickness="1.5"
+                            CornerRadius="3">
+                        <Border Width="6" Height="1.5" Background="{DynamicResource FbBlue}"
+                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,3,0,0" />
+                    </Border>
+                    <TextBlock Text="{DynamicResource L.AppName}" FontSize="11" FontWeight="Medium"
+                               LetterSpacing="1.8" Foreground="{DynamicResource FbPewter}"
+                               VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0,0,10,0" Spacing="2"
+                            VerticalAlignment="Center">
+                    <Button Classes="act" Padding="8,0" Command="{Binding OpenSettingsCommand}"
+                            ToolTip.Tip="{DynamicResource L.Settings}">
+                        <Path Data="{StaticResource FbGearGeometry}" Fill="#588CFA"
+                              Width="15" Height="15" Stretch="Uniform" />
+                    </Button>
+                </StackPanel>
+
+                <!-- session tabs -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="10,0,0,0">
+                    <ItemsControl ItemsSource="{Binding Tabs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="2" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SessionViewModel">
+                                <Button Padding="0" Background="Transparent" BorderThickness="0"
+                                        Command="{Binding Main.SelectTabCommand}" CommandParameter="{Binding}">
+                                    <Border Height="34" Padding="14,0,8,0" CornerRadius="4,4,0,0"
+                                            Classes.active="{Binding IsTabActive}">
+                                        <Border.Styles>
+                                            <Style Selector="Border.active">
+                                                <Setter Property="Background" Value="{DynamicResource FbPanel}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource FbCloud}" />
+                                                <Setter Property="BorderThickness" Value="1,1,1,0" />
+                                            </Style>
+                                        </Border.Styles>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                            <Ellipse Classes="dot" Classes.on="{Binding IsConnected}" />
+                                            <TextBlock Text="{Binding TabTitle}" FontSize="12"
+                                                       Foreground="{DynamicResource FbGraphite}" VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding TabKind}" Classes="micro" VerticalAlignment="Center"
+                                                       Classes.activeKind="{Binding IsTabActive}">
+                                                <TextBlock.Styles>
+                                                    <Style Selector="TextBlock.activeKind">
+                                                        <Setter Property="Foreground" Value="{DynamicResource FbBlueOn}" />
+                                                    </Style>
+                                                </TextBlock.Styles>
+                                            </TextBlock>
+                                            <Button Classes="act" Content="✕" FontSize="9" Padding="4,0" Height="18"
+                                                    Command="{Binding Main.CloseTabCommand}" CommandParameter="{Binding}" />
+                                        </StackPanel>
+                                    </Border>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Classes="act" Content="+" FontSize="14" Width="30" Height="30" Margin="2,0,0,3"
+                            VerticalAlignment="Center" HorizontalContentAlignment="Center"
+                            Command="{Binding NewConnectionCommand}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- ── toolbar (active session) ── -->
+        <Border DockPanel.Dock="Top" Height="44" Background="{DynamicResource FbPanel}"
+                BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1">
+            <ContentControl Content="{Binding ActiveTab}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate x:DataType="vm:SessionViewModel">
+                        <v:SessionToolbar />
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </Border>
+
+        <!-- ── status bar ── -->
+        <Border DockPanel.Dock="Bottom" Height="28" Background="{DynamicResource FbPanel}"
+                BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,1,0,0">
+            <ContentControl Content="{Binding ActiveTab}">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate x:DataType="vm:SessionViewModel">
+                        <v:SessionStatusBar />
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </Border>
+
+        <!-- ── main: rail | center | side ── -->
+        <Grid ColumnDefinitions="212,*,316">
+
+            <!-- left rail -->
+            <Border Grid.Column="0" Background="{DynamicResource FbBg}"
+                    BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,1,0">
+                <ScrollViewer>
+                    <StackPanel Margin="0,14,0,10">
+                        <DockPanel Height="24" Margin="14,0,14,2">
+                            <TextBlock Text="{DynamicResource L.Connections}" Classes="micro" VerticalAlignment="Center" />
+                            <Button Classes="act" Content="+" DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                    Padding="6,0" Height="20" FontSize="13"
+                                    Command="{Binding NewConnectionCommand}" />
+                        </DockPanel>
+
+                        <TextBlock Text="{DynamicResource L.NothingYet}" FontSize="11.5"
+                                   Foreground="{DynamicResource FbGhostText}" Margin="14,10"
+                                   IsVisible="{Binding !Tree.Count}" />
+
+                        <ItemsControl ItemsSource="{Binding Tree}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ConnectionNodeViewModel">
+                                    <StackPanel>
+                                        <DockPanel Height="28" Margin="14,0">
+                                            <Ellipse Classes="dot" Classes.on="{Binding IsOnline}"
+                                                     DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                            <TextBlock Text="{Binding Meta}" Classes="micro" DockPanel.Dock="Right"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding Name}" FontSize="12"
+                                                       Foreground="{DynamicResource FbCarbon}" VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis" />
+                                        </DockPanel>
+                                        <ItemsControl ItemsSource="{Binding Sessions}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:SessionNodeViewModel">
+                                                    <Button Padding="0" Background="Transparent" BorderThickness="0"
+                                                            HorizontalAlignment="Stretch"
+                                                            HorizontalContentAlignment="Stretch"
+                                                            Command="{Binding OpenCommand}">
+                                                        <Border Height="28" Classes.activeRow="{Binding IsActive}">
+                                                            <Border.Styles>
+                                                                <Style Selector="Border.activeRow">
+                                                                    <Setter Property="Background" Value="{DynamicResource FbBlueTint2}" />
+                                                                </Style>
+                                                            </Border.Styles>
+                                                            <Grid>
+                                                                <Rectangle Width="2" HorizontalAlignment="Left"
+                                                                           Fill="{DynamicResource FbBlue}"
+                                                                           IsVisible="{Binding IsActive}" />
+                                                                <Rectangle Width="1" HorizontalAlignment="Left" Margin="20,0,0,0"
+                                                                           Fill="{DynamicResource FbCloud}" />
+                                                                <DockPanel Margin="35,0,14,0">
+                                                                    <TextBlock Text="{Binding KindTag}" Classes="micro"
+                                                                               DockPanel.Dock="Right" VerticalAlignment="Center"
+                                                                               Classes.activeKind="{Binding IsActive}">
+                                                                        <TextBlock.Styles>
+                                                                            <Style Selector="TextBlock.activeKind">
+                                                                                <Setter Property="Foreground" Value="{DynamicResource FbBlueOn}" />
+                                                                            </Style>
+                                                                        </TextBlock.Styles>
+                                                                    </TextBlock>
+                                                                    <TextBlock Text="{Binding Name}" FontSize="12"
+                                                                               Foreground="{DynamicResource FbPewter}"
+                                                                               VerticalAlignment="Center" />
+                                                                </DockPanel>
+                                                            </Grid>
+                                                        </Border>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="{DynamicResource L.Profiles}" Classes="micro" Margin="14,18,14,2" Height="24" />
+                        <ItemsControl ItemsSource="{Binding Profiles}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ProfileNode">
+                                    <Button Padding="0" Background="Transparent" BorderThickness="0"
+                                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                            Command="{Binding OpenCommand}">
+                                        <TextBlock Text="{Binding Name}" FontSize="12"
+                                                   Foreground="{DynamicResource FbPewter}"
+                                                   Height="28" Padding="14,6" />
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- center: timeline + proto panel -->
+            <Grid Grid.Column="1" Background="{DynamicResource FbPanel}">
+                <!-- empty state -->
+                <StackPanel IsVisible="{Binding ShowEmptyState}" VerticalAlignment="Center"
+                            HorizontalAlignment="Center" Spacing="10">
+                    <Border Width="28" Height="28" BorderBrush="{DynamicResource FbGhostText}" BorderThickness="1.5"
+                            CornerRadius="6" HorizontalAlignment="Center">
+                        <Border Width="13" Height="1.5" Background="{DynamicResource FbGhostText}"
+                                HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,6,0,0" />
+                    </Border>
+                    <TextBlock Text="{DynamicResource L.EmptyTimeline}" FontSize="12.5"
+                               Foreground="{DynamicResource FbGhostText}" />
+                </StackPanel>
+
+                <ContentControl Content="{Binding ActiveTab}" IsVisible="{Binding HasActiveTab}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate x:DataType="vm:SessionViewModel">
+                            <v:SessionCenterView />
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+            </Grid>
+
+            <!-- right side: inspector + AI -->
+            <Border Grid.Column="2" Background="{DynamicResource FbPanel}"
+                    BorderBrush="{DynamicResource FbCloud}" BorderThickness="1,0,0,0">
+                <ContentControl Content="{Binding ActiveTab}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate x:DataType="vm:SessionViewModel">
+                            <v:SessionSideView />
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+            </Border>
+
+        </Grid>
+    </DockPanel>
+</Window>

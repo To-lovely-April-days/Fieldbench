@@ -1,0 +1,134 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             xmlns:v="using:Fieldbench.App.Views"
+             xmlns:conv="using:Fieldbench.App.Converters"
+             xmlns:lens="using:Fieldbench.Core.Lenses"
+             x:Class="Fieldbench.App.Views.SessionCenterView"
+             x:DataType="vm:SessionViewModel">
+
+    <UserControl.Styles>
+        <!-- timeline row states -->
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinHeight" Value="26" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="CornerRadius" Value="0" />
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource FbBlueTint2}" />
+        </Style>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource FbAsh}" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- ── timeline ── -->
+        <Grid Grid.Row="0" RowDefinitions="Auto,Auto,Auto,*">
+
+            <!-- column header -->
+            <Grid Grid.Row="0" Height="26" Margin="14,0,6,0"
+                  ColumnDefinitions="96,52,52,40,*,300,30">
+                <TextBlock Grid.Column="0" Text="{DynamicResource L.Time}" Classes="micro" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="{DynamicResource L.DeltaMs}" Classes="micro" VerticalAlignment="Center"
+                           TextAlignment="Right" Margin="0,0,12,0" />
+                <TextBlock Grid.Column="2" Text="{DynamicResource L.Dir}" Classes="micro" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="3" Text="{DynamicResource L.Len}" Classes="micro" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="4" Text="{DynamicResource L.Frame}" Classes="micro" VerticalAlignment="Center"
+                           IsVisible="{Binding !ShowAsciiColumn}" />
+                <TextBlock Grid.Column="4" Text="{DynamicResource L.Ascii}" Classes="micro" VerticalAlignment="Center"
+                           IsVisible="{Binding ShowAsciiColumn}" />
+                <TextBlock Grid.Column="5" Text="{DynamicResource L.Hex}" Classes="micro" VerticalAlignment="Center" />
+            </Grid>
+            <Border Grid.Row="0" VerticalAlignment="Bottom" Height="1" Background="{DynamicResource FbCloud}" />
+
+            <!-- filter strip -->
+            <Border Grid.Row="1" Background="{DynamicResource FbPanel}" Padding="14,4,14,4"
+                    BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1">
+                <DockPanel LastChildFill="False">
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="10">
+                        <TextBox Text="{Binding FilterText}" Watermark="{DynamicResource L.FilterPlaceholder}"
+                                 Width="220" MinHeight="24" Height="24" FontSize="11.5" />
+                        <ComboBox ItemsSource="{Binding DirectionFilters}"
+                                  SelectedItem="{Binding FilterDirectionLabel}"
+                                  MinHeight="24" Height="24" FontSize="11" Width="70"
+                                  FontFamily="{StaticResource FbMono}" />
+                        <CheckBox IsChecked="{Binding FilterErrorsOnly}" Content="{DynamicResource L.FilterErrors}"
+                                  FontSize="11.5" MinHeight="24" />
+                    </StackPanel>
+                    <Button DockPanel.Dock="Right" Classes="act" Height="24" FontSize="11.5">
+                        <Button.Flyout>
+                            <MenuFlyout>
+                                <MenuItem Header="CSV" Command="{Binding ExportCommand}" CommandParameter="csv" />
+                                <MenuItem Header="JSON" Command="{Binding ExportCommand}" CommandParameter="json" />
+                                <MenuItem Header="Raw bin" Command="{Binding ExportCommand}" CommandParameter="bin" />
+                                <MenuItem Header="Text log" Command="{Binding ExportCommand}" CommandParameter="txt" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="↓" FontSize="10" Foreground="{DynamicResource FbSilver}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{DynamicResource L.Export}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </DockPanel>
+            </Border>
+
+            <!-- protocol detection chip -->
+            <Border Grid.Row="2" Height="40" Background="{DynamicResource FbBlueTint}"
+                    BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1"
+                    IsVisible="{Binding HasDetection}">
+                <DockPanel Margin="14,0" LastChildFill="False">
+                    <TextBlock DockPanel.Dock="Left" Text="⌁" FontSize="13" Foreground="{DynamicResource FbBlue}"
+                               VerticalAlignment="Center" />
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Margin="12,0,0,0" Spacing="6"
+                                VerticalAlignment="Center">
+                        <TextBlock FontSize="12.5" FontWeight="Medium" Foreground="{DynamicResource FbCarbon}"
+                                   Text="{Binding DetectionTitle}" />
+                        <TextBlock FontSize="12.5" Foreground="{DynamicResource FbGraphite}" Text="—" />
+                        <TextBlock Classes="mono" FontSize="11" Foreground="{DynamicResource FbPewter}"
+                                   VerticalAlignment="Center" Text="{Binding DetectionMeta}" />
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Button Classes="primary" Height="26" Padding="14,0" FontSize="12"
+                                Content="{DynamicResource L.SwitchLens}" Command="{Binding ApplyDetectedLensCommand}" />
+                        <Button Classes="act" Content="✕" FontSize="11" Command="{Binding DismissDetectionCommand}" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- virtualized frame list -->
+            <ListBox Grid.Row="3" Name="TimelineList"
+                     ItemsSource="{Binding Frames}"
+                     SelectionMode="Multiple"
+                     Background="Transparent" BorderThickness="0" Padding="0"
+                     SelectionChanged="OnTimelineSelectionChanged">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="lens:Frame">
+                        <v:FrameRow />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- ── protocol panel ── -->
+        <Border Grid.Row="1" Height="246" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,1,0,0"
+                Background="{DynamicResource FbPanel}">
+            <Panel>
+                <v:MasterPanelView DataContext="{Binding MasterPanel}"
+                                   IsVisible="{Binding $parent[UserControl].((vm:SessionViewModel)DataContext).IsMaster}" />
+                <v:SlavePanelView DataContext="{Binding SlavePanel}"
+                                  IsVisible="{Binding $parent[UserControl].((vm:SessionViewModel)DataContext).IsSlave}" />
+                <v:MonitorPanelView IsVisible="{Binding $parent[UserControl].((vm:SessionViewModel)DataContext).IsMonitor}" />
+            </Panel>
+        </Border>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modbus CRC Check Failed: the 5 Real Causes (and how to tell them apart) | Fieldbench</title>
+<meta name="description" content="A Modbus CRC failure means the frame arrived but the math didn't. Electrical noise, termination, clock drift, bad reframing or a second master — each leaves a different fingerprint. The 5-minute triage.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"Modbus CRC check failed: the 5 real causes — and how to tell them apart","datePublished":"2026-07-20","author":{"@type":"Organization","name":"Fieldbench"}}
+</script>
+<style>
+:root{--blue:#3E6AE1;--blue-tint:#3E6AE114;--carbon:#171A20;--graphite:#393C41;--pewter:#5C5E62;--silver:#8E8E8E;--cloud:#EAEAEC;--ash:#F4F4F4;--bg:#FAFAFB;--red:#D9342B;--r:4px;
+--sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--carbon);background:#fff;-webkit-font-smoothing:antialiased;line-height:1.7}
+a{color:var(--blue);text-decoration:none}
+.wrap{max-width:680px;margin:0 auto;padding:0 28px}
+nav.top{height:60px;border-bottom:1px solid var(--cloud);position:sticky;top:0;background:rgba(255,255,255,.95);z-index:10}
+.nav-in{max-width:1120px;margin:0 auto;padding:0 28px;height:60px;display:flex;align-items:center;gap:28px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:500;font-size:13px;letter-spacing:.14em;color:var(--carbon)}
+.logo .mark{width:16px;height:16px;border:2px solid var(--blue);border-radius:4px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:3px;top:6px;width:7px;height:2px;background:var(--blue)}
+.nav-links{display:flex;gap:24px;font-size:13.5px}
+.nav-links a{color:var(--pewter)}
+.nav-cta{margin-left:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r);font-weight:500;background:var(--blue);color:#fff;height:38px;padding:0 20px;font-size:13.5px}
+article{padding:56px 0 30px}
+.meta{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--silver);display:flex;gap:12px}
+h1{font-size:32px;font-weight:500;letter-spacing:-.02em;line-height:1.25;margin:14px 0 10px}
+.lede{font-size:16px;color:var(--graphite)}
+h2{font-size:20px;font-weight:500;letter-spacing:-.01em;margin:40px 0 10px}
+p{font-size:14.5px;color:var(--graphite);margin:12px 0}
+p b{font-weight:500;color:var(--carbon)}
+.hexblock{background:var(--bg);border:1px solid var(--cloud);border-radius:8px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;color:var(--pewter);margin:16px 0;line-height:1.9;overflow-x:auto}
+.hexblock .bad{color:var(--red);font-weight:500}
+.hexblock .cm{color:var(--silver)}
+ul{margin:12px 0 12px 20px}
+li{font-size:14.5px;color:var(--graphite);margin:6px 0}
+.tell{background:var(--ash);border-radius:8px;padding:12px 16px;font-size:13.5px;color:var(--graphite);margin:14px 0}
+.tell b{font-weight:500}
+.banner{margin:48px 0;background:var(--bg);border:1px solid var(--cloud);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:18px}
+.banner p{font-size:13.5px;flex:1;margin:0}
+footer{border-top:1px solid var(--cloud);padding:28px 0 44px}
+footer .wrap{display:flex;gap:18px;font-size:12.5px;color:var(--silver);max-width:680px}
+footer a{color:var(--pewter)}
+@media(max-width:700px){.banner{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="nav-in">
+    <a class="logo" href="fieldbench-web-home.html"><span class="mark"></span>FIELDBENCH</a>
+    <div class="nav-links"><a href="fieldbench-web-home.html#features">Features</a><a href="fieldbench-web-home.html#pricing">Pricing</a><a href="fieldbench-web-docs.html">Docs</a><a href="fieldbench-web-tools.html">Free tools</a><a href="fieldbench-web-blog.html">Blog</a></div>
+    <div class="nav-cta"><a class="btn" href="fieldbench-web-home.html#pricing">Download free</a></div>
+  </div>
+</nav>
+
+<article class="wrap">
+  <div class="meta"><span>TROUBLESHOOTING</span><span>JULY 2026 · 6 MIN READ</span></div>
+  <h1>Modbus CRC check failed: the 5 real causes — and how to tell them apart</h1>
+  <p class="lede">A CRC failure is a specific kind of bad news: the frame arrived, its structure even parses, but the math at the end doesn't agree. That narrows the suspects considerably — if you know what each one's fingerprint looks like.</p>
+
+  <div class="hexblock">
+    01 03 14 00 E6 00 E7 01 90 00 FA 04 DC 00 03 09 C4 00 00 00 01 00 2A <span class="bad">3B 91</span><br>
+    <span class="cm">received CRC 3B 91 · computed 3A 91 — a single flipped bit, twenty bytes in</span>
+  </div>
+
+  <h2>1 · Electrical noise</h2>
+  <p>The most common culprit on a factory floor. A contactor pulls in, a VFD switches, a cable run shares a tray with three-phase power — and one bit flips mid-frame.</p>
+  <div class="tell"><b>Fingerprint:</b> sporadic failures on otherwise perfectly structured frames, often correlated with something mechanical happening. Received and computed CRCs differ by a small hamming distance.</div>
+  <p><b>Fix:</b> shielded twisted pair with the shield grounded at one end, route away from power cables, ferrites on the worst offenders.</p>
+
+  <h2>2 · Missing or wrong termination</h2>
+  <p>An unterminated 485 line rings. Reflections superimpose on the signal and corrupt edges — mildly at 9600 baud on short runs, brutally at 115200 on long ones.</p>
+  <div class="tell"><b>Fingerprint:</b> error rate scales with baud rate and cable length. Everything works on the bench, falls apart at the far cabinet.</div>
+  <p><b>Fix:</b> 120 Ω across A/B at <b>both</b> physical ends of the trunk (not on stubs, not on every device), plus bias resistors so the idle line has a defined state.</p>
+
+  <h2>3 · Marginal clock mismatch</h2>
+  <p>UARTs tolerate a few percent of baud error. Cheap slaves with RC oscillators drift with temperature — and sampling error accumulates along the frame.</p>
+  <div class="tell"><b>Fingerprint:</b> long frames fail more than short ones, and the corruption clusters toward the tail. Gets worse as the cabinet heats up through the shift.</div>
+  <p><b>Fix:</b> drop the baud rate and see if it vanishes. If it does, the slave's clock is the problem, not your wiring.</p>
+
+  <h2>4 · Your own tool split the frame wrong</h2>
+  <p>The dirty secret of RTU: the spec separates frames by 3.5 character times of silence, but a PC operating system can't observe serial timing that precisely. If your tool splits purely on timing, it will occasionally glue two frames together or cut one in half — then compute a CRC over the wrong span and blame the wire.</p>
+  <div class="tell"><b>Fingerprint:</b> "failed" frames whose hex looks like a response with the start of the next request stuck to the end, or a frame of suspiciously wrong length. The devices are innocent.</div>
+  <p><b>Fix:</b> use a tool that reframes with a CRC sliding window instead of trusting timestamps. (This failure mode is exactly why Fieldbench splits RTU frames with a hybrid silence + CRC-scan strategy.)</p>
+
+  <h2>5 · Two masters on the bus</h2>
+  <p>Someone left the SCADA polling while you debug, or a gateway retries behind your back. Two transmitters collide, bytes interleave, checksums die.</p>
+  <div class="tell"><b>Fingerprint:</b> bursts of garbage at a rhythm that isn't yours — usually the other master's poll interval. Frames from slave addresses you never asked for.</div>
+  <p><b>Fix:</b> monitor the bus passively before transmitting anything. If traffic is already there, find its owner first.</p>
+
+  <h2>The 5-minute triage</h2>
+  <ul>
+    <li>Listen first, talk second — passive monitoring reveals cause 5 instantly.</li>
+    <li>Halve the baud rate — if errors vanish, it's cause 2 or 3; check termination before blaming clocks.</li>
+    <li>Compare error timing with the plant — correlation with machinery says cause 1.</li>
+    <li>Read the failed hex — if it looks like two frames welded together, it's cause 4 and your tool owes you an apology.</li>
+  </ul>
+  <p>Or select the frame and let the AI run this triage for you — it reads the received-vs-computed CRC distance, the frame structure and the surrounding traffic, then ranks the causes above with a checklist.</p>
+
+  <div class="banner">
+    <p><b>Fieldbench</b> is a serial &amp; Modbus workbench with CRC-sliding reframing, passive bus monitoring, and an AI that explains broken frames. Free for single-connection work.</p>
+    <a class="btn" href="fieldbench-web-home.html#pricing">Download for Windows</a>
+  </div>
+</article>
+
+<footer><div class="wrap"><span>© 2026 Fieldbench</span><a href="fieldbench-web-blog.html">← All posts</a><a href="fieldbench-web-tools.html">Free tools</a></div></footer>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Fieldbench.App.ViewModels"
+        xmlns:conv="using:Fieldbench.App.Converters"
+        xmlns:master="using:Fieldbench.Core.Master"
+        x:Class="Fieldbench.App.Views.ScanWindow"
+        x:DataType="vm:ScanViewModel"
+        Title="Scan slaves"
+        Width="520" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{DynamicResource FbPanel}"
+        FontFamily="{StaticResource FbSans}"
+        FontSize="12">
+
+    <StackPanel>
+        <DockPanel Margin="20,18,20,0">
+            <TextBlock Text="{DynamicResource L.ScanTitle}" FontSize="16" FontWeight="Medium" />
+            <Button Classes="act" Content="✕" FontSize="11" DockPanel.Dock="Right" HorizontalAlignment="Right"
+                    Click="OnClose" />
+        </DockPanel>
+
+        <StackPanel Margin="20,16,20,0">
+            <!-- params -->
+            <Grid ColumnDefinitions="*,10,*,10,1.4*,10,*" Margin="0,0,0,12">
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.From}" Classes="micro" />
+                    <NumericUpDown Value="{Binding From}" Minimum="1" Maximum="247" FormatString="0" MinHeight="30" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.To}" Classes="micro" />
+                    <NumericUpDown Value="{Binding To}" Minimum="1" Maximum="247" FormatString="0" MinHeight="30" />
+                </StackPanel>
+                <StackPanel Grid.Column="4" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.Probe}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding ProbeFunctions}" SelectedItem="{Binding ProbeFunction}"
+                              HorizontalAlignment="Stretch" FontFamily="{StaticResource FbMono}" FontSize="11.5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding, Converter={x:Static conv:MiscConverters.ProbeFcLabel}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Column="6" Spacing="5">
+                    <TextBlock Text="{DynamicResource L.Timeout}" Classes="micro" />
+                    <ComboBox ItemsSource="{Binding TimeoutOptions}" SelectedItem="{Binding TimeoutMs}"
+                              HorizontalAlignment="Stretch" FontFamily="{StaticResource FbMono}" FontSize="11.5">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding, Converter={x:Static conv:MiscConverters.TimeoutLabel}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <!-- sweep option -->
+            <CheckBox IsChecked="{Binding SweepParams}" Margin="0,0,0,14">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource L.SweepParams}" FontSize="12"
+                               Foreground="{DynamicResource FbGraphite}" />
+                    <TextBlock Text="{DynamicResource L.SweepHint}" FontSize="11"
+                               Foreground="{DynamicResource FbSilver}" />
+                </StackPanel>
+            </CheckBox>
+
+            <!-- progress -->
+            <StackPanel IsVisible="{Binding IsRunning}" Margin="0,0,0,6">
+                <Border Height="3" CornerRadius="2" Background="{DynamicResource FbCloud}" Margin="0,0,0,7">
+                    <Rectangle HorizontalAlignment="Left" Fill="{DynamicResource FbBlue}"
+                               Width="{Binding Progress, Converter={x:Static vm:UiMath.Times480}}" />
+                </Border>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBlock Text="{DynamicResource L.Probing}" Classes="mono" FontSize="10.5"
+                                   Foreground="{DynamicResource FbSilver}" />
+                        <TextBlock Text="{Binding CurrentUnit}" Classes="mono" FontSize="10.5"
+                                   Foreground="{DynamicResource FbGraphite}" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding ProgressLabel}" Classes="mono" FontSize="10.5"
+                               Foreground="{DynamicResource FbSilver}" DockPanel.Dock="Right"
+                               HorizontalAlignment="Right" />
+                </DockPanel>
+            </StackPanel>
+
+            <!-- results -->
+            <Border BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,1,0,0" Margin="0,8,0,0"
+                    Padding="0,12,0,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,0,0,4">
+                        <TextBlock Text="{DynamicResource L.Responding}" Classes="micro" />
+                        <TextBlock Text="{Binding Hits.Count}" Classes="mono" FontSize="10.5" FontWeight="Medium"
+                                   Foreground="{DynamicResource FbGreen}" />
+                        <TextBlock Text="{DynamicResource L.Found}" Classes="micro"
+                                   Foreground="{DynamicResource FbGreen}" />
+                    </StackPanel>
+                    <ItemsControl ItemsSource="{Binding Hits}" MaxHeight="200">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="master:ScanHit">
+                                <Border Height="32" BorderBrush="{DynamicResource FbRowLine}" BorderThickness="0,0,0,1">
+                                    <DockPanel VerticalAlignment="Center">
+                                        <TextBlock Text="✓" FontSize="11" Foreground="{DynamicResource FbGreen}"
+                                                   Margin="0,0,10,0" />
+                                        <TextBlock Classes="mono" FontSize="12" FontWeight="Medium"
+                                                   Foreground="{DynamicResource FbCarbon}" Margin="0,0,10,0">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="@{0:00}">
+                                                    <Binding Path="Unit" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Classes="mono" FontSize="10.5" Foreground="{DynamicResource FbSilver}"
+                                                   Margin="0,0,10,0" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:0} ms">
+                                                    <Binding Path="ResponseMs" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding ResultLabel}" Classes="mono" FontSize="10.5"
+                                                   Foreground="{DynamicResource FbPewter}" VerticalAlignment="Center" />
+                                        <Button DockPanel.Dock="Right" Padding="0" Background="Transparent"
+                                                BorderThickness="0" HorizontalAlignment="Right"
+                                                Command="{Binding $parent[ItemsControl].((vm:ScanViewModel)DataContext).OpenAsMasterCommand}"
+                                                CommandParameter="{Binding}">
+                                            <TextBlock Text="{DynamicResource L.OpenAsMaster}" FontSize="11.5"
+                                                       FontWeight="Medium" Foreground="{DynamicResource FbBlue}" />
+                                        </Button>
+                                    </DockPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <StackPanel Orientation="Horizontal" Spacing="10" Height="32" IsVisible="{Binding IsRunning}">
+                        <TextBlock Text="{DynamicResource L.Scanning}" FontSize="12"
+                                   Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding CurrentUnit}" Classes="mono" FontSize="12"
+                                   Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" />
+                        <TextBlock Text="…" FontSize="12" Foreground="{DynamicResource FbSilver}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- footer -->
+        <Border BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,1,0,0" Padding="20,14" Margin="0,4,0,0">
+            <DockPanel LastChildFill="False">
+                <Button Classes="ghost" Command="{Binding StartCommand}">
+                    <Panel>
+                        <TextBlock Text="{DynamicResource L.StartScan}" Foreground="{DynamicResource FbBlue}"
+                                   FontWeight="Medium" IsVisible="{Binding !IsRunning}" />
+                        <TextBlock Text="{DynamicResource L.StopScan}" Foreground="{DynamicResource FbRed}"
+                                   IsVisible="{Binding IsRunning}" />
+                    </Panel>
+                </Button>
+                <TextBlock Text="{DynamicResource L.ScanKeep}" FontSize="11" Foreground="{DynamicResource FbSilver}"
+                           DockPanel.Dock="Right" HorizontalAlignment="Right" VerticalAlignment="Center" />
+            </DockPanel>
+        </Border>
+    </StackPanel>
+</Window>

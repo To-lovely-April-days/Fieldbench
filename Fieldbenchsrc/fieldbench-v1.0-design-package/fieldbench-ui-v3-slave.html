@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — Slave session · TCP simulator</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --blue-tint2:#3E6AE10E;
+  --carbon:#171A20; --graphite:#393C41; --pewter:#5C5E62; --silver:#8E8E8E;
+  --cloud:#EAEAEC; --ash:#F4F4F4; --bg:#FAFAFB; --white:#FFFFFF;
+  --green:#1FA463; --amber:#D9870A; --red:#D9342B;
+  --f-addr:#8A56D6; --f-func:#0B3E97; --f-len:#00B386; --f-data:#5C5E62; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.titlebar{height:40px;display:flex;align-items:stretch;border-bottom:1px solid var(--cloud);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tabs{display:flex;align-items:flex-end;flex:1;padding:6px 10px 0;gap:2px}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;height:34px;font-size:12px;color:var(--silver);border:1px solid transparent;border-bottom:none;border-radius:var(--r) var(--r) 0 0}
+.tab .dot{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.tab .dot.on{background:var(--green)}
+.tab .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.tab.active{background:var(--white);border-color:var(--cloud);color:var(--carbon)}
+.tab.active .kind{color:var(--blue)}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 10px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.toolbar{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--white);border-bottom:1px solid var(--cloud);flex-shrink:0}
+.ctl{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.ctl .cell{display:flex;align-items:center;gap:7px;padding:0 11px;font-size:12px}
+.ctl .cell + .cell{border-left:1px solid var(--cloud)}
+.ctl .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--silver)}
+.ctl .v{font-family:var(--mono);font-size:11.5px;color:var(--carbon)}
+.ctl .car{color:var(--silver);font-size:8px}
+.lens{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.lens span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--pewter)}
+.lens span.on{background:var(--blue-tint);color:var(--blue);font-weight:500}
+.spacer{flex:1}
+.run{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pewter)}
+.run .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.run b{font-weight:500;color:var(--carbon)}
+.run .t{font-family:var(--mono);font-size:11.5px;color:var(--silver)}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr 316px;min-height:0}
+.rail{background:var(--bg);border-right:1px solid var(--cloud);padding:14px 0}
+.rh{display:flex;align-items:center;height:24px;padding:0 14px}
+.rh span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.trow{display:flex;align-items:center;gap:8px;height:28px;padding:0 14px;font-size:12px;color:var(--pewter)}
+.trow .st{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.trow .st.on{background:var(--green)}
+.trow.conn{color:var(--carbon)}
+.trow .m{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.trow.sess{padding-left:35px;position:relative}
+.trow.sess::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--cloud)}
+.trow.sess .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-left:auto}
+.trow.active{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue);color:var(--carbon)}
+.trow.active .kind{color:var(--blue)}
+.center{display:flex;flex-direction:column;min-width:0;background:var(--white)}
+.thead{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px;height:26px;align-items:center;padding:0 14px;border-bottom:1px solid var(--cloud)}
+.thead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.rows{flex:1;overflow:hidden}
+.row{display:grid;grid-template-columns:104px 52px 48px 40px 1fr 336px;align-items:center;height:26px;padding:0 14px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.row .ts{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.row .ts b{color:var(--graphite);font-weight:400}
+.row .dt{font-family:var(--mono);font-size:10.5px;color:var(--silver);text-align:right;padding-right:12px}
+.dir{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em}
+.dir.tx{color:var(--amber)} .dir.rx{color:#1989FA}
+.row .len{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.sum{display:flex;align-items:center;gap:9px}
+.tok{font-family:var(--mono);font-size:11px;font-weight:500}
+.tok.addr{color:var(--f-addr)} .tok.func{color:var(--f-func)}
+.sum .txt{color:var(--graphite);font-size:11.5px}
+.tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;margin-left:auto;color:var(--green)}
+.row .hex{font-family:var(--mono);font-size:11px;color:var(--silver);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row.sel{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue)}
+.proto{height:246px;border-top:1px solid var(--cloud);background:var(--white);display:flex;flex-direction:column;flex-shrink:0}
+.ptabs{display:flex;align-items:center;height:34px;border-bottom:1px solid var(--cloud);padding:0 14px;gap:20px}
+.ptab{height:33px;display:flex;align-items:center;font-size:12px;color:var(--silver);border-bottom:1.5px solid transparent}
+.ptab.on{color:var(--carbon);border-bottom-color:var(--blue);font-weight:500}
+.ptabs .info{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--silver)}
+.ghead,.grow{display:grid;grid-template-columns:80px 1fr 128px 128px 170px 148px;align-items:center;padding:0 14px}
+.ghead{height:26px;border-bottom:1px solid var(--cloud)}
+.ghead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.grow{height:29px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.grow .a{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.grow .n{color:var(--carbon)}
+.grow .ty{font-family:var(--mono);font-size:10.5px;color:var(--silver)}
+.grow .v{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--carbon)}
+.grow .v small{font-size:10px;color:var(--silver);font-weight:400;margin-left:4px}
+.grow .gen{font-family:var(--mono);font-size:10.5px;color:var(--blue)}
+.grow .gen.static{color:var(--silver)}
+.grow .raw{font-family:var(--mono);font-size:10.5px;color:var(--silver)}
+.side{background:var(--white);border-left:1px solid var(--cloud);display:flex;flex-direction:column}
+.shead{display:flex;align-items:baseline;gap:8px;padding:13px 16px 10px}
+.shead .t{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.shead .fid{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.inspector{padding:0 16px 14px;border-bottom:1px solid var(--cloud)}
+.bytes{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin-bottom:12px}
+.by{height:22px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;border-radius:3px;background:var(--ash);color:var(--f-data)}
+.by.mbap{color:var(--f-len);background:#00B38612}
+.by.addr{color:var(--f-addr);background:#8A56D612}
+.by.func{color:var(--f-func);background:#0B3E9710}
+.flds{display:flex;flex-direction:column}
+.fld{display:flex;align-items:center;gap:10px;height:25px;font-size:11.5px;border-bottom:1px solid rgba(23,26,32,.04)}
+.fld:last-child{border-bottom:none}
+.fld .sw{width:2px;height:12px;border-radius:1px;flex-shrink:0}
+.fld .k{color:var(--silver);width:94px;font-size:11px}
+.fld .v{font-family:var(--mono);color:var(--carbon);font-size:11.5px}
+.clients{padding:12px 16px;border-bottom:1px solid var(--cloud)}
+.crow{display:flex;align-items:center;gap:9px;height:26px;font-size:11.5px;color:var(--graphite)}
+.crow .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.crow .m{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.ai{flex:1;display:flex;flex-direction:column}
+.ai .shead .t,.ai .shead .sp{color:var(--blue)}
+.aiempty{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 16px}
+.aiempty .big{font-size:12.5px;color:var(--graphite);margin-bottom:8px}
+.check{display:flex;align-items:center;gap:10px;height:30px;font-size:11.5px;color:var(--graphite);border-bottom:1px solid rgba(23,26,32,.04)}
+.check:last-child{border-bottom:none}
+.check .n{font-family:var(--mono);font-size:10px;color:var(--blue)}
+.check .go{margin-left:auto;color:var(--silver);font-size:10px}
+.aifoot{display:flex;align-items:center;height:32px;padding:0 16px;border-top:1px solid var(--cloud);font-size:11px;color:var(--silver)}
+.aifoot b{font-family:var(--mono);color:var(--blue);font-weight:500;margin:0 4px}
+.aifoot a{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:500}
+.status{height:28px;display:flex;align-items:center;padding:0 14px;background:var(--white);border-top:1px solid var(--cloud);font-family:var(--mono);font-size:10.5px;color:var(--silver);flex-shrink:0}
+.status .item{display:flex;align-items:center;gap:6px;padding:0 14px;border-left:1px solid var(--cloud)}
+.status .item:first-child{border-left:none;padding-left:0}
+.status .item b{color:var(--graphite);font-weight:400}
+.status .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs">
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">mon</span></div>
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">rtu·m</span></div>
+      <div class="tab active"><span class="dot on"></span>TCP :502 <span class="kind">slv</span></div>
+    </div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="ctl">
+      <div class="cell"><span class="k">Listen</span><span class="v">0.0.0.0 : 502</span></div>
+      <div class="cell"><span class="k">Unit ID</span><span class="v">01</span><span class="car">▾</span></div>
+    </div>
+    <div class="lens"><span class="on">Modbus TCP · Slave</span></div>
+    <div class="spacer"></div>
+    <div class="run"><span class="dot"></span><b>Listening</b><span class="t">1 client</span></div>
+  </div>
+
+  <div class="main">
+    <aside class="rail">
+      <div class="rh"><span>Connections</span></div>
+      <div class="trow conn"><span class="st on"></span>COM3 — CH340<span class="m">9600</span></div>
+      <div class="trow sess">Monitor<span class="kind">raw</span></div>
+      <div class="trow sess">Master<span class="kind">rtu</span></div>
+      <div class="trow conn"><span class="st on"></span>TCP Server<span class="m">:502</span></div>
+      <div class="trow sess active">Slave<span class="kind">tcp</span></div>
+    </aside>
+
+    <section class="center">
+      <div class="thead"><span>Time</span><span style="text-align:right;padding-right:12px">Δ ms</span><span>Dir</span><span>Len</span><span>Frame</span><span>Hex</span></div>
+      <div class="rows">
+        <div class="row"><span class="ts">15:04:22.<b>101</b></span><span class="dt"></span><span class="dir rx">RX ↓</span><span class="len">12</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9 · request</span></span><span class="hex">00 A1 00 00 00 06 01 03 00 00 00 0A</span></div>
+        <div class="row"><span class="ts">15:04:22.<b>103</b></span><span class="dt">2</span><span class="dir tx">TX ↑</span><span class="len">29</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC03</span><span class="txt">20 bytes · response</span><span class="tag">OK</span></span><span class="hex">00 A1 00 00 00 17 01 03 14 00 F3 00 E7 …</span></div>
+        <div class="row sel"><span class="ts">15:04:22.<b>390</b></span><span class="dt"></span><span class="dir rx">RX ↓</span><span class="len">12</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC06</span><span class="txt">Write single 40009 = 1</span></span><span class="hex">00 A2 00 00 00 06 01 06 00 08 00 01</span></div>
+        <div class="row"><span class="ts">15:04:22.<b>391</b></span><span class="dt">1</span><span class="dir tx">TX ↑</span><span class="len">12</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC06</span><span class="txt">Echo · accepted</span><span class="tag">OK</span></span><span class="hex">00 A2 00 00 00 06 01 06 00 08 00 01</span></div>
+        <div class="row"><span class="ts">15:04:23.<b>101</b></span><span class="dt"></span><span class="dir rx">RX ↓</span><span class="len">12</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9 · request</span></span><span class="hex">00 A3 00 00 00 06 01 03 00 00 00 0A</span></div>
+        <div class="row"><span class="ts">15:04:23.<b>103</b></span><span class="dt">2</span><span class="dir tx">TX ↑</span><span class="len">29</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC03</span><span class="txt">20 bytes · response</span><span class="tag">OK</span></span><span class="hex">00 A3 00 00 00 17 01 03 14 00 F5 00 E7 …</span></div>
+        <div class="row"><span class="ts">15:04:24.<b>101</b></span><span class="dt"></span><span class="dir rx">RX ↓</span><span class="len">12</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC03</span><span class="txt">Read holding 0–9 · request</span></span><span class="hex">00 A4 00 00 00 06 01 03 00 00 00 0A</span></div>
+        <div class="row"><span class="ts">15:04:24.<b>102</b></span><span class="dt">1</span><span class="dir tx">TX ↑</span><span class="len">29</span><span class="sum"><span class="tok addr">U01</span><span class="tok func">FC03</span><span class="txt">20 bytes · response</span><span class="tag">OK</span></span><span class="hex">00 A4 00 00 00 17 01 03 14 00 F8 00 E7 …</span></div>
+      </div>
+
+      <div class="proto">
+        <div class="ptabs">
+          <div class="ptab on">Holding 4x</div>
+          <div class="ptab">Input 3x</div>
+          <div class="ptab">Coils 0x</div>
+          <div class="ptab">Discrete 1x</div>
+          <span class="info">Sparse map · illegal address → EXC 02 auto</span>
+        </div>
+        <div class="ghead"><span>Address</span><span>Tag</span><span>Type</span><span>Value</span><span>Generator</span><span>Raw</span></div>
+        <div class="grow"><span class="a">40001</span><span class="n">temp_pv</span><span class="ty">uint16 ×0.1</span><span class="v">24.3<small>°C</small></span><span class="gen">Sine · 20–30 · 10 s</span><span class="raw">00 F3</span></div>
+        <div class="grow"><span class="a">40002</span><span class="n">press_pv</span><span class="ty">uint16 ×0.001</span><span class="v">1.013<small>bar</small></span><span class="gen static">Static</span><span class="raw">03 F5</span></div>
+        <div class="grow"><span class="a">40003</span><span class="n">flow_pv</span><span class="ty">uint16 ×0.1</span><span class="v">41.2<small>L/min</small></span><span class="gen">Increment · +0.1 / s</span><span class="raw">01 9C</span></div>
+        <div class="grow"><span class="a">40005</span><span class="n">temp_sp</span><span class="ty">float32 · AB CD</span><span class="v">25.0<small>°C</small></span><span class="gen static">Static</span><span class="raw">41 C8 00 00</span></div>
+        <div class="grow"><span class="a">40009</span><span class="n">status</span><span class="ty">uint16 · bits</span><span class="v">0x0001</span><span class="gen static">Static · written by client</span><span class="raw">00 01</span></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="inspector">
+        <div class="shead" style="padding-left:0;padding-right:0"><span class="t">Byte inspector</span><span class="fid">#0288 · RX · 12 B</span></div>
+        <div class="bytes">
+          <span class="by mbap">00</span><span class="by mbap">A2</span><span class="by mbap">00</span><span class="by mbap">00</span><span class="by mbap">00</span><span class="by mbap">06</span><span class="by addr">01</span><span class="by func">06</span>
+          <span class="by">00</span><span class="by">08</span><span class="by">00</span><span class="by">01</span>
+        </div>
+        <div class="flds">
+          <div class="fld"><span class="sw" style="background:var(--f-len)"></span><span class="k">Transaction</span><span class="v">0x00A2</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-len)"></span><span class="k">Length</span><span class="v">6</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-addr)"></span><span class="k">Unit ID</span><span class="v">0x01</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-func)"></span><span class="k">Function</span><span class="v">0x06 · Write single</span></div>
+          <div class="fld"><span class="sw" style="background:var(--f-data)"></span><span class="k">Register</span><span class="v">40009 ← 0x0001</span></div>
+        </div>
+      </div>
+
+      <div class="clients">
+        <div class="shead" style="padding:0 0 8px"><span class="t">Clients</span><span class="fid">1 connected</span></div>
+        <div class="crow"><span class="dot"></span>192.168.1.20<span class="m">req 214 · 00:06:41</span></div>
+      </div>
+
+      <div class="ai">
+        <div class="shead"><span class="sp" style="color:var(--blue)">✦</span><span class="t">AI explain</span></div>
+        <div class="aiempty">
+          <div class="big">Select requests to explain client behavior.</div>
+          <div class="check"><span class="n">01</span>Explain selection<span class="go">→</span></div>
+        </div>
+        <div class="aifoot">Trial <b>27 / 30</b> left <a href="#">Subscribe</a></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="status">
+    <span class="item"><span class="dot"></span><b>TCP :502 · LISTEN</b></span>
+    <span class="item">CLIENTS <b>1</b></span>
+    <span class="item">REQ <b>214</b></span>
+    <span class="item">EXC <b>0</b></span>
+  </div>
+</div>
+</body>
+</html>

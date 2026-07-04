@@ -1,0 +1,20 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Fieldbench.App.Views.ConfirmWindow"
+        Width="460" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        Background="{DynamicResource FbPanel}"
+        FontFamily="{StaticResource FbSans}"
+        FontSize="12">
+
+    <StackPanel Margin="20,18">
+        <TextBlock Name="TitleText" FontSize="15" FontWeight="Medium" Margin="0,0,0,10" />
+        <TextBlock Name="MessageText" FontSize="12" Foreground="{DynamicResource FbGraphite}" TextWrapping="Wrap"
+                   LineHeight="18" Margin="0,0,0,18" />
+        <DockPanel LastChildFill="False">
+            <Button Name="CancelBtn" Classes="ghost" Click="OnCancel" />
+            <Button Name="AcceptBtn" Classes="primary" DockPanel.Dock="Right" Click="OnAccept" />
+        </DockPanel>
+    </StackPanel>
+</Window>

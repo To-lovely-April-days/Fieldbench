@@ -1,0 +1,209 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Fieldbench.App.ViewModels"
+        xmlns:conv="using:Fieldbench.App.Converters"
+        x:Class="Fieldbench.App.Views.ImportReviewWindow"
+        x:DataType="vm:ImportReviewViewModel"
+        Title="Import point map"
+        Width="1180" Height="724"
+        WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource FbPanel}"
+        FontFamily="{StaticResource FbSans}"
+        FontSize="12">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- header -->
+        <Border Grid.Row="0" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1" Padding="22,16">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="✦" FontSize="14" Foreground="{DynamicResource FbBlue}" VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource L.ImportTitle}" FontSize="15" FontWeight="Medium"
+                               VerticalAlignment="Center" />
+                    <TextBlock Text="{DynamicResource L.ImportSubtitle}" FontSize="12"
+                               Foreground="{DynamicResource FbSilver}" VerticalAlignment="Center" Margin="4,0,0,0" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="16" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal" Spacing="4" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource L.AiTrial}" Classes="micro" VerticalAlignment="Center" />
+                        <TextBlock Text="·" Classes="micro" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource L.Extractions}" Classes="micro" VerticalAlignment="Center" />
+                        <TextBlock Text="{Binding QuotaLabel}" Classes="mono" FontSize="10" FontWeight="Medium"
+                                   Foreground="{DynamicResource FbBlue}" VerticalAlignment="Center" />
+                        <TextBlock Text="{DynamicResource L.AiLeft}" Classes="micro" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <Button Classes="act" Content="✕" FontSize="12" Command="{Binding CancelCommand}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- body -->
+        <Grid Grid.Row="1" ColumnDefinitions="372,*">
+
+            <!-- source pane -->
+            <Border Grid.Column="0" Background="{DynamicResource FbBg}" BorderBrush="{DynamicResource FbCloud}"
+                    BorderThickness="0,0,1,0" Padding="16">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Row="0" Text="{DynamicResource L.SourceLabel}" Classes="micro" Margin="0,0,0,10" />
+                    <Border Grid.Row="1" Background="{DynamicResource FbPanel}" BorderBrush="{DynamicResource FbCloud}"
+                            BorderThickness="1" CornerRadius="4" Padding="2">
+                        <TextBox Text="{Binding PasteText}" AcceptsReturn="True" TextWrapping="NoWrap"
+                                 FontFamily="{StaticResource FbMono}" FontSize="10.5" BorderThickness="0"
+                                 Background="Transparent" VerticalAlignment="Stretch"
+                                 Watermark="{DynamicResource L.PasteHere}" />
+                    </Border>
+                    <StackPanel Grid.Row="2" Margin="0,12,0,0" Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="14">
+                            <Button Classes="ghost" Padding="0" Command="{Binding ExtractCommand}">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{DynamicResource L.ReExtract}" FontSize="12"
+                                               Foreground="{DynamicResource FbPewter}" IsVisible="{Binding Extracted}" />
+                                    <TextBlock Text="{DynamicResource L.Extract}" FontSize="12" FontWeight="Medium"
+                                               Foreground="{DynamicResource FbBlue}" IsVisible="{Binding !Extracted}" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="ghost" Padding="0" Click="OnPasteImage">
+                                <TextBlock Text="📋 Paste image" FontSize="12" Foreground="{DynamicResource FbPewter}" />
+                            </Button>
+                            <TextBlock Text="{Binding ImageInfo}" FontSize="11" Foreground="{DynamicResource FbGreen}"
+                                       VerticalAlignment="Center" IsVisible="{Binding HasImage}" />
+                        </StackPanel>
+                        <TextBlock Text="{DynamicResource L.PdfComing}" FontSize="10.5"
+                                   Foreground="{DynamicResource FbSilver}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- review pane -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,Auto,Auto,*">
+
+                <!-- forced address base -->
+                <Border Grid.Row="0" Background="{DynamicResource FbBlueTint}" BorderBrush="{DynamicResource FbCloud}"
+                        BorderThickness="0,0,0,1" Padding="22,14">
+                    <DockPanel>
+                        <TextBlock Text="{DynamicResource L.AddressBase}" Classes="micro"
+                                   Foreground="{DynamicResource FbBlue}" FontWeight="Medium" Width="118"
+                                   TextWrapping="Wrap" VerticalAlignment="Center" />
+                        <StackPanel Orientation="Horizontal" Spacing="14">
+                            <Border Classes="seg" Height="30" Background="{DynamicResource FbPanel}">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Classes="seg-item" GroupName="base" Content="{DynamicResource L.Base1}"
+                                                 IsChecked="{Binding IsBase1}" />
+                                    <Rectangle Width="1" Fill="{DynamicResource FbCloud}" />
+                                    <RadioButton Classes="seg-item" GroupName="base" Content="{DynamicResource L.Base0}"
+                                                 IsChecked="{Binding IsBase0}" />
+                                </StackPanel>
+                            </Border>
+                            <TextBlock Text="{DynamicResource L.BaseWhy}" FontSize="11"
+                                       Foreground="{DynamicResource FbPewter}" TextWrapping="Wrap" MaxWidth="280"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding AiSuggestion}" Classes="mono" FontSize="10"
+                                   Foreground="{DynamicResource FbSilver}" DockPanel.Dock="Right"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center" />
+                    </DockPanel>
+                </Border>
+
+                <!-- summary -->
+                <Border Grid.Row="1" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,0,0,1" Padding="22,10">
+                    <DockPanel>
+                        <TextBlock Text="{Binding SummaryLabel}" FontSize="12" Foreground="{DynamicResource FbPewter}" />
+                        <TextBlock Text="{Binding Error}" FontSize="11.5" Foreground="{DynamicResource FbRed}"
+                                   DockPanel.Dock="Right" HorizontalAlignment="Right"
+                                   IsVisible="{Binding Error, Converter={x:Static conv:FrameConverters.IsNotNull}}" />
+                    </DockPanel>
+                </Border>
+
+                <!-- table header -->
+                <Grid Grid.Row="2" Height="28" Margin="22,0" ColumnDefinitions="30,76,*,92,66,60,58,40,158">
+                    <TextBlock Grid.Column="1" Text="{DynamicResource L.Address}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="{DynamicResource L.Tag}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="3" Text="{DynamicResource L.Type}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="4" Text="{DynamicResource L.Order}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="5" Text="{DynamicResource L.Scale}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="6" Text="{DynamicResource L.Unit}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="7" Text="{DynamicResource L.RW}" Classes="micro" VerticalAlignment="Center" />
+                    <TextBlock Grid.Column="8" Text="{DynamicResource L.Status}" Classes="micro" VerticalAlignment="Center" />
+                </Grid>
+
+                <!-- rows -->
+                <ScrollViewer Grid.Row="3">
+                    <ItemsControl ItemsSource="{Binding Rows}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:PointRowViewModel">
+                                <Border Height="32" BorderBrush="{DynamicResource FbRowLine}" BorderThickness="0,0,0,1"
+                                        Classes.warn="{Binding IsWarning}">
+                                    <Border.Styles>
+                                        <Style Selector="Border.warn">
+                                            <Setter Property="Background" Value="{DynamicResource FbAmberRow}" />
+                                        </Style>
+                                    </Border.Styles>
+                                    <Grid Margin="22,0" ColumnDefinitions="30,76,*,92,66,60,58,40,158"
+                                          VerticalAlignment="Center">
+                                        <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" MinHeight="20" />
+                                        <TextBox Grid.Column="1" Text="{Binding RawAddress}" Classes="mono"
+                                                 MinHeight="24" Height="24" FontSize="11" Padding="6,0"
+                                                 BorderThickness="0" Background="Transparent"
+                                                 Classes.bad="{Binding IsInvalid}">
+                                            <TextBox.Styles>
+                                                <Style Selector="TextBox.bad">
+                                                    <Setter Property="Foreground" Value="{DynamicResource FbRed}" />
+                                                </Style>
+                                            </TextBox.Styles>
+                                        </TextBox>
+                                        <TextBox Grid.Column="2" Text="{Binding Name}" MinHeight="24" Height="24"
+                                                 FontSize="12" Padding="6,0" BorderThickness="0"
+                                                 Background="Transparent" />
+                                        <TextBlock Grid.Column="3" Text="{Binding TypeLabel}" Classes="mono"
+                                                   FontSize="10.5" Foreground="{DynamicResource FbPewter}"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="4" Text="{Binding OrderLabel}" Classes="mono"
+                                                   FontSize="10.5" Foreground="{DynamicResource FbPewter}"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="5" Text="{Binding ScaleLabel}" Classes="mono"
+                                                   FontSize="10.5" Foreground="{DynamicResource FbPewter}"
+                                                   VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="6" Text="{Binding Unit}" Classes="mono" FontSize="10.5"
+                                                   Foreground="{DynamicResource FbPewter}" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="7" Text="{Binding RwLabel}" Classes="micro"
+                                                   VerticalAlignment="Center" />
+                                        <Panel Grid.Column="8" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding StatusLabel}" Classes="mono" FontSize="10"
+                                                       Foreground="{DynamicResource FbGreen}" IsVisible="{Binding IsReady}" />
+                                            <Border CornerRadius="20" Padding="9,2" Background="{DynamicResource FbAmberTint}"
+                                                    IsVisible="{Binding !IsReady}">
+                                                <TextBlock Text="{Binding StatusLabel}" Classes="mono" FontSize="10"
+                                                           Foreground="{DynamicResource FbAmber}" />
+                                            </Border>
+                                        </Panel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- footer -->
+        <Border Grid.Row="2" BorderBrush="{DynamicResource FbCloud}" BorderThickness="0,1,0,0" Padding="22,14">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <CheckBox IsChecked="{Binding SaveProfile}" Content="{DynamicResource L.SaveProfile}"
+                              FontSize="12" />
+                    <TextBox Text="{Binding ProfileFileName}" Classes="mono" MinHeight="28" Height="28"
+                             FontSize="11" Width="220" IsEnabled="{Binding SaveProfile}" />
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                    <Button Classes="ghost" Content="{DynamicResource L.Cancel}" Command="{Binding CancelCommand}" />
+                    <StackPanel Spacing="3">
+                        <Button Classes="primary" Content="{Binding ImportButtonLabel}"
+                                Command="{Binding ImportCommand}" IsEnabled="{Binding HasRows}" />
+                        <TextBlock Text="{Binding SegmentNote}" FontSize="10" Foreground="{DynamicResource FbSilver}"
+                                   HorizontalAlignment="Right" />
+                    </StackPanel>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

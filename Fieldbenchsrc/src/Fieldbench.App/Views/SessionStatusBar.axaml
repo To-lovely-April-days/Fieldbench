@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Fieldbench.App.ViewModels"
+             x:Class="Fieldbench.App.Views.SessionStatusBar"
+             x:DataType="vm:SessionViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.sv">
+            <Setter Property="FontFamily" Value="{StaticResource FbMono}" />
+            <Setter Property="FontSize" Value="10.5" />
+            <Setter Property="Foreground" Value="{DynamicResource FbGraphite}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.sk">
+            <Setter Property="FontFamily" Value="{StaticResource FbMono}" />
+            <Setter Property="FontSize" Value="10.5" />
+            <Setter Property="Foreground" Value="{DynamicResource FbSilver}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Rectangle.sep">
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Fill" Value="{DynamicResource FbCloud}" />
+            <Setter Property="Margin" Value="14,6" />
+        </Style>
+    </UserControl.Styles>
+
+    <DockPanel Margin="14,0" LastChildFill="False">
+        <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+            <Ellipse Classes="dot" Classes.on="{Binding IsConnected}" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBlock Classes="sv" Text="{Binding PortLabel}" />
+            <TextBlock Classes="sv" Text=" · " />
+            <TextBlock Classes="sv" Text="{Binding ParamsLabel}" />
+            <Rectangle Classes="sep" />
+            <TextBlock Classes="sk" Text="TX " />
+            <TextBlock Classes="sv" Text="{Binding TxBytes}" />
+            <Rectangle Classes="sep" />
+            <TextBlock Classes="sk" Text="RX " />
+            <TextBlock Classes="sv" Text="{Binding RxBytes}" />
+            <Rectangle Classes="sep" />
+            <TextBlock Classes="sk" Text="FRM " />
+            <TextBlock Classes="sv" Text="{Binding FrameCount}" />
+            <Rectangle Classes="sep" />
+            <TextBlock Classes="sk" Text="ERR " />
+            <TextBlock Classes="sv" Text="{Binding ErrorCount}" Foreground="{DynamicResource FbRed}" />
+            <Rectangle Classes="sep" />
+            <TextBlock Classes="sk" Text="BUF " />
+            <Border Width="44" Height="3" CornerRadius="2" Background="{DynamicResource FbCloud}"
+                    VerticalAlignment="Center" Margin="4,0">
+                <Rectangle HorizontalAlignment="Left" Fill="{DynamicResource FbSilver}"
+                           Width="{Binding BufferUsage, Converter={x:Static vm:UiMath.Times44}}" />
+            </Border>
+            <TextBlock Classes="sv" Text="{Binding BufferPercent}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+            <TextBlock Classes="sv" Text="✦ " Foreground="{DynamicResource FbBlue}" />
+            <TextBlock Classes="sv" Text="{Binding Ai.QuotaLabel}" Foreground="{DynamicResource FbBlue}" />
+            <Rectangle Classes="sep" />
+            <TextBlock Classes="sv" Text="{Binding Fps}" />
+            <TextBlock Classes="sk" Text=" FPS" />
+        </StackPanel>
+    </DockPanel>
+</UserControl>

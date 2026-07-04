@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fieldbench — Monitor session · protocol detect</title>
+<style>
+:root{
+  --blue:#3E6AE1; --blue-tint:#3E6AE114; --blue-tint2:#3E6AE10E;
+  --carbon:#171A20; --graphite:#393C41; --pewter:#5C5E62; --silver:#8E8E8E;
+  --cloud:#EAEAEC; --ash:#F4F4F4; --bg:#FAFAFB; --white:#FFFFFF;
+  --green:#1FA463; --amber:#D9870A; --red:#D9342B; --r:4px;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Code",Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#EDEEF0;font-family:var(--sans);color:var(--carbon);display:flex;justify-content:center;padding:28px 16px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+.frame{width:1440px;height:860px;background:var(--bg);border:1px solid var(--cloud);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.titlebar{height:40px;display:flex;align-items:stretch;border-bottom:1px solid var(--cloud);flex-shrink:0}
+.logo{display:flex;align-items:center;gap:9px;padding:0 16px;font-weight:500;font-size:11px;letter-spacing:.16em;color:var(--pewter)}
+.logo .mark{width:13px;height:13px;border:1.5px solid var(--blue);border-radius:3px;position:relative}
+.logo .mark::after{content:'';position:absolute;left:2.5px;top:5px;width:6px;height:1.5px;background:var(--blue)}
+.tabs{display:flex;align-items:flex-end;flex:1;padding:6px 10px 0;gap:2px}
+.tab{display:flex;align-items:center;gap:8px;padding:0 14px;height:34px;font-size:12px;color:var(--silver);border:1px solid transparent;border-bottom:none;border-radius:var(--r) var(--r) 0 0}
+.tab .dot{width:5px;height:5px;border-radius:50%;background:#D0D1D2}
+.tab .dot.on{background:var(--green)}
+.tab .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.tab.active{background:var(--white);border-color:var(--cloud);color:var(--carbon)}
+.tab.active .kind{color:var(--blue)}
+.tab-new{width:30px;height:30px;margin-bottom:3px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:14px}
+.winctl{display:flex;align-items:center;gap:2px;padding:0 10px}
+.winctl span{width:32px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.toolbar{height:44px;display:flex;align-items:center;gap:14px;padding:0 14px;background:var(--white);border-bottom:1px solid var(--cloud);flex-shrink:0}
+.ctl{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.ctl .cell{display:flex;align-items:center;gap:7px;padding:0 11px;font-size:12px}
+.ctl .cell + .cell{border-left:1px solid var(--cloud)}
+.ctl .k{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--silver)}
+.ctl .v{font-family:var(--mono);font-size:11.5px;color:var(--carbon)}
+.ctl .car{color:var(--silver);font-size:8px}
+.lens{display:flex;height:28px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.lens span{display:flex;align-items:center;padding:0 14px;font-size:12px;color:var(--pewter)}
+.lens span.on{background:var(--blue-tint);color:var(--blue);font-weight:500}
+.acts{display:flex;align-items:center;gap:4px}
+.act{display:flex;align-items:center;gap:7px;height:28px;padding:0 11px;border-radius:var(--r);font-size:12px;color:var(--pewter)}
+.act .ic{font-size:10px;color:var(--silver)}
+.act.rec .ic{color:var(--red)}
+.spacer{flex:1}
+.run{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pewter)}
+.run .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.run b{font-weight:500;color:var(--carbon)}
+.run .t{font-family:var(--mono);font-size:11.5px;color:var(--silver)}
+.main{flex:1;display:grid;grid-template-columns:212px 1fr 316px;min-height:0}
+.rail{background:var(--bg);border-right:1px solid var(--cloud);display:flex;flex-direction:column;padding:14px 0 10px}
+.rh{display:flex;align-items:center;height:24px;padding:0 14px;margin-bottom:2px}
+.rh span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.rh i{margin-left:auto;font-style:normal;color:var(--silver);font-size:13px}
+.tree{display:flex;flex-direction:column;margin-bottom:16px}
+.trow{display:flex;align-items:center;gap:8px;height:28px;padding:0 14px;font-size:12px;color:var(--pewter)}
+.trow .st{width:5px;height:5px;border-radius:50%;background:#D0D1D2;flex-shrink:0}
+.trow .st.on{background:var(--green)}
+.trow.conn{color:var(--carbon)}
+.trow .m{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.trow.sess{padding-left:35px;position:relative}
+.trow.sess::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--cloud)}
+.trow.sess .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver);margin-left:auto}
+.trow.active{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue);color:var(--carbon)}
+.trow.active .kind{color:var(--blue)}
+.center{display:flex;flex-direction:column;min-width:0;background:var(--white)}
+.timeline{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
+.thead{display:grid;grid-template-columns:104px 56px 48px 40px 1fr 356px 30px;height:26px;align-items:center;padding:0 6px 0 14px;border-bottom:1px solid var(--cloud)}
+.thead span{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--silver)}
+.detect{display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;background:var(--blue-tint);border-bottom:1px solid var(--cloud)}
+.detect .ic{color:var(--blue);font-size:13px}
+.detect .txt{font-size:12.5px;color:var(--graphite)}
+.detect .txt b{font-weight:500;color:var(--carbon)}
+.detect .txt .m{font-family:var(--mono);font-size:11px;color:var(--pewter)}
+.detect .primary{margin-left:auto;height:26px;display:flex;align-items:center;padding:0 14px;background:var(--blue);color:#fff;font-size:12px;font-weight:500;border-radius:var(--r)}
+.detect .dis{width:24px;height:24px;display:flex;align-items:center;justify-content:center;color:var(--silver);font-size:11px}
+.rows{flex:1;overflow:hidden}
+.row{display:grid;grid-template-columns:104px 56px 48px 40px 1fr 356px 30px;align-items:center;height:26px;padding:0 6px 0 14px;border-bottom:1px solid rgba(23,26,32,.045);font-size:12px}
+.row .ts{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.row .ts b{color:var(--graphite);font-weight:400}
+.row .dt{font-family:var(--mono);font-size:10.5px;color:var(--silver);text-align:right;padding-right:12px}
+.dir{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.08em;color:#1989FA}
+.row .len{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.ascii{font-family:var(--mono);font-size:11px;color:#C9CBCE;letter-spacing:.12em;overflow:hidden;white-space:nowrap}
+.row .hex{font-family:var(--mono);font-size:11px;color:var(--pewter);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aibtn{width:20px;height:20px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:11px;visibility:hidden}
+.row.sel{background:var(--blue-tint2);box-shadow:inset 2px 0 0 var(--blue)}
+.row.sel .aibtn{visibility:visible;background:var(--blue-tint)}
+.sbar{position:absolute;right:3px;top:72px;width:3px;height:96px;border-radius:2px;background:var(--cloud)}
+.proto{height:210px;border-top:1px solid var(--cloud);background:var(--white);display:flex;flex-direction:column;flex-shrink:0}
+.ptabs{display:flex;align-items:center;height:34px;border-bottom:1px solid var(--cloud);padding:0 14px;gap:20px}
+.ptab{height:33px;display:flex;align-items:center;font-size:12px;color:var(--silver);border-bottom:1.5px solid transparent}
+.ptab.on{color:var(--carbon);border-bottom-color:var(--blue);font-weight:500}
+.compose{display:flex;align-items:center;gap:10px;padding:14px 14px 10px}
+.mseg{display:flex;height:30px;border:1px solid var(--cloud);border-radius:var(--r);overflow:hidden}
+.mseg span{display:flex;align-items:center;padding:0 11px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--pewter)}
+.mseg span.on{background:var(--ash);color:var(--carbon);font-weight:500}
+.hexin{flex:1;height:30px;display:flex;align-items:center;padding:0 12px;border:1px solid var(--cloud);border-radius:var(--r);font-family:var(--mono);font-size:12px;color:var(--carbon);background:var(--white)}
+.hexin .caret{width:1px;height:14px;background:var(--blue);margin-left:2px}
+.sel2{display:flex;align-items:center;gap:7px;height:30px;padding:0 11px;border:1px solid var(--cloud);border-radius:var(--r);font-size:11.5px;color:var(--pewter)}
+.sel2 .car{color:var(--silver);font-size:8px}
+.sendbtn{height:30px;display:flex;align-items:center;padding:0 18px;background:var(--blue);color:#fff;font-size:12px;font-weight:500;border-radius:var(--r)}
+.crow{display:flex;align-items:center;gap:8px;padding:4px 14px}
+.crow .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--silver);width:74px}
+.fav{font-size:11.5px;color:var(--graphite);background:var(--bg);border:1px solid var(--cloud);border-radius:20px;padding:4px 12px}
+.fav.add{color:var(--silver);border-style:dashed;background:transparent}
+.hist{font-family:var(--mono);font-size:11px;color:var(--silver)}
+.hist b{color:var(--pewter);font-weight:400}
+.side{background:var(--white);border-left:1px solid var(--cloud);display:flex;flex-direction:column;min-height:0}
+.shead{display:flex;align-items:baseline;gap:8px;padding:13px 16px 10px;flex-shrink:0}
+.shead .t{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--silver)}
+.shead .fid{font-family:var(--mono);font-size:10.5px;color:var(--silver);margin-left:auto}
+.inspector{padding:0 16px 14px;border-bottom:1px solid var(--cloud)}
+.bytes{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin-bottom:10px}
+.by{height:22px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;border-radius:3px;background:var(--ash);color:var(--pewter)}
+.arow{display:flex;align-items:center;gap:10px;font-size:11px;margin-bottom:12px}
+.arow .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--silver)}
+.arow .v{font-family:var(--mono);color:#C9CBCE;letter-spacing:.12em}
+.hint{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--blue-tint);border-radius:8px;font-size:11.5px;color:var(--graphite)}
+.hint .ic{color:var(--blue)}
+.hint a{margin-left:auto;color:var(--blue);font-weight:500;text-decoration:none;white-space:nowrap}
+.nolens{font-size:11px;color:var(--silver);margin-bottom:10px}
+.ai{flex:1;display:flex;flex-direction:column;min-height:0}
+.ai .shead .t,.ai .shead .sp{color:var(--blue)}
+.aiempty{flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 16px;gap:4px}
+.aiempty .big{font-size:12.5px;color:var(--graphite);margin-bottom:8px}
+.check{display:flex;align-items:center;gap:10px;height:30px;font-size:11.5px;color:var(--graphite);border-bottom:1px solid rgba(23,26,32,.04)}
+.check:last-child{border-bottom:none}
+.check .n{font-family:var(--mono);font-size:10px;color:var(--blue)}
+.check .go{margin-left:auto;color:var(--silver);font-size:10px}
+.aifoot{display:flex;align-items:center;height:32px;padding:0 16px;border-top:1px solid var(--cloud);font-size:11px;color:var(--silver);flex-shrink:0}
+.aifoot b{font-family:var(--mono);color:var(--blue);font-weight:500;margin:0 4px;font-size:11px}
+.aifoot a{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:500}
+.status{height:28px;display:flex;align-items:center;padding:0 14px;background:var(--white);border-top:1px solid var(--cloud);font-size:11px;color:var(--silver);flex-shrink:0}
+.status .item{display:flex;align-items:center;gap:6px;padding:0 14px;border-left:1px solid var(--cloud);font-family:var(--mono);font-size:10.5px}
+.status .item:first-child{border-left:none;padding-left:0}
+.status .item b{color:var(--graphite);font-weight:400}
+.status .dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.status .gauge{width:44px;height:3px;border-radius:2px;background:var(--cloud);position:relative;overflow:hidden}
+.status .gauge i{position:absolute;left:0;top:0;bottom:0;width:8%;background:var(--silver)}
+.status .aiq{color:var(--blue)} .status .aiq b{color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <div class="titlebar">
+    <div class="logo"><span class="mark"></span>FIELDBENCH</div>
+    <div class="tabs">
+      <div class="tab active"><span class="dot on"></span>COM3 <span class="kind">mon</span></div>
+      <div class="tab"><span class="dot on"></span>COM3 <span class="kind">rtu·m</span></div>
+      <div class="tab"><span class="dot"></span>192.168.1.50 <span class="kind">tcp·s</span></div>
+      <div class="tab-new">+</div>
+    </div>
+    <div class="winctl"><span>–</span><span>▢</span><span>✕</span></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="ctl">
+      <div class="cell"><span class="k">Port</span><span class="v">COM3 · CH340</span><span class="car">▾</span></div>
+      <div class="cell"><span class="k">Baud</span><span class="v">9600</span><span class="car">▾</span></div>
+      <div class="cell"><span class="v">8-N-1</span><span class="car">▾</span></div>
+    </div>
+    <div class="lens"><span class="on">Raw</span><span>Modbus RTU</span></div>
+    <div class="ctl">
+      <div class="cell"><span class="k">Split</span><span class="v">Gap 20 ms</span><span class="car">▾</span></div>
+    </div>
+    <div class="acts">
+      <div class="act rec"><span class="ic">●</span>Record</div>
+      <div class="act"><span class="ic">⌫</span>Clear</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="run"><span class="dot"></span><b>Connected</b><span class="t">00:03:07</span></div>
+  </div>
+
+  <div class="main">
+
+    <aside class="rail">
+      <div class="rh"><span>Connections</span><i>+</i></div>
+      <div class="tree">
+        <div class="trow conn"><span class="st on"></span>COM3 — CH340<span class="m">9600</span></div>
+        <div class="trow sess active">Monitor<span class="kind">raw</span></div>
+        <div class="trow sess">Master<span class="kind">rtu</span></div>
+        <div class="trow conn"><span class="st"></span>192.168.1.50<span class="m">:502</span></div>
+        <div class="trow sess">Slave<span class="kind">tcp</span></div>
+      </div>
+      <div class="rh"><span>Profiles</span></div>
+      <div class="tree">
+        <div class="trow">Boiler skid A</div>
+        <div class="trow">Test bench 485</div>
+      </div>
+    </aside>
+
+    <section class="center">
+      <div class="timeline">
+        <div class="thead"><span>Time</span><span style="text-align:right;padding-right:12px">Δ ms</span><span>Dir</span><span>Len</span><span>ASCII</span><span>Hex</span><span></span></div>
+
+        <div class="detect">
+          <span class="ic">⌁</span>
+          <span class="txt"><b>Modbus RTU detected</b> — <span class="m">12 / 12 chunks pass CRC-16 · @01 polling FC03</span></span>
+          <span class="primary">Switch lens</span>
+          <span class="dis">✕</span>
+        </div>
+
+        <div class="rows">
+          <div class="row"><span class="ts">14:31:58.<b>114</b></span><span class="dt"></span><span class="dir">RX ↓</span><span class="len">8</span><span class="ascii">········</span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:31:58.<b>128</b></span><span class="dt">14</span><span class="dir">RX ↓</span><span class="len">25</span><span class="ascii">··············…</span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:31:58.<b>612</b></span><span class="dt">484</span><span class="dir">RX ↓</span><span class="len">8</span><span class="ascii">········</span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:31:58.<b>626</b></span><span class="dt">14</span><span class="dir">RX ↓</span><span class="len">25</span><span class="ascii">··············…</span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:31:59.<b>112</b></span><span class="dt">486</span><span class="dir">RX ↓</span><span class="len">8</span><span class="ascii">········</span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:31:59.<b>126</b></span><span class="dt">14</span><span class="dir">RX ↓</span><span class="len">25</span><span class="ascii">··············…</span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:31:59.<b>610</b></span><span class="dt">484</span><span class="dir">RX ↓</span><span class="len">8</span><span class="ascii">········</span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row sel"><span class="ts">14:31:59.<b>625</b></span><span class="dt">15</span><span class="dir">RX ↓</span><span class="len">25</span><span class="ascii">··············…</span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:00.<b>109</b></span><span class="dt">484</span><span class="dir">RX ↓</span><span class="len">8</span><span class="ascii">········</span><span class="hex">01 03 00 00 00 0A C5 CD</span><span class="aibtn">✦</span></div>
+          <div class="row"><span class="ts">14:32:00.<b>124</b></span><span class="dt">15</span><span class="dir">RX ↓</span><span class="len">25</span><span class="ascii">··············…</span><span class="hex">01 03 14 00 E5 00 E7 01 90 00 FA 04 DC …</span><span class="aibtn">✦</span></div>
+        </div>
+        <div class="sbar"></div>
+      </div>
+
+      <div class="proto">
+        <div class="ptabs">
+          <div class="ptab on">Send</div>
+          <div class="ptab">Log</div>
+        </div>
+        <div class="compose">
+          <div class="mseg"><span class="on">HEX</span><span>ASCII</span></div>
+          <div class="hexin">01 04 00 00 00 02<span class="caret"></span></div>
+          <div class="sel2">+ CRC-16 Modbus<span class="car">▾</span></div>
+          <div class="sel2">⟳ Off<span class="car">▾</span></div>
+          <div class="sendbtn">Send</div>
+        </div>
+        <div class="crow">
+          <span class="lb">Favorites</span>
+          <span class="fav">Read inputs @1</span>
+          <span class="fav">Poll status</span>
+          <span class="fav add">+ Save current</span>
+        </div>
+        <div class="crow">
+          <span class="lb">Recent</span>
+          <span class="hist"><b>01 04 00 00 00 02 71 CB</b> · 14:29:11 · ↑</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="inspector">
+        <div class="shead" style="padding-left:0;padding-right:0"><span class="t">Byte inspector</span><span class="fid">#0512 · RX · 8 B</span></div>
+        <div class="bytes">
+          <span class="by">01</span><span class="by">03</span><span class="by">00</span><span class="by">00</span><span class="by">00</span><span class="by">0A</span><span class="by">C5</span><span class="by">CD</span>
+        </div>
+        <div class="arow"><span class="k">ASCII</span><span class="v">········</span></div>
+        <div class="nolens">No lens applied — bytes shown raw.</div>
+        <div class="hint"><span class="ic">⌁</span>Pattern match: Modbus RTU · CRC-16 valid<a href="#">Apply lens →</a></div>
+      </div>
+
+      <div class="ai">
+        <div class="shead"><span class="sp" style="color:var(--blue)">✦</span><span class="t">AI explain</span></div>
+        <div class="aiempty">
+          <div class="big">Select one or more chunks to begin.</div>
+          <div class="check"><span class="n">01</span>Explain selection<span class="go">→</span></div>
+          <div class="check"><span class="n">02</span>Identify unknown protocol<span class="go">→</span></div>
+        </div>
+        <div class="aifoot">Trial <b>30 / 30</b> left <a href="#">Subscribe</a></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="status">
+    <span class="item"><span class="dot"></span><b>COM3 · 9600 8N1</b></span>
+    <span class="item">TX <b>0 B</b></span>
+    <span class="item">RX <b>6.1 KB</b></span>
+    <span class="item">FRM <b>184</b></span>
+    <span class="item">ERR <b>0</b></span>
+    <span class="item">BUF <span class="gauge"><i></i></span><b>8%</b></span>
+    <span class="spacer"></span>
+    <span class="item aiq">✦ <b>30</b></span>
+    <span class="item">60 FPS</span>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <x:String x:Key="L.AppName">FIELDBENCH</x:String>
+
+    <!-- Toolbar / lens -->
+    <x:String x:Key="L.Port">PORT</x:String>
+    <x:String x:Key="L.Baud">BAUD</x:String>
+    <x:String x:Key="L.Raw">Raw</x:String>
+    <x:String x:Key="L.ScanSlaves">Scan slaves</x:String>
+    <x:String x:Key="L.Record">Record</x:String>
+    <x:String x:Key="L.Clear">Clear</x:String>
+    <x:String x:Key="L.Connected">Connected</x:String>
+    <x:String x:Key="L.Disconnected">Disconnected</x:String>
+    <x:String x:Key="L.Listening">Listening</x:String>
+    <x:String x:Key="L.DeviceLost">Device lost</x:String>
+    <x:String x:Key="L.Connect">Connect</x:String>
+    <x:String x:Key="L.Disconnect">Disconnect</x:String>
+    <x:String x:Key="L.Split">SPLIT</x:String>
+    <x:String x:Key="L.Listen">LISTEN</x:String>
+    <x:String x:Key="L.UnitId">UNIT ID</x:String>
+    <x:String x:Key="L.NoConnection">No connection</x:String>
+    <x:String x:Key="L.Pause">Pause</x:String>
+    <x:String x:Key="L.Resume">Resume</x:String>
+
+    <!-- Rail -->
+    <x:String x:Key="L.Connections">CONNECTIONS</x:String>
+    <x:String x:Key="L.Profiles">PROFILES</x:String>
+    <x:String x:Key="L.NothingYet">Nothing yet.</x:String>
+    <x:String x:Key="L.Monitor">Monitor</x:String>
+    <x:String x:Key="L.Master">Master</x:String>
+    <x:String x:Key="L.Slave">Slave</x:String>
+
+    <!-- Timeline -->
+    <x:String x:Key="L.Time">TIME</x:String>
+    <x:String x:Key="L.DeltaMs">Δ MS</x:String>
+    <x:String x:Key="L.Dir">DIR</x:String>
+    <x:String x:Key="L.Len">LEN</x:String>
+    <x:String x:Key="L.Frame">FRAME</x:String>
+    <x:String x:Key="L.Hex">HEX</x:String>
+    <x:String x:Key="L.Ascii">ASCII</x:String>
+    <x:String x:Key="L.SwitchLens">Switch lens</x:String>
+    <x:String x:Key="L.Detected">detected</x:String>
+    <x:String x:Key="L.FilterErrors">Errors only</x:String>
+    <x:String x:Key="L.FilterPlaceholder">Filter hex / ASCII…</x:String>
+    <x:String x:Key="L.EmptyTimeline">Create a connection to start capturing.</x:String>
+
+    <!-- Inspector -->
+    <x:String x:Key="L.ByteInspector">BYTE INSPECTOR</x:String>
+    <x:String x:Key="L.NoLens">No lens applied — bytes shown raw.</x:String>
+    <x:String x:Key="L.ApplyLens">Apply lens →</x:String>
+    <x:String x:Key="L.SelectFrame">Select a frame to inspect.</x:String>
+    <x:String x:Key="L.Addr">ADDR</x:String>
+    <x:String x:Key="L.Func">FUNC</x:String>
+    <x:String x:Key="L.Data">DATA</x:String>
+    <x:String x:Key="L.Crc">CRC</x:String>
+
+    <!-- AI -->
+    <x:String x:Key="L.AiExplain">AI EXPLAIN</x:String>
+    <x:String x:Key="L.AiEmpty">Select one or more frames to begin.</x:String>
+    <x:String x:Key="L.AiExplainSelection">Explain selection</x:String>
+    <x:String x:Key="L.AiIdentify">Identify unknown protocol</x:String>
+    <x:String x:Key="L.AiAsk">Ask about this frame…</x:String>
+    <x:String x:Key="L.AiTrial">Trial</x:String>
+    <x:String x:Key="L.AiLeft">left</x:String>
+    <x:String x:Key="L.Subscribe">Subscribe</x:String>
+    <x:String x:Key="L.AiOffline">AI needs a network connection — core features are unaffected.</x:String>
+    <x:String x:Key="L.AiQuotaOut">Trial quota exhausted — subscribe for 1000 explanations / month.</x:String>
+
+    <!-- Proto panels -->
+    <x:String x:Key="L.Registers">Registers</x:String>
+    <x:String x:Key="L.PollTasks">Poll tasks</x:String>
+    <x:String x:Key="L.Send">Send</x:String>
+    <x:String x:Key="L.Chart">Chart</x:String>
+    <x:String x:Key="L.Log">Log</x:String>
+    <x:String x:Key="L.Address">ADDRESS</x:String>
+    <x:String x:Key="L.Tag">TAG</x:String>
+    <x:String x:Key="L.Type">TYPE</x:String>
+    <x:String x:Key="L.Value">VALUE</x:String>
+    <x:String x:Key="L.Trend">TREND</x:String>
+    <x:String x:Key="L.RawCol">RAW</x:String>
+    <x:String x:Key="L.RW">R/W</x:String>
+    <x:String x:Key="L.Generator">GENERATOR</x:String>
+    <x:String x:Key="L.Task">TASK</x:String>
+    <x:String x:Key="L.Target">TARGET</x:String>
+    <x:String x:Key="L.Interval">INTERVAL</x:String>
+    <x:String x:Key="L.LastCycle">LAST CYCLE</x:String>
+    <x:String x:Key="L.Errors">ERRORS</x:String>
+    <x:String x:Key="L.Enabled">ENABLED</x:String>
+    <x:String x:Key="L.Actions">ACTIONS</x:String>
+    <x:String x:Key="L.NewTask">+ New task</x:String>
+    <x:String x:Key="L.NewTag">+ New tag</x:String>
+    <x:String x:Key="L.SerialScheduling">SAME CONNECTION · SERIAL SCHEDULING</x:String>
+    <x:String x:Key="L.SparseInfo">SPARSE MAP · ILLEGAL ADDRESS → EXC 02 AUTO</x:String>
+    <x:String x:Key="L.Favorites">FAVORITES</x:String>
+    <x:String x:Key="L.Recent">RECENT</x:String>
+    <x:String x:Key="L.SaveCurrent">+ Save current</x:String>
+    <x:String x:Key="L.Clients">CLIENTS</x:String>
+    <x:String x:Key="L.ImportPointMap">Import point map…</x:String>
+    <x:String x:Key="L.ExportCsv">↓ Export CSV</x:String>
+    <x:String x:Key="L.JumpTimeline">Jump to timeline ↑</x:String>
+
+    <!-- Status bar -->
+    <x:String x:Key="L.Fps">FPS</x:String>
+
+    <!-- New connection dialog -->
+    <x:String x:Key="L.NewConnection">New connection</x:String>
+    <x:String x:Key="L.Serial">Serial</x:String>
+    <x:String x:Key="L.TcpClient">TCP client</x:String>
+    <x:String x:Key="L.TcpServer">TCP server</x:String>
+    <x:String x:Key="L.BaudRate">BAUD RATE</x:String>
+    <x:String x:Key="L.DataBits">DATA BITS</x:String>
+    <x:String x:Key="L.Parity">PARITY</x:String>
+    <x:String x:Key="L.StopBits">STOP BITS</x:String>
+    <x:String x:Key="L.FlowControl">FLOW CONTROL</x:String>
+    <x:String x:Key="L.Host">HOST</x:String>
+    <x:String x:Key="L.PortNumber">PORT</x:String>
+    <x:String x:Key="L.StartAs">START AS</x:String>
+    <x:String x:Key="L.StartAsHint">Monitor listens passively · Master polls devices · Slave simulates one. Switch anytime — same connection, same capture.</x:String>
+    <x:String x:Key="L.NoDevice">No device on hand?</x:String>
+    <x:String x:Key="L.NoDeviceHint">Run the demo — a simulated master and slave, wired together.</x:String>
+    <x:String x:Key="L.RunDemo">Run demo →</x:String>
+    <x:String x:Key="L.Cancel">Cancel</x:String>
+
+    <!-- Scan dialog -->
+    <x:String x:Key="L.ScanTitle">Scan slaves</x:String>
+    <x:String x:Key="L.From">FROM</x:String>
+    <x:String x:Key="L.To">TO</x:String>
+    <x:String x:Key="L.Probe">PROBE</x:String>
+    <x:String x:Key="L.Timeout">TIMEOUT</x:String>
+    <x:String x:Key="L.SweepParams">Also sweep common serial parameters</x:String>
+    <x:String x:Key="L.SweepHint">9600–115200 baud × N / E parity — adds roughly 4 minutes</x:String>
+    <x:String x:Key="L.Responding">RESPONDING</x:String>
+    <x:String x:Key="L.Found">found</x:String>
+    <x:String x:Key="L.OpenAsMaster">Open as Master →</x:String>
+    <x:String x:Key="L.StopScan">Stop scan</x:String>
+    <x:String x:Key="L.StartScan">Start scan</x:String>
+    <x:String x:Key="L.ScanKeep">Found slaves stay in the list after stopping.</x:String>
+    <x:String x:Key="L.Scanning">Scanning</x:String>
+    <x:String x:Key="L.Probing">Probing</x:String>
+    <x:String x:Key="L.Elapsed">elapsed</x:String>
+
+    <!-- Import review -->
+    <x:String x:Key="L.ImportTitle">Import point map</x:String>
+    <x:String x:Key="L.ImportSubtitle">AI extracted from pasted content</x:String>
+    <x:String x:Key="L.SourceLabel">SOURCE — PASTED CONTENT</x:String>
+    <x:String x:Key="L.ReExtract">↻ Re-extract</x:String>
+    <x:String x:Key="L.PdfComing">Whole-PDF import with page picker — coming in 1.0.x</x:String>
+    <x:String x:Key="L.AddressBase">ADDRESS BASE — CONFIRM TO IMPORT</x:String>
+    <x:String x:Key="L.Base1">4xxxx · PLC, 1-based</x:String>
+    <x:String x:Key="L.Base0">0-based · protocol</x:String>
+    <x:String x:Key="L.BaseWhy">This decides the wire address of every register below — the single most common import mistake.</x:String>
+    <x:String x:Key="L.AiSuggests">AI suggests:</x:String>
+    <x:String x:Key="L.PointsExtracted">points extracted</x:String>
+    <x:String x:Key="L.Ready">ready</x:String>
+    <x:String x:Key="L.NeedReview">need review</x:String>
+    <x:String x:Key="L.Status">STATUS</x:String>
+    <x:String x:Key="L.Order">ORDER</x:String>
+    <x:String x:Key="L.Scale">SCALE</x:String>
+    <x:String x:Key="L.Unit">UNIT</x:String>
+    <x:String x:Key="L.SaveProfile">Save device profile</x:String>
+    <x:String x:Key="L.ImportN">Import</x:String>
+    <x:String x:Key="L.Points">points</x:String>
+    <x:String x:Key="L.SegmentedNote">Creates segmented poll tasks · ≤125 registers each</x:String>
+    <x:String x:Key="L.PasteHere">Paste a register table (text) or an image of the manual page, then Extract.</x:String>
+    <x:String x:Key="L.Extract">Extract</x:String>
+    <x:String x:Key="L.Extractions">extractions</x:String>
+
+    <!-- Settings -->
+    <x:String x:Key="L.Settings">Settings</x:String>
+    <x:String x:Key="L.General">General</x:String>
+    <x:String x:Key="L.Appearance">Appearance</x:String>
+    <x:String x:Key="L.License">License</x:String>
+    <x:String x:Key="L.AiAssistant">AI assistant</x:String>
+    <x:String x:Key="L.Updates">Updates</x:String>
+    <x:String x:Key="L.About">About</x:String>
+    <x:String x:Key="L.Theme">Theme</x:String>
+    <x:String x:Key="L.ThemeLight">Light</x:String>
+    <x:String x:Key="L.ThemeDark">Dark</x:String>
+    <x:String x:Key="L.Language">Language</x:String>
+    <x:String x:Key="L.BufferSize">Timeline buffer (frames)</x:String>
+    <x:String x:Key="L.LicenseKey">License key</x:String>
+    <x:String x:Key="L.LicensedTo">Licensed to</x:String>
+    <x:String x:Key="L.Devices">Devices</x:String>
+    <x:String x:Key="L.Validation">Validation</x:String>
+    <x:String x:Key="L.NoPhoneHome">Permanently offline after activation — no phone-home, ever.</x:String>
+    <x:String x:Key="L.OfflineActivation">Offline activation.</x:String>
+    <x:String x:Key="L.MachineCodeIs">This machine's code is</x:String>
+    <x:String x:Key="L.OfflineHow">— open fieldbench.app/activate on any device, exchange it for an activation file, then import it here.</x:String>
+    <x:String x:Key="L.ImportActivation">Import activation file…</x:String>
+    <x:String x:Key="L.Activate">Activate</x:String>
+    <x:String x:Key="L.Activated">Activated</x:String>
+    <x:String x:Key="L.FreeTier">Free</x:String>
+    <x:String x:Key="L.TrialTier">Pro trial</x:String>
+    <x:String x:Key="L.DaysLeft">days left</x:String>
+    <x:String x:Key="L.StartTrial">Start 14-day Pro trial</x:String>
+    <x:String x:Key="L.Explanations">Explanations</x:String>
+    <x:String x:Key="L.PointExtractions">Point map extractions</x:String>
+    <x:String x:Key="L.ThisMonth">this month</x:String>
+    <x:String x:Key="L.Privacy">Privacy</x:String>
+    <x:String x:Key="L.PrivacyNote">Frames are sent only when you press Explain. Nothing is stored on the gateway.</x:String>
+    <x:String x:Key="L.PreviewSent">Preview what gets sent</x:String>
+    <x:String x:Key="L.Version">Version</x:String>
+    <x:String x:Key="L.CheckNow">Check now</x:String>
+    <x:String x:Key="L.NotifyUpdates">Notify about updates</x:String>
+    <x:String x:Key="L.NeverSilent">Never installs silently — you choose when.</x:String>
+    <x:String x:Key="L.Telemetry">Anonymous usage statistics</x:String>
+    <x:String x:Key="L.TelemetryOff">Off by default. No frame content is ever included.</x:String>
+    <x:String x:Key="L.UpgradePro">Upgrade to Pro</x:String>
+
+    <!-- Misc -->
+    <x:String x:Key="L.Export">Export</x:String>
+    <x:String x:Key="L.Demo">Demo</x:String>
+    <x:String x:Key="L.OK">OK</x:String>
+
+</ResourceDictionary>
